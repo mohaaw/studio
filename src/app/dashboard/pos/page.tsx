@@ -5,18 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, Volume2, Accessibility } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, Volume2, Accessibility, ShieldCheck, BookText } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef, useTransition } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { suggestPersonalized } from "@/ai/flows/suggest-personalized-flow";
 import { textToSpeech } from "@/ai/flows/text-to-speech-flow";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Product {
     id: string;
@@ -26,6 +27,7 @@ interface Product {
     image: string;
     category: string;
     serials: string[];
+    warranty: string;
 }
 
 interface CartItem extends Product {
@@ -54,14 +56,14 @@ type TextToSpeechOutput = {
 
 
 const products: Product[] = [
-  { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['F17G83J8Q1J9', 'C39L8B8JHW6H', 'G6TPL0Q7Q1J9'] },
-  { id: '2', name: 'MacBook Air M2', price: 1199.00, stock: 8, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['C02H1234ABCD', 'C02H5678WXYZ'] },
-  { id: '3', name: 'Apple Watch S8', price: 399.00, stock: 15, image: 'https://placehold.co/150x150.png', category: 'Wearables', serials: ['G99KAP123XYZ'] },
-  { id: '4', name: 'AirPods Pro 2', price: 249.00, stock: 30, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: ['GX7Y2345Z123'] },
-  { id: '5', name: 'Dell XPS 13', price: 1099.00, stock: 7, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['5CG1234567'] },
-  { id: '6', name: 'Samsung S23', price: 899.00, stock: 12, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['R58R3ABC123'] },
-  { id: '7', name: 'Anker Charger', price: 39.99, stock: 50, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [] },
-  { id: '8', name: 'Logitech Mouse', price: 79.99, stock: 25, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [] },
+  { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['F17G83J8Q1J9', 'C39L8B8JHW6H', 'G6TPL0Q7Q1J9'], warranty: 'Expires Nov 2024' },
+  { id: '2', name: 'MacBook Air M2', price: 1199.00, stock: 8, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['C02H1234ABCD', 'C02H5678WXYZ'], warranty: 'Expires Oct 2024' },
+  { id: '3', name: 'Apple Watch S8', price: 399.00, stock: 15, image: 'https://placehold.co/150x150.png', category: 'Wearables', serials: ['G99KAP123XYZ'], warranty: 'Expires Jan 2025' },
+  { id: '4', name: 'AirPods Pro 2', price: 249.00, stock: 30, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: ['GX7Y2345Z123'], warranty: 'Standard 90-Day' },
+  { id: '5', name: 'Dell XPS 13', price: 1099.00, stock: 7, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['5CG1234567'], warranty: 'Standard 90-Day' },
+  { id: '6', name: 'Samsung S23', price: 899.00, stock: 12, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['R58R3ABC123'], warranty: 'Expires Sep 2024' },
+  { id: '7', name: 'Anker Charger', price: 39.99, stock: 50, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [], warranty: 'Manufacturer Limited' },
+  { id: '8', name: 'Logitech Mouse', price: 79.99, stock: 25, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [], warranty: 'Manufacturer Limited' },
 ];
 
 const customers: Customer[] = [
@@ -90,10 +92,15 @@ export default function POSPage() {
     const [isSerialSelectorOpen, setSerialSelectorOpen] = useState(false);
     const [isDiscountModalOpen, setDiscountModalOpen] = useState(false);
     const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
+    const [isWarrantyModalOpen, setWarrantyModalOpen] = useState(false);
+    const [isHandoverModalOpen, setHandoverModalOpen] = useState(false);
     const [currentItemForSerial, setCurrentItemForSerial] = useState<CartItem | null>(null);
+    const [currentItemForWarranty, setCurrentItemForWarranty] = useState<CartItem | null>(null);
 
     const [cashTendered, setCashTendered] = useState("");
     const audioRef = useRef<HTMLAudioElement>(null);
+    const [handoverNotes, setHandoverNotes] = useState("- Customer Jane Smith is waiting for a call back about her MacBook repair status.\n- Remember to restock the iPhone charging cables.");
+    const [newHandoverNote, setNewHandoverNote] = useState("");
     
     // Check network status
     useEffect(() => {
@@ -227,6 +234,20 @@ export default function POSPage() {
             });
         }
     }
+    
+    const handleShowWarranty = (item: CartItem) => {
+        setCurrentItemForWarranty(item);
+        setWarrantyModalOpen(true);
+    }
+    
+    const handleSaveHandoverNotes = () => {
+        if (newHandoverNote.trim() !== "") {
+            const timestamp = new Date().toLocaleString();
+            setHandoverNotes(prev => `${prev}\n- ${newHandoverNote} [${timestamp}]`);
+            setNewHandoverNote("");
+        }
+        setHandoverModalOpen(false);
+    }
 
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const totalDiscount = (subtotal * discount) / 100;
@@ -348,7 +369,7 @@ export default function POSPage() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                          <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
-                         <div className="flex items-center gap-2">
+                         <div className="flex items-center gap-1">
                              <Button 
                                 variant={isAccessibilityMode ? "secondary" : "outline"} 
                                 size="icon" 
@@ -360,6 +381,9 @@ export default function POSPage() {
                                 }}
                             >
                                 <Accessibility className="h-4 w-4"/>
+                            </Button>
+                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setHandoverModalOpen(true)}>
+                                <BookText className="h-4 w-4"/>
                             </Button>
                             <div className={`flex items-center gap-1.5 text-xs font-medium ${isOnline ? 'text-green-500' : 'text-destructive'}`}>
                                 {isOnline ? <Wifi className="h-4 w-4"/> : <WifiOff className="h-4 w-4"/>}
@@ -423,6 +447,7 @@ export default function POSPage() {
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleShowWarranty(cartItem)}><ShieldCheck className="h-4 w-4"/></Button>
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, -1)}><Minus className="h-4 w-4" /></Button>
                                     <span className="w-4 text-center">{cartItem.quantity}</span>
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, 1)}><Plus className="h-4 w-4" /></Button>
@@ -572,7 +597,60 @@ export default function POSPage() {
                 </div>
             </DialogContent>
         </Dialog>
+        
+        {/* Dialog for Warranty Lookup */}
+        <Dialog open={isWarrantyModalOpen} onOpenChange={setWarrantyModalOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                        <ShieldCheck className="h-6 w-6 text-primary" />
+                        Warranty Status
+                    </DialogTitle>
+                    <DialogDescription>
+                        Warranty details for {currentItemForWarranty?.name}
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 text-center">
+                    <p className="text-lg font-semibold">{currentItemForWarranty?.warranty}</p>
+                    {currentItemForWarranty?.selectedSerial && 
+                        <p className="text-sm text-muted-foreground mt-1">Serial: {currentItemForWarranty.selectedSerial}</p>
+                    }
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild><Button>Close</Button></DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        
+        {/* Dialog for Handover Notes */}
+        <Dialog open={isHandoverModalOpen} onOpenChange={setHandoverModalOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                        <BookText className="h-6 w-6 text-primary" />
+                        Shift Handover Notes
+                    </DialogTitle>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <div>
+                        <Label>Previous Notes</Label>
+                        <Textarea value={handoverNotes} readOnly rows={5} className="bg-muted"/>
+                    </div>
+                     <div>
+                        <Label htmlFor="new-note">Add New Note</Label>
+                        <Textarea id="new-note" value={newHandoverNote} onChange={(e) => setNewHandoverNote(e.target.value)} placeholder="Type your note here..." />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
+                    <Button onClick={handleSaveHandoverNotes}>Save Notes</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
 
     </div>
   );
 }
+
+    
