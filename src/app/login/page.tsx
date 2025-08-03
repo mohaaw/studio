@@ -8,7 +8,8 @@ import Link from "next/link";
 export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-sm border-primary/20 shadow-lg shadow-primary/10">
+      <div className="absolute inset-0 -z-10 h-full w-full bg-white bg-[linear-gradient(to_right,#f0f0f0_1px,transparent_1px),linear-gradient(to_bottom,#f0f0f0_1px,transparent_1px)] bg-[size:6rem_4rem]"><div className="absolute bottom-0 left-0 right-0 top-0 bg-[radial-gradient(circle_800px_at_100%_200px,#d5e5ff,transparent)]"></div></div>
+      <Card className="w-full max-w-sm border-primary/20 shadow-lg shadow-primary/10 bg-card/80 backdrop-blur-lg">
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <CircuitBoard className="h-12 w-12 text-primary" />
