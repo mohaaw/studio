@@ -65,11 +65,11 @@ export default function IntakePage() {
                              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="space-y-2">
                                     <Label htmlFor="purchase-price">Purchase Price</Label>
-                                    <Input id="purchase-price" type="number" placeholder="750.00" startIcon={<span>$</span>} />
+                                    <Input id="purchase-price" type="number" placeholder="750.00" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="sale-price">Suggested Sale Price</Label>
-                                    <Input id="sale-price" type="number" placeholder="999.00" startIcon={<span>$</span>} />
+                                    <Input id="sale-price" type="number" placeholder="999.00" />
                                 </div>
                              </div>
                         </div>
