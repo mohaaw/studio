@@ -61,12 +61,12 @@ export default function TeamHubPage() {
 
     return (
         <div className="space-y-6">
-             <h1 className="font-headline text-3xl font-bold">Team Hub</h1>
+             <h1 className="font-headline text-3xl font-bold">Announcements</h1>
              <div className="grid gap-8 lg:grid-cols-3">
                 <div className="lg:col-span-2 space-y-6">
                     <div className="flex items-center gap-4">
                         <Megaphone className="h-6 w-6 text-primary"/>
-                        <h2 className="font-headline text-2xl font-semibold">Announcements</h2>
+                        <h2 className="font-headline text-2xl font-semibold">Latest News</h2>
                     </div>
                      {announcements.map((item, index) => (
                         <Card key={index}>

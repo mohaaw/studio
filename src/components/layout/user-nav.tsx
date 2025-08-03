@@ -10,6 +10,7 @@ import {
   Rocket,
   Palette,
   Save,
+  ShieldCheck
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -41,6 +42,7 @@ import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
+import { Switch } from "@/components/ui/switch";
 
 const defaultCustomColors = {
   background: '204 10% 4%',
@@ -115,6 +117,7 @@ export function UserNav() {
   const { state } = useSidebar();
   const { theme, setTheme } = useTheme();
   const [isCustomizerOpen, setCustomizerOpen] = useState(false);
+  const [isSecurityOpen, setSecurityOpen] = useState(false);
   const [customColors, setCustomColors] = useState(defaultCustomColors);
 
   useEffect(() => {
@@ -264,6 +267,10 @@ export function UserNav() {
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
+          <DropdownMenuItem onClick={() => setSecurityOpen(true)}>
+            <ShieldCheck className="mr-2 h-4 w-4" />
+            <span>Security</span>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
@@ -310,7 +317,33 @@ export function UserNav() {
             </DialogFooter>
         </DialogContent>
     </Dialog>
+
+    <Dialog open={isSecurityOpen} onOpenChange={setSecurityOpen}>
+        <DialogContent>
+            <DialogHeader>
+                <DialogTitle>Security Settings</DialogTitle>
+                <DialogDescription>
+                    Manage your account security settings.
+                </DialogDescription>
+            </DialogHeader>
+            <div className="py-4">
+                <div className="flex items-center justify-between rounded-lg border p-4">
+                    <div>
+                        <Label htmlFor="2fa-switch" className="font-bold">Two-Factor Authentication</Label>
+                        <p className="text-sm text-muted-foreground">
+                            Add an extra layer of security to your account.
+                        </p>
+                    </div>
+                    <Switch id="2fa-switch" />
+                </div>
+            </div>
+            <DialogFooter>
+                 <DialogClose asChild>
+                    <Button variant="outline">Close</Button>
+                </DialogClose>
+            </DialogFooter>
+        </DialogContent>
+    </Dialog>
     </>
   );
 }
-
