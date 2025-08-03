@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -8,6 +9,7 @@ import {
   Users,
   Warehouse,
   Wrench,
+  User,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -31,6 +33,7 @@ const menuItems = [
   { href: '/dashboard/inventory', label: 'Inventory', icon: Boxes },
   { href: '/dashboard/pos', label: 'Point of Sale', icon: ScanLine },
   { href: '/dashboard/repairs', label: 'Repairs', icon: Wrench },
+  { href: '/dashboard/customers', label: 'Customers', icon: User },
   { href: '/dashboard/intake', label: 'Storehouse Intake', icon: Warehouse },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Users },
 ];
