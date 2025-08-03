@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown } from "lucide-react";
+import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown, Ship, Hammer, Plus, Minus } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -14,7 +14,12 @@ const item = {
   category: 'Phones',
   location: 'Shop 1',
   status: 'For Sale',
-  purchasePrice: 750.00,
+  costs: {
+      purchasePrice: 750.00,
+      shippingCost: 12.50,
+      refurbishmentCost: 45.00,
+      otherCosts: 5.00,
+  },
   salePrice: 999.00,
   stock: 12,
   reorderPoint: 5,
@@ -40,6 +45,8 @@ const item = {
   ]
 };
 
+const totalLandedCost = Object.values(item.costs).reduce((acc, cost) => acc + cost, 0);
+const profitMargin = ((item.salePrice - totalLandedCost) / item.salePrice) * 100;
 
 export default function ItemProfilePage({ params }: { params: { id: string } }) {
   // In a real app, you would fetch item data based on params.id
@@ -105,31 +112,42 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg">Pricing & Status</CardTitle>
+                    <CardTitle className="font-headline text-lg">Pricing & Profitability</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
                         <p className="text-sm text-muted-foreground">Sale Price</p>
                         <p className="font-bold text-2xl text-primary font-mono">${item.salePrice.toFixed(2)}</p>
                     </div>
-                     <div>
-                        <p className="text-sm text-muted-foreground">Purchase Price</p>
-                        <p className="font-semibold text-lg font-mono">${item.purchasePrice.toFixed(2)}</p>
+                     <div className="space-y-3 rounded-lg border bg-muted/30 p-3">
+                        <p className="font-semibold text-sm">Landed Cost Breakdown</p>
+                        <div className="flex items-center justify-between text-xs">
+                            <p className="text-muted-foreground flex items-center gap-2"><Package className="h-4 w-4" /> Base Purchase Price</p>
+                            <p className="font-mono">${item.costs.purchasePrice.toFixed(2)}</p>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                            <p className="text-muted-foreground flex items-center gap-2"><Ship className="h-4 w-4" /> Shipping & Intake</p>
+                            <p className="font-mono">${item.costs.shippingCost.toFixed(2)}</p>
+                        </div>
+                         <div className="flex items-center justify-between text-xs">
+                            <p className="text-muted-foreground flex items-center gap-2"><Hammer className="h-4 w-4" /> Refurbishment</p>
+                            <p className="font-mono">${item.costs.refurbishmentCost.toFixed(2)}</p>
+                        </div>
+                        <div className="flex items-center justify-between text-xs">
+                            <p className="text-muted-foreground flex items-center gap-2"><Plus className="h-4 w-4" /> Other Costs</p>
+                            <p className="font-mono">${item.costs.otherCosts.toFixed(2)}</p>
+                        </div>
+                        <Separator/>
+                        <div className="flex items-center justify-between font-bold">
+                            <p>Total Landed Cost</p>
+                            <p className="font-mono">${totalLandedCost.toFixed(2)}</p>
+                        </div>
                     </div>
                     <div>
                         <p className="text-sm text-muted-foreground">Est. Profit Margin</p>
-                        <p className="font-semibold text-lg font-mono text-green-500">
-                            {(((item.salePrice - item.purchasePrice) / item.salePrice) * 100).toFixed(1)}%
+                        <p className={`font-semibold text-lg font-mono ${profitMargin > 20 ? 'text-green-500' : 'text-amber-500'}`}>
+                            {profitMargin.toFixed(1)}%
                         </p>
-                    </div>
-                    <Separator />
-                     <div>
-                        <p className="text-sm text-muted-foreground">Current Location</p>
-                        <p className="font-semibold">{item.location}</p>
-                    </div>
-                     <div>
-                        <p className="text-sm text-muted-foreground">Warranty</p>
-                        <p className="font-semibold">{item.warranty}</p>
                     </div>
                 </CardContent>
             </Card>

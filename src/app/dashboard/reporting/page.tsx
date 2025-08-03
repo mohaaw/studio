@@ -3,18 +3,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles } from "lucide-react";
+import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles, TrendingDown, PiggyBank, Target } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Line, LineChart, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-const reports = [
-    { title: "Sales Summary", description: "Detailed report of all sales, revenue, profit, and taxes.", icon: DollarSign },
-    { title: "Inventory Value Report", description: "Current inventory stock levels and their total valuation.", icon: Package },
-    { title: "Repair Statistics", description: "Turnaround times, parts used, and revenue from repairs.", icon: Wrench },
-    { title: "Customer Spending Habits", description: "Analysis of top-spending customers and popular items.", icon: FileText },
-    { title: "Supplier Performance", description: "Order history and costs associated with each supplier.", icon: FileText },
-    { title: "Employee Sales Performance", description: "Sales figures attributed to each employee.", icon: FileText },
-];
 
 const forecastData = [
   { month: "Jan", demand: 186 },
@@ -46,14 +39,51 @@ export default function ReportingPage() {
     <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 className="font-headline text-3xl font-bold">Reporting</h1>
+                <h1 className="font-headline text-3xl font-bold">Reporting & Analytics</h1>
                 <p className="text-muted-foreground">Generate and export detailed reports for your business.</p>
             </div>
             <div className="flex items-center gap-2">
                 <DateRangePicker />
+                <Button variant="secondary"><Download className="mr-2"/> Export All</Button>
             </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="lg:col-span-3">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg flex items-center gap-2">
+                        <PiggyBank className="h-5 w-5 text-primary" />
+                        Profit & Loss Statement
+                    </CardTitle>
+                    <CardDescription>Simulated P&L for the selected period.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell className="font-semibold">Total Revenue</TableCell>
+                                <TableCell className="text-right font-mono text-green-500">+$150,000.00</TableCell>
+                            </TableRow>
+                             <TableRow>
+                                <TableCell className="pl-8 text-muted-foreground">Cost of Goods Sold (Landed)</TableCell>
+                                <TableCell className="text-right font-mono text-destructive">-$85,000.00</TableCell>
+                            </TableRow>
+                            <TableRow className="font-semibold bg-muted/30">
+                                <TableCell>Gross Profit</TableCell>
+                                <TableCell className="text-right font-mono">=$65,000.00</TableCell>
+                            </TableRow>
+                             <TableRow>
+                                <TableCell className="pl-8 text-muted-foreground">Operational Expenses</TableCell>
+                                <TableCell className="text-right font-mono text-destructive">-$15,000.00</TableCell>
+                            </TableRow>
+                            <TableRow className="font-bold text-lg border-t-2 border-primary">
+                                <TableCell>Net Profit</TableCell>
+                                <TableCell className="text-right font-mono text-primary">=$50,000.00</TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+
             <Card className="lg:col-span-2">
                 <CardHeader>
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
@@ -78,23 +108,23 @@ export default function ReportingPage() {
                     </ChartContainer>
                 </CardContent>
             </Card>
-            {reports.map((report, index) => (
-                 <Card key={index}>
-                    <CardHeader className="flex flex-row items-center gap-4 space-y-0">
-                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                            <report.icon className="h-6 w-6 text-primary" />
-                        </div>
-                        <CardTitle className="font-headline text-xl">{report.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col justify-between h-full">
-                        <p className="text-muted-foreground mb-4">{report.description}</p>
-                        <Button variant="outline" onClick={() => handleExport(report.title)}>
-                            <Download className="mr-2 h-4 w-4" />
-                            Export to CSV
-                        </Button>
-                    </CardContent>
-                </Card>
-            ))}
+            
+            <Card>
+                <CardHeader>
+                     <CardTitle className="font-headline text-lg flex items-center gap-2">
+                        <Target className="h-5 w-5 text-primary" />
+                        Generate Reports
+                    </CardTitle>
+                    <CardDescription>Export detailed CSV reports for analysis.</CardDescription>
+                </CardHeader>
+                 <CardContent className="flex flex-col gap-3">
+                    <Button variant="outline" className="w-full justify-start"><DollarSign className="mr-2"/> Sales Summary</Button>
+                    <Button variant="outline" className="w-full justify-start"><Package className="mr-2"/> Inventory Value</Button>
+                    <Button variant="outline" className="w-full justify-start"><Wrench className="mr-2"/> Repair Statistics</Button>
+                    <Button variant="outline" className="w-full justify-start"><FileText className="mr-2"/> Customer Spending</Button>
+                    <Button variant="outline" className="w-full justify-start"><TrendingDown className="mr-2"/> Aging Inventory</Button>
+                 </CardContent>
+            </Card>
         </div>
     </div>
   );

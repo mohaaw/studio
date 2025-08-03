@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Printer, Wand2, Sparkles, Box, Trash2, Brush } from "lucide-react";
+import { ArrowLeft, Save, Printer, Wand2, Sparkles, Box, Trash2, Brush, DollarSign } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { Separator } from "@/components/ui/separator";
 import { generateDescription } from "@/ai/flows/generate-description-flow";
 import { suggestPrice } from "@/ai/flows/suggest-price-flow";
@@ -30,9 +30,23 @@ export default function IntakePage() {
     const [specs, setSpecs] = useState('');
     const [condition, setCondition] = useState('');
     const [description, setDescription] = useState('');
-    const [purchasePrice, setPurchasePrice] = useState('');
-    const [salePrice, setSalePrice] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    // Pricing state
+    const [purchasePrice, setPurchasePrice] = useState('');
+    const [shippingCost, setShippingCost] = useState('');
+    const [refurbishmentCost, setRefurbishmentCost] = useState('');
+    const [otherCosts, setOtherCosts] = useState('');
+    const [salePrice, setSalePrice] = useState('');
+
+    const totalLandedCost = useMemo(() => {
+        return (
+            parseFloat(purchasePrice || '0') +
+            parseFloat(shippingCost || '0') +
+            parseFloat(refurbishmentCost || '0') +
+            parseFloat(otherCosts || '0')
+        );
+    }, [purchasePrice, shippingCost, refurbishmentCost, otherCosts]);
 
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -91,7 +105,7 @@ export default function IntakePage() {
                 category: category,
                 specs: specs,
                 condition: condition,
-                purchasePrice: purchasePrice ? parseFloat(purchasePrice) : undefined,
+                purchasePrice: totalLandedCost > 0 ? totalLandedCost : undefined,
             });
             if (result) {
                 setSalePrice(result.toString());
@@ -254,15 +268,34 @@ export default function IntakePage() {
                         </div>
 
                          <div className="space-y-4">
-                            <h3 className="font-headline text-lg font-semibold border-b pb-2">Pricing</h3>
+                            <h3 className="font-headline text-lg font-semibold border-b pb-2">Pricing & Costing</h3>
                              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="purchase-price">Purchase Price</Label>
+                                    <Label htmlFor="purchase-price">Base Purchase Price ($)</Label>
                                     <Input id="purchase-price" type="number" placeholder="750.00" value={purchasePrice} onChange={(e) => setPurchasePrice(e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
+                                    <Label htmlFor="shipping-cost">Shipping / Intake Cost ($)</Label>
+                                    <Input id="shipping-cost" type="number" placeholder="15.00" value={shippingCost} onChange={(e) => setShippingCost(e.target.value)} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="refurb-cost">Refurbishment Cost ($)</Label>
+                                    <Input id="refurb-cost" type="number" placeholder="50.00" value={refurbishmentCost} onChange={(e) => setRefurbishmentCost(e.target.value)} />
+                                </div>
+                                 <div className="space-y-2">
+                                    <Label htmlFor="other-cost">Other Costs ($)</Label>
+                                    <Input id="other-cost" type="number" placeholder="5.00" value={otherCosts} onChange={(e) => setOtherCosts(e.target.value)} />
+                                </div>
+                                <div className="md:col-span-2 p-4 rounded-lg bg-muted border-dashed border">
+                                    <div className="flex justify-between items-center font-semibold">
+                                        <p>Total Landed Cost</p>
+                                        <p className="font-mono text-lg">${totalLandedCost.toFixed(2)}</p>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">This is the true cost of the item after all expenses.</p>
+                                </div>
+                                <div className="md:col-span-2 space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="sale-price">Suggested Sale Price</Label>
+                                        <Label htmlFor="sale-price">Suggested Sale Price ($)</Label>
                                         <Button type="button" variant="outline" size="sm" onClick={handleSuggestPrice} disabled={isGeneratingPrice}>
                                             <Sparkles className="mr-2 h-4 w-4" />
                                             {isGeneratingPrice ? 'Suggesting...' : 'Suggest'}
@@ -303,24 +336,6 @@ export default function IntakePage() {
                     body * {
                         visibility: hidden;
                     }
-                    .print\\:block {
-                        display: block !important;
-                    }
-                    .print\\:space-y-0 {
-                        --tw-space-y-reverse: 0;
-                        margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
-                        margin-bottom: calc(0px * var(--tw-space-y-reverse));
-                    }
-                     .print\\:max-w-full {
-                        max-width: 100%;
-                    }
-                    .print\\:mx-0 {
-                        margin-left: 0px;
-                        margin-right: 0px;
-                    }
-                    .print\\:hidden {
-                        display: none !important;
-                    }
                     .print-container, .print-container * {
                         visibility: visible;
                     }
@@ -330,6 +345,11 @@ export default function IntakePage() {
                         top: 0;
                         width: 100%;
                     }
+                    .print-hidden { display: none !important; }
+                    .print-block { display: block !important; }
+                    .print-max-w-full { max-width: 100% !important; }
+                    .print-mx-0 { margin-left: 0 !important; margin-right: 0 !important; }
+                    .print-space-y-0 { margin-top: 0 !important; margin-bottom: 0 !important; }
                 }
             `}</style>
         </div>

@@ -17,7 +17,8 @@ import {
   Megaphone,
   UserCog,
   BarChart2,
-  Undo2
+  Undo2,
+  DollarSign
 } from 'lucide-react';
 import {
   Sidebar,
@@ -46,6 +47,7 @@ const menuItems = [
   { href: '/dashboard/trade-ins', label: 'Trade-ins', icon: ArrowRightLeft },
   { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
   { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
+  { href: '/dashboard/expenses', label: 'Expenses', icon: DollarSign },
   { href: '/dashboard/reporting', label: 'Reporting', icon: BarChart2 },
   { href: '/dashboard/team-management', label: 'Team Management', icon: UserCog },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Megaphone },
