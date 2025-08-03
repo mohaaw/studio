@@ -32,6 +32,14 @@ export function UserNav() {
   const { state } = useSidebar();
   const { setTheme } = useTheme();
 
+  const handleThemeChange = (theme: string) => {
+    setTheme(theme);
+    // Add a small delay to ensure the theme is set before reloading
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -74,19 +82,19 @@ export function UserNav() {
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuItem onClick={() => setTheme('light')}>
+                <DropdownMenuItem onClick={() => handleThemeChange('light')}>
                   <Sun className="mr-2 h-4 w-4" />
                   <span>Light</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                <DropdownMenuItem onClick={() => handleThemeChange('dark')}>
                   <Moon className="mr-2 h-4 w-4" />
                   <span>Dark</span>
                 </DropdownMenuItem>
-                 <DropdownMenuItem onClick={() => setTheme('pro')}>
+                 <DropdownMenuItem onClick={() => handleThemeChange('pro')}>
                   <Rocket className="mr-2 h-4 w-4" />
                   <span>Pro</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setTheme('system')}>
+                <DropdownMenuItem onClick={() => handleThemeChange('system')}>
                   <Laptop className="mr-2 h-4 w-4" />
                   <span>System</span>
                 </DropdownMenuItem>
