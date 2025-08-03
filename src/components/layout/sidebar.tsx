@@ -7,6 +7,7 @@ import {
   ScanLine,
   Users,
   Warehouse,
+  Wrench,
 } from 'lucide-react';
 import {
   Sidebar,
@@ -29,6 +30,7 @@ const menuItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/inventory', label: 'Inventory', icon: Boxes },
   { href: '/dashboard/pos', label: 'Point of Sale', icon: ScanLine },
+  { href: '/dashboard/repairs', label: 'Repairs', icon: Wrench },
   { href: '/dashboard/intake', label: 'Storehouse Intake', icon: Warehouse },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Users },
 ];
