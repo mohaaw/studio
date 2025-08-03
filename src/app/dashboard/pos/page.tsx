@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { suggestPersonalized, SuggestPersonalizedOutput } from "@/ai/flows/suggest-personalized-flow";
+import { suggestPersonalized, type SuggestPersonalizedOutput } from "@/ai/flows/suggest-personalized-flow";
 
 interface Product {
     id: string;
@@ -510,7 +510,3 @@ export default function POSPage() {
     </div>
   );
 }
-
-    
-
-    

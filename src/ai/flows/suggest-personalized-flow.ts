@@ -11,13 +11,13 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const SuggestPersonalizedInputSchema = z.object({
+const SuggestPersonalizedInputSchema = z.object({
   customerName: z.string().describe('The name of the customer.'),
   purchaseHistory: z.array(z.string()).describe('A list of items the customer has previously purchased.'),
 });
 export type SuggestPersonalizedInput = z.infer<typeof SuggestPersonalizedInputSchema>;
 
-export const SuggestPersonalizedOutputSchema = z.object({
+const SuggestPersonalizedOutputSchema = z.object({
     suggestions: z.array(z.object({
         name: z.string().describe('The name of the suggested product.'),
         reasoning: z.string().describe('A brief explanation for why this product is recommended.'),
