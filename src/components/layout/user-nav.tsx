@@ -4,6 +4,10 @@
 import {
   LogOut,
   Languages,
+  Sun,
+  Moon,
+  Laptop,
+  Rocket
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -22,21 +26,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useSidebar } from '../ui/sidebar';
-import { ThemeSwitcher } from './theme-switcher';
+import { useTheme } from 'next-themes';
 
 export function UserNav() {
   const { state } = useSidebar();
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
          <Button
             variant="ghost"
-            className="relative h-10 rounded-full p-2"
-            style={{ 
-                width: state === 'collapsed' ? '40px' : 'auto',
-                aspectRatio: state === 'collapsed' ? '1 / 1' : 'auto',
-            }}
+            className="relative h-10 w-full justify-start rounded-md p-2"
         >
           <Avatar className="h-8 w-8">
             <AvatarImage src="https://placehold.co/40x40" alt="@shadcn" data-ai-hint="person portrait"/>
@@ -65,6 +66,33 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+           <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span>Theme</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem onClick={() => setTheme('light')}>
+                  <Sun className="mr-2 h-4 w-4" />
+                  <span>Light</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('dark')}>
+                  <Moon className="mr-2 h-4 w-4" />
+                  <span>Dark</span>
+                </DropdownMenuItem>
+                 <DropdownMenuItem onClick={() => setTheme('pro')}>
+                  <Rocket className="mr-2 h-4 w-4" />
+                  <span>Pro</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setTheme('system')}>
+                  <Laptop className="mr-2 h-4 w-4" />
+                  <span>System</span>
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
               <Languages className="mr-2 h-4 w-4" />

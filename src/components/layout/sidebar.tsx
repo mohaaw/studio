@@ -29,7 +29,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Separator } from '../ui/separator';
 import { UserNav } from './user-nav';
-import { ThemeSwitcher } from './theme-switcher';
 
 
 const menuItems = [
@@ -79,8 +78,7 @@ export default function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
       <Separator className="my-1" />
-      <SidebarFooter className="flex-row items-center gap-2 p-2">
-        <ThemeSwitcher />
+      <SidebarFooter className="p-2">
         <UserNav />
       </SidebarFooter>
     </Sidebar>
