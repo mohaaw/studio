@@ -4,26 +4,74 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
-const searchResults = [
+interface Product {
+    id: string;
+    name: string;
+    price: number;
+    stock: number;
+    image: string;
+}
+
+interface CartItem extends Product {
+    quantity: number;
+}
+
+
+const searchResults: Product[] = [
   { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/40x40.png' },
-  { id: '2', name: 'iPhone 12 Mini', price: 599.00, stock: 2, image: 'https://placehold.co/40x40.png' },
-  { id: '3', name: 'iPhone SE (2022)', price: 429.00, stock: 10, image: 'https://placehold.co/40x40.png' },
+  { id: '2', name: 'MacBook Air M2', price: 1199.00, stock: 8, image: 'https://placehold.co/40x40.png' },
+  { id: '3', name: 'Apple Watch Series 8', price: 399.00, stock: 15, image: 'https://placehold.co/40x40.png' },
+  { id: '4', name: 'AirPods Pro 2', price: 249.00, stock: 30, image: 'https://placehold.co/40x40.png' },
+  { id: '5', name: 'Dell XPS 13', price: 1099.00, stock: 7, image: 'https://placehold.co/40x40.png' },
 ];
 
-const initialCartItem = {
-    id: '1',
-    name: 'iPhone 13 Pro',
-    price: 999.00,
-    quantity: 1,
-    image: 'https://placehold.co/100x100.png'
-};
 
 export default function POSPage() {
-  const [cartItem, setCartItem] = useState(initialCartItem);
+    const [cart, setCart] = useState<CartItem[]>([]);
+
+    const handleAddToCart = (product: Product) => {
+        setCart((prevCart) => {
+            const existingItem = prevCart.find((item) => item.id === product.id);
+            if (existingItem) {
+                return prevCart.map((item) =>
+                    item.id === product.id
+                        ? { ...item, quantity: item.quantity + 1 }
+                        : item
+                );
+            }
+            return [...prevCart, { ...product, quantity: 1 }];
+        });
+    };
+
+    const handleUpdateQuantity = (productId: string, amount: number) => {
+        setCart((prevCart) => {
+            return prevCart.map((item) => {
+                if (item.id === productId) {
+                    const newQuantity = item.quantity + amount;
+                    return newQuantity > 0 ? { ...item, quantity: newQuantity } : null;
+                }
+                return item;
+            }).filter(Boolean) as CartItem[];
+        });
+    };
+
+    const handleRemoveItem = (productId: string) => {
+        setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+    };
+
+    const handleClearCart = () => {
+        setCart([]);
+    };
+
+    const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const tax = subtotal * 0.08;
+    const total = subtotal + tax;
+
 
   return (
     <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-6 lg:grid-cols-3">
@@ -52,13 +100,15 @@ export default function POSPage() {
                             {searchResults.map((item) => (
                                 <TableRow key={item.id}>
                                     <TableCell className="flex items-center gap-3 font-medium">
-                                        <Image src={item.image} alt={item.name} width={40} height={40} className="rounded-md" data-ai-hint="phone"/>
+                                        <Image src={item.image} alt={item.name} width={40} height={40} className="rounded-md" data-ai-hint="phone laptop"/>
                                         {item.name}
                                     </TableCell>
-                                    <TableCell>{item.stock}</TableCell>
+                                    <TableCell>
+                                        <Badge variant={item.stock > 5 ? 'secondary' : 'destructive'}>{item.stock} in stock</Badge>
+                                    </TableCell>
                                     <TableCell className="text-right font-mono">${item.price.toFixed(2)}</TableCell>
                                     <TableCell className="text-right">
-                                        <Button size="sm">Add to Cart</Button>
+                                        <Button size="sm" onClick={() => handleAddToCart(item)}>Add to Cart</Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -69,28 +119,37 @@ export default function POSPage() {
         </div>
         <div>
             <Card className="h-full flex flex-col bg-card">
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between">
                     <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
+                    {cart.length > 0 && (
+                         <Button variant="ghost" size="sm" onClick={handleClearCart}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Clear Cart
+                        </Button>
+                    )}
                 </CardHeader>
                 <CardContent className="flex-1 space-y-4 overflow-y-auto">
-                    {cartItem ? (
-                        <div className="flex items-center gap-4">
-                            <Image src={cartItem.image} alt={cartItem.name} width={64} height={64} className="rounded-md border-2 border-primary/50" data-ai-hint="phone"/>
-                            <div className="flex-1">
-                                <p className="font-semibold">{cartItem.name}</p>
-                                <p className="text-muted-foreground font-mono">${cartItem.price.toFixed(2)}</p>
+                    {cart.length > 0 ? (
+                        cart.map(cartItem => (
+                            <div key={cartItem.id} className="flex items-center gap-4">
+                                <Image src={cartItem.image} alt={cartItem.name} width={64} height={64} className="rounded-md border-2 border-primary/50" data-ai-hint="phone"/>
+                                <div className="flex-1">
+                                    <p className="font-semibold">{cartItem.name}</p>
+                                    <p className="text-muted-foreground font-mono">${cartItem.price.toFixed(2)}</p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, -1)}><Minus className="h-4 w-4" /></Button>
+                                    <span>{cartItem.quantity}</span>
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, 1)}><Plus className="h-4 w-4" /></Button>
+                                </div>
+                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemoveItem(cartItem.id)}>
+                                    <XCircle className="h-5 w-5" />
+                                </Button>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <Button variant="outline" size="icon" className="h-8 w-8"><Minus className="h-4 w-4" /></Button>
-                                <span>{cartItem.quantity}</span>
-                                <Button variant="outline" size="icon" className="h-8 w-8"><Plus className="h-4 w-4" /></Button>
-                            </div>
-                             <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive">
-                                <XCircle className="h-5 w-5" />
-                            </Button>
-                        </div>
+                        ))
                     ) : (
-                        <div className="text-center text-muted-foreground py-10">
+                        <div className="text-center text-muted-foreground py-10 flex flex-col items-center gap-4">
+                            <ShoppingCart className="h-16 w-16" />
                             <p>No items in cart</p>
                         </div>
                     )}
@@ -99,19 +158,19 @@ export default function POSPage() {
                     <div className="w-full space-y-2 text-sm">
                         <div className="flex justify-between">
                             <p>Subtotal</p>
-                            <p className="font-medium font-mono">${cartItem?.price.toFixed(2) || '0.00'}</p>
+                            <p className="font-medium font-mono">${subtotal.toFixed(2)}</p>
                         </div>
                         <div className="flex justify-between">
                             <p>Tax (8%)</p>
-                            <p className="font-medium font-mono">${((cartItem?.price || 0) * 0.08).toFixed(2)}</p>
+                            <p className="font-medium font-mono">${tax.toFixed(2)}</p>
                         </div>
                         <Separator className="my-2" />
                          <div className="flex justify-between text-lg font-bold text-primary">
                             <p>Total</p>
-                            <p className="font-mono">${((cartItem?.price || 0) * 1.08).toFixed(2)}</p>
+                            <p className="font-mono">${total.toFixed(2)}</p>
                         </div>
                     </div>
-                    <Button size="lg" className="w-full mt-4 h-14 text-lg font-bold">
+                    <Button size="lg" className="w-full mt-4 h-14 text-lg font-bold" disabled={cart.length === 0}>
                         <CreditCard className="mr-2 h-6 w-6" />
                         Proceed to Payment
                     </Button>
