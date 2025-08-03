@@ -72,7 +72,7 @@ export default function AppSidebar() {
                 <p className="text-sm font-semibold">John Doe</p>
                 <p className="text-xs text-muted-foreground">Store Manager</p>
             </div>
-            <Link href="/login">
+            <Link href="/">
                 <Button variant="ghost" size="icon" aria-label="Log out">
                     <LogOut className="h-5 w-5 text-muted-foreground" />
                 </Button>
