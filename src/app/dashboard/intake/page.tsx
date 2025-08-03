@@ -24,6 +24,7 @@ export default function IntakePage() {
 
     const [itemName, setItemName] = useState('');
     const [category, setCategory] = useState('');
+    const [serial, setSerial] = useState('');
     const [specs, setSpecs] = useState('');
     const [condition, setCondition] = useState('');
     const [description, setDescription] = useState('');
@@ -33,6 +34,14 @@ export default function IntakePage() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!serial) {
+             toast({
+                variant: 'destructive',
+                title: "Missing Serial Number",
+                description: "A serial number is required for all new items.",
+            });
+            return;
+        }
         setQrCodeGenerated(true);
     };
 
@@ -91,15 +100,31 @@ export default function IntakePage() {
             }
         });
     }
+    
+    const handlePrint = () => {
+        window.print();
+    }
 
     return (
-        <div className="space-y-6 max-w-4xl mx-auto">
-            <Link href="/dashboard/inventory" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="h-4 w-4" />
-                Back to Inventory
-            </Link>
-            <h1 className="font-headline text-3xl font-bold">Storehouse Intake</h1>
-            <Card>
+        <div className="space-y-6 max-w-4xl mx-auto print:space-y-0 print:max-w-full print:mx-0">
+             <div className="flex items-center justify-between print:hidden">
+                <Link href="/dashboard/inventory" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Inventory
+                </Link>
+            </div>
+            
+            <div className="hidden print:block text-center">
+                 <h2 className="font-headline text-2xl font-bold">{itemName}</h2>
+                <p className="font-mono">{serial}</p>
+                <div className="flex justify-center mt-4">
+                     <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${serial}`} alt="QR Code" width={200} height={200} data-ai-hint="qr code"/>
+                </div>
+                <p className="mt-2 text-lg font-bold font-mono">${salePrice}</p>
+            </div>
+
+
+            <Card className="print:hidden">
                 <form onSubmit={handleSubmit}>
                     <CardHeader>
                         <CardTitle className="font-headline text-xl">Register New Item</CardTitle>
@@ -111,27 +136,29 @@ export default function IntakePage() {
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Item Name / Model</Label>
-                                    <Input id="name" placeholder="e.g., MacBook Pro 16-inch" value={itemName} onChange={(e) => setItemName(e.target.value)} />
+                                    <Input id="name" placeholder="e.g., MacBook Pro 16-inch" value={itemName} onChange={(e) => setItemName(e.target.value)} required/>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="category">Category</Label>
-                                    <Select value={category} onValueChange={setCategory}>
+                                    <Select value={category} onValueChange={setCategory} required>
                                         <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="phones">Phones</SelectItem>
                                             <SelectItem value="laptops">Laptops</SelectItem>
                                             <SelectItem value="wearables">Wearables</SelectItem>
                                             <SelectItem value="accessories">Accessories</SelectItem>
+                                            <SelectItem value="gaming">Gaming Consoles</SelectItem>
+                                            <SelectItem value="parts">Repair Parts</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="serial">Serial Number</Label>
-                                    <Input id="serial" placeholder="e.g., C02G80F3Q05D" />
+                                    <Label htmlFor="serial">Serial Number / IMEI</Label>
+                                    <Input id="serial" placeholder="e.g., C02G80F3Q05D" value={serial} onChange={(e) => setSerial(e.target.value)} required/>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="condition">Condition</Label>
-                                     <Select value={condition} onValueChange={setCondition}><SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger><SelectContent><SelectItem value="a-grade">A-Grade (Like New)</SelectItem><SelectItem value="b-grade">B-Grade (Good)</SelectItem><SelectItem value="c-grade">C-Grade (Fair)</SelectItem></SelectContent></Select>
+                                     <Select value={condition} onValueChange={setCondition} required><SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger><SelectContent><SelectItem value="a-grade">A-Grade (Like New)</SelectItem><SelectItem value="b-grade">B-Grade (Good)</SelectItem><SelectItem value="c-grade">C-Grade (Fair)</SelectItem></SelectContent></Select>
                                 </div>
                                  <div className="md:col-span-2 space-y-2">
                                     <Label htmlFor="specs">Full Specifications / Notes</Label>
@@ -165,7 +192,7 @@ export default function IntakePage() {
                                             {isGeneratingPrice ? 'Suggesting...' : 'Suggest'}
                                         </Button>
                                     </div>
-                                    <Input id="sale-price" type="number" placeholder="999.00" value={salePrice} onChange={(e) => setSalePrice(e.target.value)}/>
+                                    <Input id="sale-price" type="number" placeholder="999.00" value={salePrice} onChange={(e) => setSalePrice(e.target.value)} required/>
                                 </div>
                              </div>
                         </div>
@@ -176,11 +203,11 @@ export default function IntakePage() {
                             <div className="space-y-4 rounded-lg border-2 border-dashed border-primary bg-primary/10 p-6 text-center transition-all duration-300">
                                 <h3 className="font-headline text-lg font-semibold text-primary">QR Code Generated</h3>
                                 <div className="flex justify-center">
-                                     <Image src="https://placehold.co/200x200.png" alt="QR Code" width={200} height={200} data-ai-hint="qr code"/>
+                                     <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${serial}`} alt="QR Code" width={200} height={200} data-ai-hint="qr code"/>
                                 </div>
                                 <p className="text-muted-foreground">Item registered successfully. Print this QR code and attach it to the item.</p>
-                                <Button variant="outline">
-                                    <Printer className="mr-2 h-4 w-4" /> Print QR Code
+                                <Button type="button" variant="outline" onClick={handlePrint}>
+                                    <Printer className="mr-2 h-4 w-4" /> Print QR Code Label
                                 </Button>
                             </div>
                         ) : (
@@ -194,6 +221,43 @@ export default function IntakePage() {
                     </CardContent>
                 </form>
             </Card>
+
+            <style jsx global>{`
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    .print\\:block {
+                        display: block !important;
+                    }
+                    .print\\:space-y-0 {
+                        --tw-space-y-reverse: 0;
+                        margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+                        margin-bottom: calc(0px * var(--tw-space-y-reverse));
+                    }
+                     .print\\:max-w-full {
+                        max-width: 100%;
+                    }
+                    .print\\:mx-0 {
+                        margin-left: 0px;
+                        margin-right: 0px;
+                    }
+                    .print\\:hidden {
+                        display: none !important;
+                    }
+                    .print-container, .print-container * {
+                        visibility: visible;
+                    }
+                    .print-container {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                    }
+                }
+            `}</style>
         </div>
     );
 }
+
+    

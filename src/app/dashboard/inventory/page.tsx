@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, PlusCircle, MoreHorizontal } from "lucide-react";
+import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine } from "lucide-react";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 
 const inventoryItems = [
@@ -47,11 +48,15 @@ export default function InventoryPage() {
     <div className="space-y-6">
         <div className="flex items-center justify-between">
             <h1 className="font-headline text-3xl font-bold">Inventory</h1>
-            <Link href="/dashboard/intake">
-                <Button>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add New Item
-                </Button>
-            </Link>
+             <div className="flex items-center gap-2">
+                <Button variant="outline"><ArrowUpFromLine className="mr-2"/> Import CSV</Button>
+                <Button variant="outline"><ArrowDownToLine className="mr-2"/> Export CSV</Button>
+                <Link href="/dashboard/intake">
+                    <Button>
+                        <PlusCircle className="mr-2 h-4 w-4" /> Add New Item
+                    </Button>
+                </Link>
+            </div>
         </div>
       <Card>
         <CardHeader>
@@ -94,7 +99,6 @@ export default function InventoryPage() {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[300px]">Item</TableHead>
-                  <TableHead>SKU</TableHead>
                   <TableHead>Serial Number</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Status</TableHead>
@@ -107,15 +111,14 @@ export default function InventoryPage() {
                 {inventoryItems.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
-                      <Link href={`/dashboard/inventory/${item.id}`} className="flex items-center gap-4 font-medium text-primary hover:underline">
+                      <Link href={`/dashboard/inventory/${item.id}`} className="flex items-center gap-4 font-medium hover:underline">
                         <Image src={item.image} alt={item.name} width={64} height={64} className="rounded-md object-cover" data-ai-hint="phone laptop"/>
                         <div>
-                            <p className="font-semibold">{item.name}</p>
-                            <p className="text-xs text-muted-foreground">{item.category}</p>
+                            <p className="font-semibold text-primary">{item.name}</p>
+                            <p className="text-xs text-muted-foreground">{item.category} / {item.sku}</p>
                         </div>
                       </Link>
                     </TableCell>
-                    <TableCell className="font-mono text-xs">{item.sku}</TableCell>
                     <TableCell className="font-mono text-xs">{item.serial}</TableCell>
                     <TableCell>{item.location}</TableCell>
                     <TableCell>
@@ -135,10 +138,13 @@ export default function InventoryPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>Edit</DropdownMenuItem>
-                                <DropdownMenuItem>Transfer</DropdownMenuItem>
-                                <DropdownMenuItem>View History</DropdownMenuItem>
-                                <DropdownMenuItem className="text-destructive">Delete</DropdownMenuItem>
+                                <DropdownMenuItem>Edit Item</DropdownMenuItem>
+                                <DropdownMenuItem>Transfer Location</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>View Item History</DropdownMenuItem>
+                                <DropdownMenuItem>Print Label</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive">Delete Item</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>
@@ -152,3 +158,5 @@ export default function InventoryPage() {
     </div>
   );
 }
+
+    
