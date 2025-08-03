@@ -1,13 +1,18 @@
+
 'use client'
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2 } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
 
 interface Product {
     id: string;
@@ -33,6 +38,37 @@ const searchResults: Product[] = [
 
 export default function POSPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
+    const { toast } = useToast();
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        const getCameraPermission = async () => {
+          try {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                const stream = await navigator.mediaDevices.getUserMedia({video: true});
+                setHasCameraPermission(true);
+
+                if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                }
+            } else {
+                setHasCameraPermission(false);
+            }
+          } catch (error) {
+            console.error('Error accessing camera:', error);
+            setHasCameraPermission(false);
+            toast({
+              variant: 'destructive',
+              title: 'Camera Access Denied',
+              description: 'Please enable camera permissions in your browser settings to use this app.',
+            });
+          }
+        };
+
+        getCameraPermission();
+    }, [toast]);
+
 
     const handleAddToCart = (product: Product) => {
         setCart((prevCart) => {
@@ -81,9 +117,29 @@ export default function POSPage() {
                     <div className="relative">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         <Input placeholder="Search products or scan barcode..." className="h-12 text-lg pl-12" />
-                        <Button variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2">
-                            <ScanLine className="h-6 w-6" />
-                        </Button>
+                         <Dialog>
+                            <DialogTrigger asChild>
+                                <Button variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2">
+                                    <ScanLine className="h-6 w-6" />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-md">
+                                <DialogHeader>
+                                    <DialogTitle className="flex items-center gap-2"><Camera className="h-6 w-6 text-primary"/> Scan Barcode</DialogTitle>
+                                </DialogHeader>
+                                <div className="p-4 rounded-lg bg-muted border-dashed border-2">
+                                     <video ref={videoRef} className="w-full aspect-video rounded-md bg-black" autoPlay muted />
+                                </div>
+                                {hasCameraPermission === false && (
+                                    <Alert variant="destructive">
+                                        <AlertTitle>Camera Access Required</AlertTitle>
+                                        <AlertDescription>
+                                            Please allow camera access in your browser settings to use the scanner.
+                                        </AlertDescription>
+                                    </Alert>
+                                )}
+                            </DialogContent>
+                        </Dialog>
                     </div>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-auto">
@@ -180,3 +236,5 @@ export default function POSPage() {
     </div>
   );
 }
+
+    
