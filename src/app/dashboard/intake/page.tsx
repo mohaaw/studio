@@ -7,23 +7,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Printer, Wand2 } from "lucide-react";
+import { ArrowLeft, Save, Printer, Wand2, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
 import { Separator } from "@/components/ui/separator";
 import { generateDescription } from "@/ai/flows/generate-description-flow";
+import { suggestPrice } from "@/ai/flows/suggest-price-flow";
 import { useToast } from "@/hooks/use-toast";
 
 export default function IntakePage() {
     const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
-    const [isGenerating, startTransition] = useTransition();
+    const [isGeneratingDesc, startDescTransition] = useTransition();
+    const [isGeneratingPrice, startPriceTransition] = useTransition();
     const { toast } = useToast();
 
     const [itemName, setItemName] = useState('');
     const [category, setCategory] = useState('');
     const [specs, setSpecs] = useState('');
+    const [condition, setCondition] = useState('');
     const [description, setDescription] = useState('');
+    const [purchasePrice, setPurchasePrice] = useState('');
+    const [salePrice, setSalePrice] = useState('');
 
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -40,7 +45,7 @@ export default function IntakePage() {
             });
             return;
         }
-        startTransition(async () => {
+        startDescTransition(async () => {
             const result = await generateDescription({
                 name: itemName,
                 category: category,
@@ -53,6 +58,35 @@ export default function IntakePage() {
                     variant: 'destructive',
                     title: "Generation Failed",
                     description: "Could not generate a description. Please try again.",
+                });
+            }
+        });
+    }
+
+    const handleSuggestPrice = () => {
+        if (!itemName || !category || !specs || !condition) {
+            toast({
+                variant: 'destructive',
+                title: "Missing Information",
+                description: "Please fill in Item Name, Category, Specs and Condition first.",
+            });
+            return;
+        }
+        startPriceTransition(async () => {
+            const result = await suggestPrice({
+                name: itemName,
+                category: category,
+                specs: specs,
+                condition: condition,
+                purchasePrice: purchasePrice ? parseFloat(purchasePrice) : undefined,
+            });
+            if (result) {
+                setSalePrice(result.toString());
+            } else {
+                 toast({
+                    variant: 'destructive',
+                    title: "Suggestion Failed",
+                    description: "Could not suggest a price. Please try again.",
                 });
             }
         });
@@ -97,7 +131,7 @@ export default function IntakePage() {
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="condition">Condition</Label>
-                                     <Select><SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger><SelectContent><SelectItem value="a-grade">A-Grade (Like New)</SelectItem><SelectItem value="b-grade">B-Grade (Good)</SelectItem><SelectItem value="c-grade">C-Grade (Fair)</SelectItem></SelectContent></Select>
+                                     <Select value={condition} onValueChange={setCondition}><SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger><SelectContent><SelectItem value="a-grade">A-Grade (Like New)</SelectItem><SelectItem value="b-grade">B-Grade (Good)</SelectItem><SelectItem value="c-grade">C-Grade (Fair)</SelectItem></SelectContent></Select>
                                 </div>
                                  <div className="md:col-span-2 space-y-2">
                                     <Label htmlFor="specs">Full Specifications / Notes</Label>
@@ -106,9 +140,9 @@ export default function IntakePage() {
                                 <div className="md:col-span-2 space-y-2">
                                     <div className="flex justify-between items-center">
                                         <Label htmlFor="description">AI-Generated Description</Label>
-                                        <Button type="button" variant="outline" size="sm" onClick={handleGenerateDescription} disabled={isGenerating}>
+                                        <Button type="button" variant="outline" size="sm" onClick={handleGenerateDescription} disabled={isGeneratingDesc}>
                                             <Wand2 className="mr-2 h-4 w-4" />
-                                            {isGenerating ? 'Generating...' : 'Generate'}
+                                            {isGeneratingDesc ? 'Generating...' : 'Generate'}
                                         </Button>
                                     </div>
                                     <Textarea id="description" placeholder="A compelling sales description will appear here..." value={description} onChange={e => setDescription(e.target.value)} />
@@ -121,11 +155,17 @@ export default function IntakePage() {
                              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="space-y-2">
                                     <Label htmlFor="purchase-price">Purchase Price</Label>
-                                    <Input id="purchase-price" type="number" placeholder="750.00" />
+                                    <Input id="purchase-price" type="number" placeholder="750.00" value={purchasePrice} onChange={(e) => setPurchasePrice(e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="sale-price">Suggested Sale Price</Label>
-                                    <Input id="sale-price" type="number" placeholder="999.00" />
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="sale-price">Suggested Sale Price</Label>
+                                        <Button type="button" variant="outline" size="sm" onClick={handleSuggestPrice} disabled={isGeneratingPrice}>
+                                            <Sparkles className="mr-2 h-4 w-4" />
+                                            {isGeneratingPrice ? 'Suggesting...' : 'Suggest'}
+                                        </Button>
+                                    </div>
+                                    <Input id="sale-price" type="number" placeholder="999.00" value={salePrice} onChange={(e) => setSalePrice(e.target.value)}/>
                                 </div>
                              </div>
                         </div>
