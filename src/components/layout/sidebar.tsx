@@ -16,7 +16,8 @@ import {
   Laptop,
   Megaphone,
   UserCog,
-  BarChart2
+  BarChart2,
+  Undo2
 } from 'lucide-react';
 import {
   Sidebar,
@@ -39,6 +40,7 @@ const menuItems = [
   { href: '/dashboard/inventory', label: 'Inventory', icon: Boxes },
   { href: '/dashboard/pos', label: 'Point of Sale', icon: ScanLine },
   { href: '/dashboard/repairs', label: 'Repairs', icon: Wrench },
+  { href: '/dashboard/returns', label: 'Returns (RMA)', icon: Undo2 },
   { href: '/dashboard/customers', label: 'Customers', icon: User },
   { href: '/dashboard/intake', label: 'Storehouse Intake', icon: Warehouse },
   { href: '/dashboard/trade-ins', label: 'Trade-ins', icon: ArrowRightLeft },

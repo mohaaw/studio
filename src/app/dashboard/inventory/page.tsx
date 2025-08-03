@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine } from "lucide-react";
+import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine, HardDrive, CheckSquare } from "lucide-react";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -16,8 +16,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
 
 const inventoryItems = [
   { id: '1', sku: 'IP13P-256-GR', name: 'iPhone 13 Pro', serial: 'F17G83J8Q1J9', category: 'Phones', location: 'Shop 1', status: 'For Sale', purchasePrice: 750.00, salePrice: 999.00, image: 'https://placehold.co/64x64.png' },
@@ -46,6 +49,10 @@ const getStatusVariant = (status: string) => {
 
 export default function InventoryPage() {
   const { toast } = useToast();
+  const [isTransferDialogOpen, setTransferDialogOpen] = useState(false);
+  const [isStocktakeDialogOpen, setStocktakeDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<(typeof inventoryItems)[0] | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState('');
 
   const handleExport = () => {
     toast({
@@ -55,18 +62,70 @@ export default function InventoryPage() {
   }
 
   const handleImport = () => {
-    // In a real app, this would open a file picker
     toast({
       title: "Importing Data",
       description: "Please select a CSV file to import. (This is a placeholder)",
     });
   }
 
+  const openTransferDialog = (item: (typeof inventoryItems)[0]) => {
+    setSelectedItem(item);
+    setTransferDialogOpen(true);
+  }
+  
+  const handleTransferItem = () => {
+      if (!selectedItem || !selectedLocation) return;
+      toast({
+          title: "Item Transfer Initiated",
+          description: `${selectedItem.name} is being transferred to ${selectedLocation}.`,
+      });
+      setTransferDialogOpen(false);
+      setSelectedItem(null);
+      setSelectedLocation('');
+  }
+
+  const handleStartStocktake = () => {
+      if (!selectedLocation) return;
+      toast({
+          title: "Stocktake Started",
+          description: `A new stocktake has been initiated for the ${selectedLocation} location.`,
+      });
+      setStocktakeDialogOpen(false);
+      setSelectedLocation('');
+  }
+
+
   return (
     <div className="space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-4">
             <h1 className="font-headline text-3xl font-bold">Inventory</h1>
-             <div className="flex items-center gap-2">
+             <div className="flex items-center gap-2 flex-wrap">
+                <Dialog open={isStocktakeDialogOpen} onOpenChange={setStocktakeDialogOpen}>
+                    <DialogTrigger asChild>
+                         <Button variant="outline"><CheckSquare className="mr-2"/> Start Stocktake</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Start New Stocktake</DialogTitle>
+                            <DialogDescription>Select a location to begin an inventory audit.</DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4 space-y-2">
+                             <Label htmlFor="stocktake-location">Location</Label>
+                             <Select onValueChange={setSelectedLocation}>
+                                <SelectTrigger id="stocktake-location"><SelectValue placeholder="Select a location" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Shop 1">Shop 1</SelectItem>
+                                    <SelectItem value="Shop 2">Shop 2</SelectItem>
+                                    <SelectItem value="Storehouse">Storehouse</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
+                            <Button onClick={handleStartStocktake} disabled={!selectedLocation}>Start Audit</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
                 <Button variant="outline" onClick={handleImport}><ArrowUpFromLine className="mr-2"/> Import CSV</Button>
                 <Button variant="outline" onClick={handleExport}><ArrowDownToLine className="mr-2"/> Export CSV</Button>
                 <Link href="/dashboard/intake">
@@ -156,8 +215,10 @@ export default function InventoryPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>Edit Item</DropdownMenuItem>
-                                <DropdownMenuItem>Transfer Location</DropdownMenuItem>
+                                <DropdownMenuItem onSelect={() => openTransferDialog(item)}>Transfer Location</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                  <Link href={`/dashboard/inventory/${item.id}`} className="w-full h-full">Edit Item</Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem>View Item History</DropdownMenuItem>
                                 <DropdownMenuItem>Print Label</DropdownMenuItem>
@@ -173,6 +234,34 @@ export default function InventoryPage() {
           </div>
         </CardContent>
       </Card>
+
+       <Dialog open={isTransferDialogOpen} onOpenChange={setTransferDialogOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Transfer Item</DialogTitle>
+                    <DialogDescription>
+                        Transferring "{selectedItem?.name}" ({selectedItem?.serial}) from "{selectedItem?.location}" to a new location.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4">
+                    <Label htmlFor="transfer-location">New Location</Label>
+                    <Select onValueChange={setSelectedLocation}>
+                        <SelectTrigger id="transfer-location">
+                            <SelectValue placeholder="Select a destination" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Shop 1">Shop 1</SelectItem>
+                            <SelectItem value="Shop 2">Shop 2</SelectItem>
+                            <SelectItem value="Storehouse">Storehouse</SelectItem>
+                        </SelectContent>
+                    </Select>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
+                    <Button onClick={handleTransferItem} disabled={!selectedLocation}>Confirm Transfer</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </div>
   );
 }
