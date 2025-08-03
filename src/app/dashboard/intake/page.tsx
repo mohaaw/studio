@@ -1,3 +1,4 @@
+
 'use client'
 
 import { Button } from "@/components/ui/button";
@@ -6,19 +7,56 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Printer } from "lucide-react";
+import { ArrowLeft, Save, Printer, Wand2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Separator } from "@/components/ui/separator";
+import { generateDescription } from "@/ai/flows/generate-description-flow";
+import { useToast } from "@/hooks/use-toast";
 
 export default function IntakePage() {
     const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
+    const [isGenerating, startTransition] = useTransition();
+    const { toast } = useToast();
+
+    const [itemName, setItemName] = useState('');
+    const [category, setCategory] = useState('');
+    const [specs, setSpecs] = useState('');
+    const [description, setDescription] = useState('');
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setQrCodeGenerated(true);
     };
+
+    const handleGenerateDescription = () => {
+        if (!itemName || !category || !specs) {
+            toast({
+                variant: 'destructive',
+                title: "Missing Information",
+                description: "Please fill in Item Name, Category, and Specifications first.",
+            });
+            return;
+        }
+        startTransition(async () => {
+            const result = await generateDescription({
+                name: itemName,
+                category: category,
+                specs: specs,
+            });
+            if (result) {
+                setDescription(result);
+            } else {
+                 toast({
+                    variant: 'destructive',
+                    title: "Generation Failed",
+                    description: "Could not generate a description. Please try again.",
+                });
+            }
+        });
+    }
 
     return (
         <div className="space-y-6 max-w-4xl mx-auto">
@@ -39,11 +77,19 @@ export default function IntakePage() {
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Item Name / Model</Label>
-                                    <Input id="name" placeholder="e.g., MacBook Pro 16-inch" />
+                                    <Input id="name" placeholder="e.g., MacBook Pro 16-inch" value={itemName} onChange={(e) => setItemName(e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="category">Category</Label>
-                                    <Select><SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger><SelectContent><SelectItem value="phones">Phones</SelectItem><SelectItem value="laptops">Laptops</SelectItem><SelectItem value="wearables">Wearables</SelectItem><SelectItem value="accessories">Accessories</SelectItem></SelectContent></Select>
+                                    <Select value={category} onValueChange={setCategory}>
+                                        <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="phones">Phones</SelectItem>
+                                            <SelectItem value="laptops">Laptops</SelectItem>
+                                            <SelectItem value="wearables">Wearables</SelectItem>
+                                            <SelectItem value="accessories">Accessories</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="serial">Serial Number</Label>
@@ -55,7 +101,17 @@ export default function IntakePage() {
                                 </div>
                                  <div className="md:col-span-2 space-y-2">
                                     <Label htmlFor="specs">Full Specifications / Notes</Label>
-                                    <Textarea id="specs" placeholder="e.g., 16GB RAM, 512GB SSD, M1 Pro Chip..." />
+                                    <Textarea id="specs" placeholder="e.g., 16GB RAM, 512GB SSD, M1 Pro Chip..." value={specs} onChange={(e) => setSpecs(e.target.value)} />
+                                </div>
+                                <div className="md:col-span-2 space-y-2">
+                                    <div className="flex justify-between items-center">
+                                        <Label htmlFor="description">AI-Generated Description</Label>
+                                        <Button type="button" variant="outline" size="sm" onClick={handleGenerateDescription} disabled={isGenerating}>
+                                            <Wand2 className="mr-2 h-4 w-4" />
+                                            {isGenerating ? 'Generating...' : 'Generate'}
+                                        </Button>
+                                    </div>
+                                    <Textarea id="description" placeholder="A compelling sales description will appear here..." value={description} onChange={e => setDescription(e.target.value)} />
                                 </div>
                             </div>
                         </div>
