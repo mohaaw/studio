@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
+import { useToast } from "@/hooks/use-toast";
 
 const inventoryItems = [
   { id: '1', sku: 'IP13P-256-GR', name: 'iPhone 13 Pro', serial: 'F17G83J8Q1J9', category: 'Phones', location: 'Shop 1', status: 'For Sale', purchasePrice: 750.00, salePrice: 999.00, image: 'https://placehold.co/64x64.png' },
@@ -44,13 +45,30 @@ const getStatusVariant = (status: string) => {
 
 
 export default function InventoryPage() {
+  const { toast } = useToast();
+
+  const handleExport = () => {
+    toast({
+      title: "Exporting Data",
+      description: "Generating inventory CSV file for download...",
+    });
+  }
+
+  const handleImport = () => {
+    // In a real app, this would open a file picker
+    toast({
+      title: "Importing Data",
+      description: "Please select a CSV file to import. (This is a placeholder)",
+    });
+  }
+
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
             <h1 className="font-headline text-3xl font-bold">Inventory</h1>
              <div className="flex items-center gap-2">
-                <Button variant="outline"><ArrowUpFromLine className="mr-2"/> Import CSV</Button>
-                <Button variant="outline"><ArrowDownToLine className="mr-2"/> Export CSV</Button>
+                <Button variant="outline" onClick={handleImport}><ArrowUpFromLine className="mr-2"/> Import CSV</Button>
+                <Button variant="outline" onClick={handleExport}><ArrowDownToLine className="mr-2"/> Export CSV</Button>
                 <Link href="/dashboard/intake">
                     <Button>
                         <PlusCircle className="mr-2 h-4 w-4" /> Add New Item
@@ -158,5 +176,3 @@ export default function InventoryPage() {
     </div>
   );
 }
-
-    

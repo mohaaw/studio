@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info } from "lucide-react";
+import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -24,6 +24,10 @@ const item = {
     { label: 'Color', value: 'Graphite' },
     { label: 'Condition', value: 'A Grade' },
     { label: 'IMEI', value: '35-123456-789012-3' },
+  ],
+  customFields: [
+    { label: 'Original Box Included', value: 'Yes' },
+    { label: 'Cosmetic Notes', value: 'Minor scuff on the top left corner. Screen is flawless.' },
   ],
   description: "This iPhone 13 Pro in Graphite is in like-new condition. With a stunning Super Retina XDR display, a powerful A15 Bionic chip, and a pro camera system, it's perfect for both work and play. Comes with 256GB of storage for all your photos, videos, and apps.",
   history: [
@@ -78,6 +82,18 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
                             <div key={spec.label} className="flex justify-between border-b border-border/50 py-2">
                                 <p className="text-muted-foreground">{spec.label}</p>
                                 <p className="font-semibold font-mono">{spec.value}</p>
+                            </div>
+                        ))}
+                     </div>
+
+                     <Separator className="my-6" />
+
+                     <h2 className="font-headline text-xl font-semibold mb-4">Custom Details</h2>
+                     <div className="space-y-3 text-sm">
+                        {item.customFields.map(field => (
+                             <div key={field.label} className="flex flex-col gap-1 rounded-md border p-3">
+                                <p className="text-muted-foreground">{field.label}</p>
+                                <p className="font-semibold">{field.value}</p>
                             </div>
                         ))}
                      </div>
@@ -142,5 +158,3 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
     </div>
   );
 }
-
-    

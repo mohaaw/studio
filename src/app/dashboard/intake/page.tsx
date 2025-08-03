@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Printer, Wand2, Sparkles } from "lucide-react";
+import { ArrowLeft, Save, Printer, Wand2, Sparkles, Box } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator";
 import { generateDescription } from "@/ai/flows/generate-description-flow";
 import { suggestPrice } from "@/ai/flows/suggest-price-flow";
 import { useToast } from "@/hooks/use-toast";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function IntakePage() {
     const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
@@ -176,6 +177,25 @@ export default function IntakePage() {
                                 </div>
                             </div>
                         </div>
+                        
+                        <div className="space-y-4">
+                             <h3 className="font-headline text-lg font-semibold border-b pb-2">Custom Details</h3>
+                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox id="original-box" />
+                                    <label
+                                        htmlFor="original-box"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                    >
+                                        Original Box Included?
+                                    </label>
+                                </div>
+                                <div className="md:col-span-2 space-y-2">
+                                    <Label htmlFor="cosmetic-notes">Cosmetic Notes</Label>
+                                    <Textarea id="cosmetic-notes" placeholder="e.g., Minor scuff on top left corner." />
+                                </div>
+                             </div>
+                        </div>
 
                          <div className="space-y-4">
                             <h3 className="font-headline text-lg font-semibold border-b pb-2">Pricing</h3>
@@ -259,5 +279,3 @@ export default function IntakePage() {
         </div>
     );
 }
-
-    
