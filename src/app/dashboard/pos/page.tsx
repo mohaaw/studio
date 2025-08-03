@@ -5,16 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2 } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles } from "lucide-react";
 import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useTransition } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { suggestPersonalized, SuggestPersonalizedOutput } from "@/ai/flows/suggest-personalized-flow";
 
 interface Product {
     id: string;
@@ -32,6 +33,12 @@ interface CartItem extends Product {
     originalPrice: number;
 }
 
+interface Customer {
+    id: string;
+    name: string;
+    purchaseHistory: string[];
+}
+
 const products: Product[] = [
   { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['F17G83J8Q1J9', 'C39L8B8JHW6H', 'G6TPL0Q7Q1J9'] },
   { id: '2', name: 'MacBook Air M2', price: 1199.00, stock: 8, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['C02H1234ABCD', 'C02H5678WXYZ'] },
@@ -43,12 +50,21 @@ const products: Product[] = [
   { id: '8', name: 'Logitech Mouse', price: 79.99, stock: 25, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [] },
 ];
 
+const customers: Customer[] = [
+    { id: '1', name: 'John Doe', purchaseHistory: ['iPhone 11', 'Anker Charger'] },
+    { id: '2', name: 'Jane Smith', purchaseHistory: ['MacBook Air M1', 'Logitech Mouse'] }
+]
+
 
 export default function POSPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [heldCarts, setHeldCarts] = useState<CartItem[][]>([]);
     const [discount, setDiscount] = useState(0);
     const [isOnline, setIsOnline] = useState(true);
+    const [activeCustomer, setActiveCustomer] = useState<Customer | null>(null);
+
+    const [isGeneratingSuggestions, startSuggestionsTransition] = useTransition();
+    const [personalizedSuggestions, setPersonalizedSuggestions] = useState<SuggestPersonalizedOutput | null>(null);
 
     const { toast } = useToast();
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -58,6 +74,7 @@ export default function POSPage() {
     const [isPaymentOpen, setPaymentOpen] = useState(false);
     const [isSerialSelectorOpen, setSerialSelectorOpen] = useState(false);
     const [isDiscountModalOpen, setDiscountModalOpen] = useState(false);
+    const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
     const [currentItemForSerial, setCurrentItemForSerial] = useState<CartItem | null>(null);
 
     const [cashTendered, setCashTendered] = useState("");
@@ -130,6 +147,8 @@ export default function POSPage() {
     const handleClearCart = () => {
         setCart([]);
         setDiscount(0);
+        setActiveCustomer(null);
+        setPersonalizedSuggestions(null);
     };
 
     const handleHoldCart = () => {
@@ -148,6 +167,21 @@ export default function POSPage() {
         setCart(cartToResume);
         setHeldCarts(heldCarts.filter((_, i) => i !== index));
     };
+
+    const handleSelectCustomer = (customerId: string) => {
+        const customer = customers.find(c => c.id === customerId);
+        if (customer) {
+            setActiveCustomer(customer);
+            setCustomerModalOpen(false);
+            startSuggestionsTransition(async () => {
+                const result = await suggestPersonalized({
+                    customerName: customer.name,
+                    purchaseHistory: customer.purchaseHistory
+                });
+                setPersonalizedSuggestions(result);
+            });
+        }
+    }
 
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const totalDiscount = (subtotal * discount) / 100;
@@ -168,7 +202,7 @@ export default function POSPage() {
         setPaymentOpen(false);
     }
     
-    const categories = ['All', ...new Set(products.map(p => p.category))];
+    const categories = ['All', 'For You', ...new Set(products.map(p => p.category))];
 
   return (
     <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-6 lg:grid-cols-3">
@@ -196,12 +230,34 @@ export default function POSPage() {
                 <CardContent className="flex-1 overflow-auto">
                     <Tabs defaultValue="All" className="w-full">
                         <TabsList>
-                            {categories.map(category => <TabsTrigger key={category} value={category}>{category}</TabsTrigger>)}
+                            {categories.map(category => (
+                                <TabsTrigger 
+                                    key={category} 
+                                    value={category}
+                                    disabled={category === 'For You' && !activeCustomer}
+                                >
+                                    {category === 'For You' && <Sparkles className="mr-2 h-4 w-4 text-primary" />}
+                                    {category}
+                                </TabsTrigger>
+                            ))}
                         </TabsList>
-                        {categories.map(category => (
+                         <TabsContent value="All">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
+                            {products.map((item) => (
+                                <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
+                                    <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
+                                    <CardFooter className="p-2 flex-col items-start">
+                                        <p className="font-semibold text-sm truncate w-full">{item.name}</p>
+                                        <p className="font-mono text-muted-foreground">${item.price.toFixed(2)}</p>
+                                    </CardFooter>
+                                </Card>
+                            ))}
+                            </div>
+                        </TabsContent>
+                        {categories.filter(c => c !== 'All' && c !== 'For You').map(category => (
                             <TabsContent key={category} value={category}>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
-                                {products.filter(p => category === 'All' || p.category === category).map((item) => (
+                                {products.filter(p => p.category === category).map((item) => (
                                     <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
                                         <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
                                         <CardFooter className="p-2 flex-col items-start">
@@ -213,38 +269,74 @@ export default function POSPage() {
                                 </div>
                             </TabsContent>
                         ))}
+                        <TabsContent value="For You">
+                            <div className="pt-4">
+                                {isGeneratingSuggestions && <p>Loading suggestions...</p>}
+                                {personalizedSuggestions && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        {personalizedSuggestions.suggestions.map((suggestion, index) => {
+                                            const product = products.find(p => p.name === suggestion.name);
+                                            return (
+                                            <Card key={index} className="cursor-pointer hover:border-primary transition-colors" onClick={() => product && handleAddToCart(product)}>
+                                                <CardHeader>
+                                                    <CardTitle className="font-headline text-lg">{suggestion.name}</CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    <p className="text-sm text-muted-foreground">{suggestion.reasoning}</p>
+                                                </CardContent>
+                                                {product && <CardFooter><p className="font-mono font-bold text-primary">${product.price.toFixed(2)}</p></CardFooter>}
+                                            </Card>
+                                        )})}
+                                    </div>
+                                )}
+                            </div>
+                        </TabsContent>
                     </Tabs>
                 </CardContent>
             </Card>
         </div>
         <div>
             <Card className="h-full flex flex-col bg-card">
-                <CardHeader className="flex flex-row items-center justify-between">
-                    <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
-                    <div className="flex items-center gap-2">
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                         <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
                          <div className={`flex items-center gap-1.5 text-xs font-medium ${isOnline ? 'text-green-500' : 'text-destructive'}`}>
                             {isOnline ? <Wifi className="h-4 w-4"/> : <WifiOff className="h-4 w-4"/>}
                             <span>{isOnline ? 'Online' : 'Offline'}</span>
                         </div>
-                        <Button variant="outline" size="sm" onClick={handleHoldCart}><Pause className="mr-2 h-4 w-4"/>Hold</Button>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button variant="outline" size="sm" disabled={heldCarts.length === 0}><Play className="mr-2 h-4 w-4"/>Resume</Button>
-                            </DialogTrigger>
-                             <DialogContent>
-                                <DialogHeader><DialogTitle>Held Sales</DialogTitle></DialogHeader>
-                                <div className="space-y-2">
-                                    {heldCarts.map((heldCart, index) => (
-                                        <DialogClose asChild key={index}>
-                                            <Button variant="outline" className="w-full justify-between" onClick={() => handleResumeCart(index)}>
-                                                <span>Sale with {heldCart.length} item(s)</span>
-                                                <span>Total: ${heldCart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}</span>
-                                            </Button>
-                                        </DialogClose>
-                                    ))}
-                                </div>
-                            </DialogContent>
-                        </Dialog>
+                    </div>
+                     <div className="flex items-center justify-between pt-2">
+                        {activeCustomer ? (
+                            <div className="flex items-center gap-2">
+                                <User className="h-5 w-5 text-primary"/>
+                                <span className="font-semibold">{activeCustomer.name}</span>
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => {setActiveCustomer(null); setPersonalizedSuggestions(null);}}><XCircle className="h-4 w-4"/></Button>
+                            </div>
+                        ) : (
+                             <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="mr-2 h-4 w-4"/>Add Customer</Button>
+                        )}
+
+                        <div className="flex items-center gap-1">
+                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleHoldCart}><Pause className="h-4 w-4"/></Button>
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline" size="icon" className="h-8 w-8" disabled={heldCarts.length === 0}><Play className="h-4 w-4"/></Button>
+                                </DialogTrigger>
+                                 <DialogContent>
+                                    <DialogHeader><DialogTitle>Held Sales</DialogTitle></DialogHeader>
+                                    <div className="space-y-2">
+                                        {heldCarts.map((heldCart, index) => (
+                                            <DialogClose asChild key={index}>
+                                                <Button variant="outline" className="w-full justify-between" onClick={() => handleResumeCart(index)}>
+                                                    <span>Sale with {heldCart.length} item(s)</span>
+                                                    <span>Total: ${heldCart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}</span>
+                                                </Button>
+                                            </DialogClose>
+                                        ))}
+                                    </div>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
                 </CardHeader>
                 <CardContent className="flex-1 space-y-4 overflow-y-auto p-4">
@@ -396,6 +488,22 @@ export default function POSPage() {
                     <Button onClick={() => { setDiscount(0); setDiscountModalOpen(false); }} variant="destructive">Remove Discount</Button>
                     <Button onClick={() => setDiscountModalOpen(false)}>Apply</Button>
                 </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
+        {/* Dialog for Customer Selection */}
+        <Dialog open={isCustomerModalOpen} onOpenChange={setCustomerModalOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Select Customer</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-2 py-4">
+                    {customers.map(customer => (
+                        <Button key={customer.id} variant="outline" className="w-full justify-start" onClick={() => handleSelectCustomer(customer.id)}>
+                            {customer.name}
+                        </Button>
+                    ))}
+                </div>
             </DialogContent>
         </Dialog>
 
