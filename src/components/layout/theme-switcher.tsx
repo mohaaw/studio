@@ -22,8 +22,8 @@ export function ThemeSwitcher() {
     }, []);
 
     const handleThemeChange = () => {
-        const currentTheme = theme === 'system' ? resolvedTheme : theme;
-        const currentIndex = themes.findIndex(t => t.name === currentTheme);
+        const currentThemeName = theme === 'system' ? resolvedTheme : theme;
+        const currentIndex = themes.findIndex(t => t.name === currentThemeName);
         const nextIndex = (currentIndex + 1) % themes.length;
         setTheme(themes[nextIndex].name);
     };
@@ -33,7 +33,8 @@ export function ThemeSwitcher() {
     }
     
     const currentThemeName = theme === 'system' ? 'auto' : theme;
-    const CurrentIcon = themes.find(t => t.name === (theme === 'system' ? resolvedTheme : theme))?.icon || Monitor;
+    // Use resolvedTheme for the icon to correctly reflect the system theme, but use `theme` for the label.
+    const CurrentIcon = themes.find(t => t.name === resolvedTheme)?.icon || Monitor;
 
     return (
         <Button 
