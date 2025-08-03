@@ -64,7 +64,7 @@ export default function CustomersPage() {
                             <AvatarFallback>{customer.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <p className="font-semibold">{customer.name}</p>
+                            <Link href={`/dashboard/customers/${customer.id}`} className="font-semibold hover:underline">{customer.name}</Link>
                         </div>
                       </div>
                     </TableCell>
@@ -90,7 +90,9 @@ export default function CustomersPage() {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>View Profile</DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link href={`/dashboard/customers/${customer.id}`}>View Profile</Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>View Purchase History</DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem disabled>
