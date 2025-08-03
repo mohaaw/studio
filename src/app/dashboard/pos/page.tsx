@@ -41,11 +41,15 @@ interface Customer {
 }
 
 // Define the type here instead of importing from the server file
-export type SuggestPersonalizedOutput = {
+type SuggestPersonalizedOutput = {
     suggestions: {
         name: string;
         reasoning: string;
     }[];
+};
+
+type TextToSpeechOutput = {
+  media: string;
 };
 
 
@@ -116,9 +120,9 @@ export default function POSPage() {
         if (!isAccessibilityMode) return;
         startSpeechTransition(async () => {
             try {
-                const { media } = await textToSpeech(text);
-                if (audioRef.current) {
-                    audioRef.current.src = media;
+                const result = await textToSpeech(text);
+                if (audioRef.current && result) {
+                    audioRef.current.src = result.media;
                     audioRef.current.play();
                 }
             } catch (error) {

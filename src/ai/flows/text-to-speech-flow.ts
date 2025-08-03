@@ -4,7 +4,6 @@
  * @fileOverview A flow to convert text to speech.
  *
  * - textToSpeech - A function that converts a string of text into audible speech.
- * - TextToSpeechOutput - The return type for the textToSpeech function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -12,10 +11,10 @@ import {z} from 'genkit';
 import wav from 'wav';
 import {googleAI} from '@genkit-ai/googleai';
 
-export const TextToSpeechOutputSchema = z.object({
+const TextToSpeechOutputSchema = z.object({
   media: z.string().describe("The base64 encoded WAV audio data URI."),
 });
-export type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
+type TextToSpeechOutput = z.infer<typeof TextToSpeechOutputSchema>;
 
 async function toWav(
   pcmData: Buffer,
