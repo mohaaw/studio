@@ -12,7 +12,8 @@ import {
   User,
   Truck,
   ClipboardList,
-  ArrowRightLeft
+  ArrowRightLeft,
+  Laptop
 } from 'lucide-react';
 import {
   Sidebar,
@@ -42,6 +43,7 @@ const menuItems = [
   { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
   { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Users },
+  { href: '/kiosk', label: 'Kiosk Mode', icon: Laptop },
 ];
 
 
@@ -67,7 +69,7 @@ export default function AppSidebar() {
                   className="justify-start"
                   tooltip={state === 'collapsed' ? item.label : undefined}
                 >
-                  <Link href={item.href}>
+                  <Link href={item.href} target={item.href === '/kiosk' ? '_blank' : '_self'}>
                     <item.icon className="h-5 w-5" />
                     <span>{item.label}</span>
                   </Link>
