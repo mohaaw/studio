@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, PlusCircle, MoreHorizontal } from "lucide-react";
+import { Search, PlusCircle, MoreHorizontal, Award } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,11 +16,11 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const customers = [
-  { id: '1', name: 'John Doe', email: 'john.doe@example.com', phone: '(123) 456-7890', totalSpent: 1248.00, lastSeen: '2023-11-15', avatar: 'https://placehold.co/40x40' },
-  { id: '2', name: 'Jane Smith', email: 'jane.smith@example.com', phone: '(987) 654-3210', totalSpent: 399.00, lastSeen: '2023-12-02', avatar: 'https://placehold.co/40x40' },
-  { id: '3', name: 'Peter Jones', email: 'peter.jones@example.com', phone: '(555) 123-4567', totalSpent: 899.00, lastSeen: '2023-11-28', avatar: 'https://placehold.co/40x40' },
-  { id: '4', name: 'Mary Johnson', email: 'mary.j@email.com', phone: '(555) 987-6543', totalSpent: 1099.00, lastSeen: '2023-11-25', avatar: 'https://placehold.co/40x40' },
-  { id: '5', name: 'David Williams', email: 'dave.w@email.com', phone: '(555) 555-5555', totalSpent: 750.00, lastSeen: '2023-12-03', avatar: 'https://placehold.co/40x40' },
+  { id: '1', name: 'John Doe', email: 'john.doe@example.com', phone: '(123) 456-7890', totalSpent: 1248.00, lastSeen: '2023-11-15', avatar: 'https://placehold.co/40x40', loyaltyPoints: 125 },
+  { id: '2', name: 'Jane Smith', email: 'jane.smith@example.com', phone: '(987) 654-3210', totalSpent: 399.00, lastSeen: '2023-12-02', avatar: 'https://placehold.co/40x40', loyaltyPoints: 40 },
+  { id: '3', name: 'Peter Jones', email: 'peter.jones@example.com', phone: '(555) 123-4567', totalSpent: 899.00, lastSeen: '2023-11-28', avatar: 'https://placehold.co/40x40', loyaltyPoints: 90 },
+  { id: '4', name: 'Mary Johnson', email: 'mary.j@email.com', phone: '(555) 987-6543', totalSpent: 1099.00, lastSeen: '2023-11-25', avatar: 'https://placehold.co/40x40', loyaltyPoints: 110 },
+  { id: '5', name: 'David Williams', email: 'dave.w@email.com', phone: '(555) 555-5555', totalSpent: 750.00, lastSeen: '2023-12-03', avatar: 'https://placehold.co/40x40', loyaltyPoints: 75 },
 ];
 
 export default function CustomersPage() {
@@ -49,7 +49,7 @@ export default function CustomersPage() {
                   <TableHead className="w-[300px]">Customer</TableHead>
                   <TableHead>Contact</TableHead>
                   <TableHead>Last Seen</TableHead>
-                  <TableHead className="text-right">Total Spent</TableHead>
+                  <TableHead className="text-right">Spending & Loyalty</TableHead>
                   <TableHead><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
               </TableHeader>
@@ -72,7 +72,13 @@ export default function CustomersPage() {
                         <p className="text-xs text-muted-foreground">{customer.phone}</p>
                     </TableCell>
                     <TableCell>{customer.lastSeen}</TableCell>
-                    <TableCell className="text-right font-mono">${customer.totalSpent.toFixed(2)}</TableCell>
+                    <TableCell className="text-right">
+                      <p className="font-mono font-semibold">${customer.totalSpent.toFixed(2)}</p>
+                      <div className="flex items-center justify-end gap-1 text-xs text-muted-foreground">
+                        <Award className="h-3 w-3" />
+                        <span>{customer.loyaltyPoints} pts</span>
+                      </div>
+                    </TableCell>
                     <TableCell className="text-right">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
