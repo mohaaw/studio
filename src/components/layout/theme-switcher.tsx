@@ -22,8 +22,8 @@ export function ThemeSwitcher() {
     }, []);
 
     const handleThemeChange = () => {
-        const currentAppliedTheme = theme === 'system' ? resolvedTheme : theme;
-        const currentIndex = themes.findIndex(t => t.name === currentAppliedTheme);
+        const currentThemeName = theme === 'system' ? resolvedTheme : theme;
+        const currentIndex = themes.findIndex((t) => t.name === currentThemeName);
         const nextIndex = (currentIndex + 1) % themes.length;
         setTheme(themes[nextIndex].name);
     };
@@ -33,10 +33,10 @@ export function ThemeSwitcher() {
         return <Button variant="ghost" size="icon" className="flex-1 justify-center"></Button>;
     }
     
-    // The theme to display in the UI (e.g., 'auto' if system is selected)
+    // The theme to display in the UI ('auto' if system is selected, otherwise the theme name)
     const displayThemeName = theme === 'system' ? 'auto' : theme;
     
-    // The icon should reflect the *actually resolved* theme
+    // The icon should reflect the *actually resolved* theme, defaulting to 'pro' icon
     const CurrentIcon = themes.find(t => t.name === resolvedTheme)?.icon || Monitor;
 
     return (
