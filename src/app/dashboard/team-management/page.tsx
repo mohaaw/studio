@@ -23,8 +23,8 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 
 const teamMembers = [
-  { id: '1', name: 'John Doe', email: 'john.doe@techshop.com', role: 'Admin', lastActive: '2 hours ago', avatar: 'https://placehold.co/40x40' },
-  { id: '2', name: 'Jane Smith', email: 'jane.smith@techshop.com', role: 'Manager', lastActive: 'Online', avatar: 'https://placehold.co/40x40' },
+  { id: '1', name: 'John Doe', email: 'john.doe@techshop.com', role: 'Admin', lastActive: 'Online', avatar: 'https://placehold.co/40x40' },
+  { id: '2', name: 'Jane Smith', email: 'jane.smith@techshop.com', role: 'Manager', lastActive: '2 hours ago', avatar: 'https://placehold.co/40x40' },
   { id: '3', name: 'Peter Jones', email: 'peter.jones@techshop.com', role: 'Technician', lastActive: '8 hours ago', avatar: 'https://placehold.co/40x40' },
   { id: '4', name: 'Mary Johnson', email: 'mary.j@techshop.com', role: 'Sales', lastActive: 'Yesterday', avatar: 'https://placehold.co/40x40' },
 ];
@@ -90,8 +90,8 @@ export default function TeamManagementPage() {
                       </div>
                     </TableCell>
                     <TableCell>
-                        <Badge variant={getRoleVariant(member.role)}>
-                            {member.role === 'Admin' ? <ShieldCheck className="mr-2 h-4 w-4" /> : <UserCog className="mr-2 h-4 w-4" />}
+                        <Badge variant={getRoleVariant(member.role as Role)}>
+                            {member.role === 'Admin' ? <ShieldCheck className="mr-1.5 h-3.5 w-3.5" /> : <UserCog className="mr-1.5 h-3.5 w-3.5" />}
                             {member.role}
                         </Badge>
                     </TableCell>
@@ -118,6 +118,9 @@ export default function TeamManagementPage() {
                                         </DropdownMenuSubContent>
                                     </DropdownMenuPortal>
                                 </DropdownMenuSub>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>View Performance</DropdownMenuItem>
+                                <DropdownMenuItem>Edit Profile</DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="text-destructive">Remove User</DropdownMenuItem>
                             </DropdownMenuContent>
