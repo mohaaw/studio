@@ -1,18 +1,27 @@
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, Lightbulb, Package, Beaker } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
+import { useState, useTransition } from "react";
+import { diagnoseRepair, DiagnoseRepairOutput } from "@/ai/flows/diagnose-repair-flow";
+import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 
 export default function RepairCheckInPage() {
     const router = useRouter();
+    const { toast } = useToast();
+    const [isDiagnosing, startDiagnosisTransition] = useTransition();
+
+    const [reportedIssue, setReportedIssue] = useState('');
+    const [diagnosisResult, setDiagnosisResult] = useState<DiagnoseRepairOutput | null>(null);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -20,6 +29,29 @@ export default function RepairCheckInPage() {
         // For now, we'll just navigate back to the repairs list
         router.push('/dashboard/repairs');
     };
+
+    const handleDiagnose = () => {
+        if (!reportedIssue) {
+            toast({
+                variant: 'destructive',
+                title: "Missing Information",
+                description: "Please enter the reported issue first.",
+            });
+            return;
+        }
+        startDiagnosisTransition(async () => {
+            const result = await diagnoseRepair({ reportedIssue });
+            if (result) {
+                setDiagnosisResult(result);
+            } else {
+                 toast({
+                    variant: 'destructive',
+                    title: "Diagnosis Failed",
+                    description: "Could not generate a diagnosis. Please try again.",
+                });
+            }
+        });
+    }
 
     return (
         <div className="space-y-6 max-w-4xl mx-auto">
@@ -65,9 +97,40 @@ export default function RepairCheckInPage() {
                                     <Input id="serial" placeholder="e.g., C02G80F3Q05D" />
                                 </div>
                                 <div className="md:col-span-2 space-y-2">
-                                    <Label htmlFor="reported-issue">Reported Issue</Label>
-                                    <Textarea id="reported-issue" placeholder="e.g., Screen is cracked, battery drains quickly..." />
+                                     <div className="flex justify-between items-center">
+                                        <Label htmlFor="reported-issue">Reported Issue</Label>
+                                        <Button type="button" variant="outline" size="sm" onClick={handleDiagnose} disabled={isDiagnosing}>
+                                            <Sparkles className="mr-2 h-4 w-4" />
+                                            {isDiagnosing ? 'Diagnosing...' : 'AI Diagnose'}
+                                        </Button>
+                                    </div>
+                                    <Textarea id="reported-issue" placeholder="e.g., Screen is cracked, battery drains quickly..." value={reportedIssue} onChange={e => setReportedIssue(e.target.value)} />
                                 </div>
+                                {isDiagnosing && <p className="text-sm text-muted-foreground md:col-span-2">AI is analyzing the issue...</p>}
+                                {diagnosisResult && (
+                                    <div className="md:col-span-2">
+                                        <Alert variant="default" className="bg-primary/10 border-primary/20">
+                                            <Lightbulb className="h-4 w-4 text-primary" />
+                                            <AlertTitle className="font-bold text-primary">AI Diagnosis</AlertTitle>
+                                            <AlertDescription className="space-y-3 pt-2">
+                                                <div>
+                                                    <h4 className="font-semibold flex items-center gap-2"><Beaker className="h-4 w-4" />Preliminary Diagnosis</h4>
+                                                    <p>{diagnosisResult.preliminaryDiagnosis}</p>
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-semibold flex items-center gap-2"><Package className="h-4 w-4" />Suggested Parts</h4>
+                                                    <div className="flex flex-wrap gap-2 mt-1">
+                                                        {diagnosisResult.suggestedParts.map(part => <Badge key={part} variant="secondary">{part}</Badge>)}
+                                                    </div>
+                                                </div>
+                                                 <div>
+                                                    <h4 className="font-semibold">Estimated Difficulty</h4>
+                                                    <p>{diagnosisResult.estimatedDifficulty}</p>
+                                                </div>
+                                            </AlertDescription>
+                                        </Alert>
+                                    </div>
+                                )}
                                 <div className="space-y-2">
                                     <Label htmlFor="technician">Assigned Technician</Label>
                                      <Select><SelectTrigger><SelectValue placeholder="Select a technician" /></SelectTrigger><SelectContent><SelectItem value="tech-1">Jane Doe</SelectItem><SelectItem value="tech-2">Mike Smith</SelectItem></SelectContent></Select>
@@ -78,13 +141,12 @@ export default function RepairCheckInPage() {
                                 </div>
                              </div>
                         </div>
-                        
-                        <div className="flex justify-end gap-2">
-                            <Button type="submit">
-                                <Save className="mr-2 h-4 w-4" /> Save & Create Ticket
-                            </Button>
-                        </div>
                     </CardContent>
+                     <CardFooter className="flex justify-end gap-2">
+                        <Button type="submit">
+                            <Save className="mr-2 h-4 w-4" /> Save & Create Ticket
+                        </Button>
+                    </CardFooter>
                 </form>
             </Card>
         </div>

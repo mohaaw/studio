@@ -2,3 +2,6 @@
 import './flows/generate-description-flow';
 import './flows/suggest-price-flow';
 import './flows/suggest-trade-in-flow';
+import './flows/diagnose-repair-flow';
+import './flows/kiosk-chatbot-flow';
+import './flows/generate-marketing-flow';

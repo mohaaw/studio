@@ -1,15 +1,18 @@
 
 'use client'
 
-import { useState } from 'react';
+import { useState, useTransition, useRef, useEffect } from 'react';
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CircuitBoard, Search, CheckCircle } from 'lucide-react';
+import { CircuitBoard, Search, CheckCircle, MessageCircle, Bot, Send, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { kioskChat } from '@/ai/flows/kiosk-chatbot-flow';
+import { useToast } from '@/hooks/use-toast';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const inventoryItems = [
   { id: '1', name: 'iPhone 13 Pro', category: 'Phones', status: 'For Sale', salePrice: 999.00, image: 'https://placehold.co/300x300.png' },
@@ -30,11 +33,25 @@ type RepairStatus = {
     message: string;
 } | null;
 
+interface ChatMessage {
+    sender: 'user' | 'bot';
+    text: string;
+}
+
 
 export default function KioskPage() {
     const [repairTicket, setRepairTicket] = useState('');
     const [statusResult, setStatusResult] = useState<RepairStatus>(null);
     const [searched, setSearched] = useState(false);
+    
+    // Chatbot state
+    const { toast } = useToast();
+    const [isChatting, startChatTransition] = useTransition();
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+    const [chatInput, setChatInput] = useState('');
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
+
 
     const handleCheckStatus = (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,6 +60,31 @@ export default function KioskPage() {
         const result = dummyRepairStatus[repairTicket.toUpperCase()];
         setStatusResult(result || null);
     }
+    
+    const handleChatSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!chatInput.trim()) return;
+
+        const newUserMessage: ChatMessage = { sender: 'user', text: chatInput };
+        setChatMessages(prev => [...prev, newUserMessage]);
+        setChatInput('');
+
+        startChatTransition(async () => {
+            const response = await kioskChat(chatInput);
+            const newBotMessage: ChatMessage = { sender: 'bot', text: response };
+            setChatMessages(prev => [...prev, newBotMessage]);
+        });
+    }
+
+    useEffect(() => {
+        if (scrollAreaRef.current) {
+             const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+             if (viewport) {
+                viewport.scrollTop = viewport.scrollHeight;
+            }
+        }
+    }, [chatMessages]);
+
 
   return (
     <div className="container mx-auto">
@@ -117,6 +159,49 @@ export default function KioskPage() {
                 </div>
             </TabsContent>
         </Tabs>
+         <div className="fixed bottom-6 right-6">
+            {isChatOpen ? (
+                <Card className="w-80 h-96 flex flex-col shadow-2xl">
+                    <CardHeader className="flex flex-row items-center justify-between p-3 border-b">
+                        <div className="flex items-center gap-2">
+                            <Bot className="h-6 w-6 text-primary"/>
+                            <CardTitle className="text-lg font-headline">TechShop Assistant</CardTitle>
+                        </div>
+                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsChatOpen(false)}>
+                            <X className="h-4 w-4"/>
+                        </Button>
+                    </CardHeader>
+                    <CardContent className="p-0 flex-1">
+                        <ScrollArea className="h-full p-3" ref={scrollAreaRef}>
+                            <div className="space-y-4">
+                            {chatMessages.map((message, index) => (
+                                <div key={index} className={`flex gap-2 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                    <div className={`rounded-lg px-3 py-2 max-w-[80%] ${message.sender === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
+                                        <p className="text-sm">{message.text}</p>
+                                    </div>
+                                </div>
+                            ))}
+                            {isChatting && (
+                                <div className="flex justify-start">
+                                    <div className="rounded-lg px-3 py-2 bg-muted text-sm">...</div>
+                                </div>
+                            )}
+                            </div>
+                        </ScrollArea>
+                    </CardContent>
+                    <CardFooter className="p-2 border-t">
+                        <form onSubmit={handleChatSubmit} className="flex w-full gap-2">
+                            <Input placeholder="Ask a question..." value={chatInput} onChange={e => setChatInput(e.target.value)} />
+                            <Button type="submit" size="icon" disabled={isChatting}><Send className="h-4 w-4"/></Button>
+                        </form>
+                    </CardFooter>
+                </Card>
+            ) : (
+                <Button size="lg" className="h-16 w-16 rounded-full shadow-lg" onClick={() => setIsChatOpen(true)}>
+                    <MessageCircle className="h-8 w-8"/>
+                </Button>
+            )}
+        </div>
     </div>
   );
 }
