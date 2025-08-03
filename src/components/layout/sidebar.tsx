@@ -10,6 +10,8 @@ import {
   Warehouse,
   Wrench,
   User,
+  Truck,
+  ClipboardList
 } from 'lucide-react';
 import {
   Sidebar,
@@ -35,6 +37,8 @@ const menuItems = [
   { href: '/dashboard/repairs', label: 'Repairs', icon: Wrench },
   { href: '/dashboard/customers', label: 'Customers', icon: User },
   { href: '/dashboard/intake', label: 'Storehouse Intake', icon: Warehouse },
+  { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
+  { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Users },
 ];
 
