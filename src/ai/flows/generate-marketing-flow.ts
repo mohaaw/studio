@@ -10,7 +10,7 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
-export const GenerateMarketingCopyInputSchema = z.object({
+const GenerateMarketingCopyInputSchema = z.object({
   topic: z.string().describe('The topic for the marketing content. e.g., "new arrivals of laptops" or "a weekend sale on accessories".'),
   platform: z.enum(['social-media', 'email']).describe('The target platform for the content.'),
 });
