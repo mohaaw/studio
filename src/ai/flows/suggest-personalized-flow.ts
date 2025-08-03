@@ -4,8 +4,6 @@
  * @fileOverview An AI flow to suggest personalized products for a customer.
  *
  * - suggestPersonalized - A function that suggests products based on purchase history.
- * - SuggestPersonalizedInput - The input type for the suggestPersonalized function.
- * - SuggestPersonalizedOutput - The return type for the suggestPersonalized function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -15,7 +13,6 @@ const SuggestPersonalizedInputSchema = z.object({
   customerName: z.string().describe('The name of the customer.'),
   purchaseHistory: z.array(z.string()).describe('A list of items the customer has previously purchased.'),
 });
-export type SuggestPersonalizedInput = z.infer<typeof SuggestPersonalizedInputSchema>;
 
 const SuggestPersonalizedOutputSchema = z.object({
     suggestions: z.array(z.object({
@@ -23,10 +20,9 @@ const SuggestPersonalizedOutputSchema = z.object({
         reasoning: z.string().describe('A brief explanation for why this product is recommended.'),
     })).describe('A list of personalized product suggestions.')
 });
-export type SuggestPersonalizedOutput = z.infer<typeof SuggestPersonalizedOutputSchema>;
 
 
-export async function suggestPersonalized(input: SuggestPersonalizedInput): Promise<SuggestPersonalizedOutput> {
+export async function suggestPersonalized(input: z.infer<typeof SuggestPersonalizedInputSchema>): Promise<z.infer<typeof SuggestPersonalizedOutputSchema>> {
     const result = await suggestPersonalizedFlow(input);
     return result;
 }

@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { suggestPersonalized, type SuggestPersonalizedOutput } from "@/ai/flows/suggest-personalized-flow";
+import { suggestPersonalized } from "@/ai/flows/suggest-personalized-flow";
 import { textToSpeech } from "@/ai/flows/text-to-speech-flow";
 
 interface Product {
@@ -39,6 +39,15 @@ interface Customer {
     name: string;
     purchaseHistory: string[];
 }
+
+// Define the type here instead of importing from the server file
+export type SuggestPersonalizedOutput = {
+    suggestions: {
+        name: string;
+        reasoning: string;
+    }[];
+};
+
 
 const products: Product[] = [
   { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['F17G83J8Q1J9', 'C39L8B8JHW6H', 'G6TPL0Q7Q1J9'] },
