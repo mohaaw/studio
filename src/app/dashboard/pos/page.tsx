@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, Volume2, Accessibility } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef, useTransition } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { suggestPersonalized, type SuggestPersonalizedOutput } from "@/ai/flows/suggest-personalized-flow";
+import { textToSpeech } from "@/ai/flows/text-to-speech-flow";
 
 interface Product {
     id: string;
@@ -64,12 +65,13 @@ export default function POSPage() {
     const [activeCustomer, setActiveCustomer] = useState<Customer | null>(null);
 
     const [isGeneratingSuggestions, startSuggestionsTransition] = useTransition();
+    const [isSpeaking, startSpeechTransition] = useTransition();
     const [personalizedSuggestions, setPersonalizedSuggestions] = useState<SuggestPersonalizedOutput | null>(null);
+    const [isAccessibilityMode, setAccessibilityMode] = useState(false);
 
     const { toast } = useToast();
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
-
+    
     // Dialog states
     const [isPaymentOpen, setPaymentOpen] = useState(false);
     const [isSerialSelectorOpen, setSerialSelectorOpen] = useState(false);
@@ -78,6 +80,7 @@ export default function POSPage() {
     const [currentItemForSerial, setCurrentItemForSerial] = useState<CartItem | null>(null);
 
     const [cashTendered, setCashTendered] = useState("");
+    const audioRef = useRef<HTMLAudioElement>(null);
     
     // Check network status
     useEffect(() => {
@@ -100,13 +103,25 @@ export default function POSPage() {
         };
     }, [toast]);
 
-
-    useEffect(() => {
-        // This is a mock for camera permission handling.
-    }, []);
+    const speak = (text: string) => {
+        if (!isAccessibilityMode) return;
+        startSpeechTransition(async () => {
+            try {
+                const { media } = await textToSpeech(text);
+                if (audioRef.current) {
+                    audioRef.current.src = media;
+                    audioRef.current.play();
+                }
+            } catch (error) {
+                console.error("TTS Error:", error);
+                toast({ variant: "destructive", title: "Text-to-Speech Failed" });
+            }
+        });
+    };
 
     const handleAddToCart = (product: Product) => {
         const newItem: CartItem = { ...product, quantity: 1, originalPrice: product.price };
+        speak(`${product.name} added to cart. Price: $${product.price.toFixed(2)}`);
         if (product.serials && product.serials.length > 0) {
             setCurrentItemForSerial(newItem);
             setSerialSelectorOpen(true);
@@ -125,26 +140,37 @@ export default function POSPage() {
     };
 
     const handleUpdateQuantity = (productId: string, amount: number) => {
+        let itemName = '';
         setCart((prevCart) => {
             return prevCart.map((item) => {
                 if (item.id === productId) {
+                    itemName = item.name;
                     const newQuantity = item.quantity + amount;
                     return newQuantity > 0 ? { ...item, quantity: newQuantity } : null;
                 }
                 return item;
             }).filter(Boolean) as CartItem[];
         });
+         if (amount > 0) {
+            speak(`Increased ${itemName} quantity.`);
+        } else {
+            speak(`Decreased ${itemName} quantity.`);
+        }
     };
     
     const handlePriceChange = (productId: string, newPrice: number) => {
         setCart(cart.map(item => item.id === productId ? { ...item, price: newPrice } : item));
+        // Debounce or add a button to speak new price to avoid too many API calls
     }
 
     const handleRemoveItem = (productId: string) => {
+        const item = cart.find(i => i.id === productId);
+        if (item) speak(`${item.name} removed from cart.`);
         setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
     };
 
     const handleClearCart = () => {
+        speak("Cart cleared.");
         setCart([]);
         setDiscount(0);
         setActiveCustomer(null);
@@ -156,16 +182,20 @@ export default function POSPage() {
         setHeldCarts([...heldCarts, cart]);
         handleClearCart();
         toast({ title: "Sale Held", description: "The current sale has been saved. You can resume it later." });
+        speak("Sale held.");
     };
 
     const handleResumeCart = (index: number) => {
         if (cart.length > 0) {
-            toast({ variant: "destructive", title: "Current Sale Active", description: "Please hold or complete the current sale before resuming another." });
+            const msg = "Please hold or complete the current sale before resuming another.";
+            toast({ variant: "destructive", title: "Current Sale Active", description: msg });
+            speak(msg);
             return;
         }
         const cartToResume = heldCarts[index];
         setCart(cartToResume);
         setHeldCarts(heldCarts.filter((_, i) => i !== index));
+        speak("Sale resumed.");
     };
 
     const handleSelectCustomer = (customerId: string) => {
@@ -173,12 +203,14 @@ export default function POSPage() {
         if (customer) {
             setActiveCustomer(customer);
             setCustomerModalOpen(false);
+             speak(`Customer ${customer.name} selected.`);
             startSuggestionsTransition(async () => {
                 const result = await suggestPersonalized({
                     customerName: customer.name,
                     purchaseHistory: customer.purchaseHistory
                 });
                 setPersonalizedSuggestions(result);
+                speak("Here are some personalized suggestions for you.");
             });
         }
     }
@@ -196,16 +228,19 @@ export default function POSPage() {
     }
 
     const completeSale = () => {
+        const saleCompleteMessage = `Sale Complete! Total: $${total.toFixed(2)}. Change due: $${changeDue.toFixed(2)}`;
         toast({ title: "Sale Complete!", description: `Total: $${total.toFixed(2)}. Change due: $${changeDue.toFixed(2)}` });
+        speak(saleCompleteMessage);
         handleClearCart();
         setCashTendered("");
         setPaymentOpen(false);
     }
     
-    const categories = ['All', 'For You', ...new Set(products.map(p => p.category))];
+    const categories = ['All', ...(activeCustomer ? ['For You'] : []), ...new Set(products.map(p => p.category))];
 
   return (
     <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-6 lg:grid-cols-3">
+        <audio ref={audioRef} className="hidden" />
         <div className="lg:col-span-2">
             <Card className="h-full flex flex-col">
                  <CardHeader>
@@ -300,17 +335,35 @@ export default function POSPage() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                          <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
-                         <div className={`flex items-center gap-1.5 text-xs font-medium ${isOnline ? 'text-green-500' : 'text-destructive'}`}>
-                            {isOnline ? <Wifi className="h-4 w-4"/> : <WifiOff className="h-4 w-4"/>}
-                            <span>{isOnline ? 'Online' : 'Offline'}</span>
-                        </div>
+                         <div className="flex items-center gap-2">
+                             <Button 
+                                variant={isAccessibilityMode ? "secondary" : "outline"} 
+                                size="icon" 
+                                className="h-8 w-8"
+                                onClick={() => {
+                                    const newMode = !isAccessibilityMode;
+                                    setAccessibilityMode(newMode);
+                                    speak(newMode ? "Accessibility mode enabled." : "Accessibility mode disabled.");
+                                }}
+                            >
+                                <Accessibility className="h-4 w-4"/>
+                            </Button>
+                            <div className={`flex items-center gap-1.5 text-xs font-medium ${isOnline ? 'text-green-500' : 'text-destructive'}`}>
+                                {isOnline ? <Wifi className="h-4 w-4"/> : <WifiOff className="h-4 w-4"/>}
+                                <span>{isOnline ? 'Online' : 'Offline'}</span>
+                            </div>
+                         </div>
                     </div>
                      <div className="flex items-center justify-between pt-2">
                         {activeCustomer ? (
                             <div className="flex items-center gap-2">
                                 <User className="h-5 w-5 text-primary"/>
                                 <span className="font-semibold">{activeCustomer.name}</span>
-                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => {setActiveCustomer(null); setPersonalizedSuggestions(null);}}><XCircle className="h-4 w-4"/></Button>
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => {
+                                    speak(`Customer ${activeCustomer.name} removed from sale.`);
+                                    setActiveCustomer(null); 
+                                    setPersonalizedSuggestions(null);
+                                    }}><XCircle className="h-4 w-4"/></Button>
                             </div>
                         ) : (
                              <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="mr-2 h-4 w-4"/>Add Customer</Button>
@@ -398,7 +451,7 @@ export default function POSPage() {
                     </div>
                      <Dialog open={isPaymentOpen} onOpenChange={setPaymentOpen}>
                         <DialogTrigger asChild>
-                            <Button size="lg" className="w-full mt-4 h-14 text-lg font-bold"><CreditCard className="mr-2 h-6 w-6" />Proceed to Payment</Button>
+                            <Button size="lg" className="w-full mt-4 h-14 text-lg font-bold" onClick={() => speak(`Proceeding to payment. Total is ${total.toFixed(2)} dollars.`)}><CreditCard className="mr-2 h-6 w-6" />Proceed to Payment</Button>
                         </DialogTrigger>
                         <DialogContent className="max-w-3xl">
                              <DialogHeader><DialogTitle className="font-headline text-2xl">Payment</DialogTitle></DialogHeader>
