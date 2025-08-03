@@ -33,8 +33,8 @@ export function ThemeSwitcher() {
         return <Button variant="ghost" size="icon" className="flex-1 justify-center"></Button>;
     }
     
-    // The theme to display in the UI ('auto' if system is selected, otherwise the theme name)
-    const displayThemeName = theme === 'system' ? 'auto' : theme;
+    // The theme to display in the UI ('system' if system is selected, otherwise the theme name)
+    const displayThemeName = theme;
     
     // The icon should reflect the *actually resolved* theme, defaulting to 'pro' icon
     const CurrentIcon = themes.find(t => t.name === resolvedTheme)?.icon || Monitor;
