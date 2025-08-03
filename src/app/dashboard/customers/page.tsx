@@ -6,13 +6,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Search, PlusCircle, MoreHorizontal, Award } from "lucide-react";
+import { Search, PlusCircle, MoreHorizontal, Award, MessageSquare, Smartphone } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 
 const customers = [
@@ -91,6 +92,16 @@ export default function CustomersPage() {
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem>View Profile</DropdownMenuItem>
                                 <DropdownMenuItem>View Purchase History</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem disabled>
+                                    <MessageSquare className="mr-2 h-4 w-4" />
+                                    Send Email
+                                </DropdownMenuItem>
+                                <DropdownMenuItem disabled>
+                                    <Smartphone className="mr-2 h-4 w-4" />
+                                    Send SMS
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
                                 <DropdownMenuItem className="text-destructive">Delete Customer</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>

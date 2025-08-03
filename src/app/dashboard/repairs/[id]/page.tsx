@@ -1,11 +1,13 @@
+
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, User, HardDrive, Phone, Mail, Wrench, Package, ClipboardCheck, History } from "lucide-react";
+import { ArrowLeft, User, HardDrive, Phone, Mail, Wrench, Package, ClipboardCheck, History, MessageSquare, Smartphone } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 const repair = {
   id: '1',
@@ -98,7 +100,7 @@ export default function RepairDetailsPage({ params }: { params: { id: string } }
                         ))}
                      </div>
                 </CardContent>
-                 <CardFooter className="flex-col items-start gap-4">
+                 <CardFooter className="flex-col items-start gap-4 border-t pt-6">
                      <Label htmlFor="new-note" className="text-base font-semibold">Add New Note</Label>
                     <Textarea id="new-note" placeholder="e.g., Replaced screen assembly. All tests passing." />
                     <Button>Add Note</Button>
@@ -121,6 +123,16 @@ export default function RepairDetailsPage({ params }: { params: { id: string } }
                         <span>{repair.customer.email}</span>
                     </div>
                 </CardContent>
+                <CardFooter className="flex gap-2">
+                    <Button variant="outline" className="w-full" disabled>
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Send Email Update
+                    </Button>
+                    <Button variant="outline" className="w-full" disabled>
+                         <Smartphone className="mr-2 h-4 w-4" />
+                        Send SMS Update
+                    </Button>
+                </CardFooter>
             </Card>
              <Card>
                 <CardHeader>
