@@ -22,18 +22,21 @@ export function ThemeSwitcher() {
     }, []);
 
     const handleThemeChange = () => {
-        const currentThemeName = theme === 'system' ? resolvedTheme : theme;
-        const currentIndex = themes.findIndex(t => t.name === currentThemeName);
+        const currentAppliedTheme = theme === 'system' ? resolvedTheme : theme;
+        const currentIndex = themes.findIndex(t => t.name === currentAppliedTheme);
         const nextIndex = (currentIndex + 1) % themes.length;
         setTheme(themes[nextIndex].name);
     };
 
     if (!mounted) {
+        // Return a placeholder button to prevent layout shift while mounting
         return <Button variant="ghost" size="icon" className="flex-1 justify-center"></Button>;
     }
     
-    const currentThemeName = theme === 'system' ? 'auto' : theme;
-    // Use resolvedTheme for the icon to correctly reflect the system theme, but use `theme` for the label.
+    // The theme to display in the UI (e.g., 'auto' if system is selected)
+    const displayThemeName = theme === 'system' ? 'auto' : theme;
+    
+    // The icon should reflect the *actually resolved* theme
     const CurrentIcon = themes.find(t => t.name === resolvedTheme)?.icon || Monitor;
 
     return (
@@ -42,7 +45,7 @@ export function ThemeSwitcher() {
             size="icon" 
             onClick={handleThemeChange} 
             className="flex-1 justify-center"
-            aria-label={`Switch to next theme. Current theme: ${currentThemeName}`}
+            aria-label={`Switch to next theme. Current theme: ${displayThemeName}`}
         >
             <CurrentIcon className="h-5 w-5" />
             <span 
@@ -53,7 +56,7 @@ export function ThemeSwitcher() {
                     transition: 'opacity 0.2s ease-in-out, width 0.2s ease-in-out'
                 }}
             >
-                {currentThemeName}
+                {displayThemeName}
             </span>
         </Button>
     );
