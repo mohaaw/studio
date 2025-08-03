@@ -1,3 +1,4 @@
+
 'use client';
 import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
@@ -12,7 +13,7 @@ const themes = [
 ];
 
 export function ThemeSwitcher() {
-    const { theme, setTheme } = useTheme();
+    const { theme, setTheme, resolvedTheme } = useTheme();
     const { state } = useSidebar();
     const [mounted, setMounted] = useState(false);
 
@@ -21,7 +22,8 @@ export function ThemeSwitcher() {
     }, []);
 
     const handleThemeChange = () => {
-        const currentIndex = themes.findIndex(t => t.name === theme);
+        const currentTheme = theme === 'system' ? resolvedTheme : theme;
+        const currentIndex = themes.findIndex(t => t.name === currentTheme);
         const nextIndex = (currentIndex + 1) % themes.length;
         setTheme(themes[nextIndex].name);
     };
@@ -30,7 +32,8 @@ export function ThemeSwitcher() {
         return <Button variant="ghost" size="icon" className="flex-1 justify-center"></Button>;
     }
     
-    const CurrentIcon = themes.find(t => t.name === theme)?.icon || Monitor;
+    const currentThemeName = theme === 'system' ? 'auto' : theme;
+    const CurrentIcon = themes.find(t => t.name === (theme === 'system' ? resolvedTheme : theme))?.icon || Monitor;
 
     return (
         <Button 
@@ -38,7 +41,7 @@ export function ThemeSwitcher() {
             size="icon" 
             onClick={handleThemeChange} 
             className="flex-1 justify-center"
-            aria-label={`Switch to next theme. Current theme: ${theme}`}
+            aria-label={`Switch to next theme. Current theme: ${currentThemeName}`}
         >
             <CurrentIcon className="h-5 w-5" />
             <span 
@@ -49,7 +52,7 @@ export function ThemeSwitcher() {
                     transition: 'opacity 0.2s ease-in-out, width 0.2s ease-in-out'
                 }}
             >
-                {theme}
+                {currentThemeName}
             </span>
         </Button>
     );
