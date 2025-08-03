@@ -67,6 +67,7 @@ export default function InventoryPage() {
                             <SelectValue placeholder="Filter by Location" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="all">All Locations</SelectItem>
                             <SelectItem value="shop1">Shop 1</SelectItem>
                             <SelectItem value="shop2">Shop 2</SelectItem>
                             <SelectItem value="storehouse">Storehouse</SelectItem>
@@ -77,6 +78,7 @@ export default function InventoryPage() {
                             <SelectValue placeholder="Filter by Status" />
                         </SelectTrigger>
                         <SelectContent>
+                            <SelectItem value="all">All Statuses</SelectItem>
                             <SelectItem value="forsale">For Sale</SelectItem>
                             <SelectItem value="intake">Intake</SelectItem>
                             <SelectItem value="sold">Sold</SelectItem>
