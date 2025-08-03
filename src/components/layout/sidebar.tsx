@@ -41,14 +41,14 @@ const menuItems = [
   { href: '/dashboard/pos', label: 'Point of Sale', icon: ScanLine },
   { href: '/dashboard/repairs', label: 'Repairs', icon: Wrench },
   { href: '/dashboard/returns', label: 'Returns (RMA)', icon: Undo2 },
-  { href: '/dashboard/customers', label: 'Customers', icon: User },
+  { href: '/dashboard/customers', label: 'Customers', icon: Users },
   { href: '/dashboard/intake', label: 'Storehouse Intake', icon: Warehouse },
   { href: '/dashboard/trade-ins', label: 'Trade-ins', icon: ArrowRightLeft },
   { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
   { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
   { href: '/dashboard/reporting', label: 'Reporting', icon: BarChart2 },
   { href: '/dashboard/team-management', label: 'Team Management', icon: UserCog },
-  { href: '/dashboard/team-hub', label: 'Announcements', icon: Megaphone },
+  { href: '/dashboard/team-hub', label: 'Team Hub', icon: Megaphone },
   { href: '/kiosk', label: 'Kiosk Mode', icon: Laptop },
 ];
 

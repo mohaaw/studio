@@ -7,10 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Sparkles } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, ShieldCheck, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { suggestTradeInValue } from "@/ai/flows/suggest-trade-in-flow";
 
@@ -24,6 +24,8 @@ export default function TradeInPage() {
     const [specs, setSpecs] = useState('');
     const [condition, setCondition] = useState('');
     const [tradeInValue, setTradeInValue] = useState('');
+    const [serial, setSerial] = useState('');
+    const [serialStatus, setSerialStatus] = useState<'unchecked' | 'checking' | 'clean' | 'flagged'>('unchecked');
 
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -63,6 +65,23 @@ export default function TradeInPage() {
             }
         });
     }
+
+    useEffect(() => {
+        if (serial.length > 5) { // Simulate check after a few chars
+            setSerialStatus('checking');
+            const timer = setTimeout(() => {
+                // Simulate a check result
+                if (serial.includes('stolen')) {
+                     setSerialStatus('flagged');
+                } else {
+                    setSerialStatus('clean');
+                }
+            }, 1500);
+            return () => clearTimeout(timer);
+        } else {
+            setSerialStatus('unchecked');
+        }
+    }, [serial]);
 
     return (
         <div className="space-y-6 max-w-4xl mx-auto">
@@ -112,16 +131,22 @@ export default function TradeInPage() {
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="serial">Serial Number</Label>
-                                    <Input id="serial" placeholder="e.g., C02ABCD12345" />
+                                    <Label htmlFor="serial">Serial Number / IMEI</Label>
+                                    <div className="relative">
+                                        <Input id="serial" placeholder="e.g., C02ABCD12345" value={serial} onChange={e => setSerial(e.target.value)} />
+                                        {serialStatus === 'clean' && <ShieldCheck className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-green-500" title="Serial number is clean" />}
+                                        {serialStatus === 'flagged' && <ShieldAlert className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-destructive" title="Serial number flagged in database!" />}
+                                    </div>
+                                    {serialStatus === 'checking' && <p className="text-xs text-muted-foreground">Checking serial number against global database...</p>}
+                                    {serialStatus === 'flagged' && <p className="text-xs text-destructive font-semibold">Warning: This serial number has been flagged as potentially stolen.</p>}
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="condition">Condition</Label>
                                      <Select value={condition} onValueChange={setCondition}><SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger><SelectContent><SelectItem value="a-grade">A-Grade (Like New)</SelectItem><SelectItem value="b-grade">B-Grade (Good)</SelectItem><SelectItem value="c-grade">C-Grade (Fair)</SelectItem><SelectItem value="d-grade">D-Grade (Poor)</SelectItem></SelectContent></Select>
                                 </div>
                                 <div className="md:col-span-2 space-y-2">
-                                    <Label htmlFor="specs">Full Specifications / Notes</Label>
-                                    <Textarea id="specs" placeholder="e.g., 64GB, Unlocked, Black. Minor scratches on back." value={specs} onChange={(e) => setSpecs(e.target.value)} />
+                                    <Label htmlFor="specs">Full Specifications / Cosmetic Notes</Label>
+                                    <Textarea id="specs" placeholder="e.g., 64GB, Unlocked, Black. Minor scratches on back. Upload photos for AI assessment." value={specs} onChange={(e) => setSpecs(e.target.value)} />
                                 </div>
                              </div>
                         </div>
@@ -145,7 +170,7 @@ export default function TradeInPage() {
 
 
                         <div className="flex justify-end gap-2 pt-4">
-                            <Button type="submit">
+                            <Button type="submit" disabled={serialStatus === 'flagged'}>
                                 <Save className="mr-2 h-4 w-4" /> Complete Trade-in &amp; Add to Inventory
                             </Button>
                         </div>

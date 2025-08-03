@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Printer, Wand2, Sparkles, Box } from "lucide-react";
+import { ArrowLeft, Save, Printer, Wand2, Sparkles, Box, Trash2, Brush } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useTransition } from "react";
@@ -16,6 +16,7 @@ import { generateDescription } from "@/ai/flows/generate-description-flow";
 import { suggestPrice } from "@/ai/flows/suggest-price-flow";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function IntakePage() {
     const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
@@ -31,6 +32,7 @@ export default function IntakePage() {
     const [description, setDescription] = useState('');
     const [purchasePrice, setPurchasePrice] = useState('');
     const [salePrice, setSalePrice] = useState('');
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -46,7 +48,7 @@ export default function IntakePage() {
         setQrCodeGenerated(true);
     };
 
-    const handleGenerateDescription = () => {
+    const handleGenerateDescription = (platform: 'default' | 'ebay' | 'facebook') => {
         if (!itemName || !category || !specs) {
             toast({
                 variant: 'destructive',
@@ -60,6 +62,7 @@ export default function IntakePage() {
                 name: itemName,
                 category: category,
                 specs: specs,
+                platform: platform,
             });
             if (result) {
                 setDescription(result);
@@ -105,6 +108,23 @@ export default function IntakePage() {
     const handlePrint = () => {
         window.print();
     }
+    
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    const removeBackground = () => {
+        toast({ title: 'Simulating AI Background Removal...', description: 'This would be replaced with a call to an image processing AI.' });
+        // In a real app, you'd send the image for processing and get back a new one.
+        // For now, we just show a toast.
+    };
 
     return (
         <div className="space-y-6 max-w-4xl mx-auto print:space-y-0 print:max-w-full print:mx-0">
@@ -132,6 +152,27 @@ export default function IntakePage() {
                         <CardDescription>Fill out the details below to add a new item to the inventory.</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-8">
+                        <div className="space-y-4">
+                             <h3 className="font-headline text-lg font-semibold border-b pb-2">Media</h3>
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                                <div>
+                                    <Label htmlFor="image-upload">Product Image</Label>
+                                    <Input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} />
+                                </div>
+                                {imagePreview && (
+                                    <div className="space-y-2">
+                                        <p className="font-medium text-sm">Image Preview</p>
+                                        <div className="relative group">
+                                            <Image src={imagePreview} alt="Preview" width={200} height={200} className="rounded-lg border object-cover aspect-square" />
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
+                                                <Button type="button" variant="secondary" onClick={removeBackground}><Brush className="mr-2 h-4 w-4" />Remove BG</Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
                         <div className="space-y-4">
                             <h3 className="font-headline text-lg font-semibold border-b pb-2">Item Details</h3>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
@@ -166,14 +207,29 @@ export default function IntakePage() {
                                     <Textarea id="specs" placeholder="e.g., 16GB RAM, 512GB SSD, M1 Pro Chip..." value={specs} onChange={(e) => setSpecs(e.target.value)} />
                                 </div>
                                 <div className="md:col-span-2 space-y-2">
-                                    <div className="flex justify-between items-center">
-                                        <Label htmlFor="description">AI-Generated Description</Label>
-                                        <Button type="button" variant="outline" size="sm" onClick={handleGenerateDescription} disabled={isGeneratingDesc}>
-                                            <Wand2 className="mr-2 h-4 w-4" />
-                                            {isGeneratingDesc ? 'Generating...' : 'Generate'}
-                                        </Button>
-                                    </div>
-                                    <Textarea id="description" placeholder="A compelling sales description will appear here..." value={description} onChange={e => setDescription(e.target.value)} />
+                                    <Label>AI-Generated Product Listing</Label>
+                                    <Tabs defaultValue="default">
+                                        <div className="flex items-center justify-between">
+                                            <TabsList>
+                                                <TabsTrigger value="default">Website</TabsTrigger>
+                                                <TabsTrigger value="ebay">eBay</TabsTrigger>
+                                                <TabsTrigger value="facebook">Facebook</TabsTrigger>
+                                            </TabsList>
+                                            <Button type="button" variant="outline" size="sm" onClick={() => handleGenerateDescription('default')} disabled={isGeneratingDesc}>
+                                                <Wand2 className="mr-2 h-4 w-4" />
+                                                {isGeneratingDesc ? 'Generating...' : 'Generate'}
+                                            </Button>
+                                        </div>
+                                        <TabsContent value="default">
+                                             <Textarea placeholder="A compelling sales description will appear here..." value={description} onChange={e => setDescription(e.target.value)} rows={6} />
+                                        </TabsContent>
+                                        <TabsContent value="ebay">
+                                            <Textarea placeholder="An eBay-formatted listing will appear here..." value={description} onChange={e => setDescription(e.target.value)} rows={6} />
+                                        </TabsContent>
+                                        <TabsContent value="facebook">
+                                            <Textarea placeholder="A Facebook Marketplace-formatted listing will appear here..." value={description} onChange={e => setDescription(e.target.value)} rows={6} />
+                                        </TabsContent>
+                                    </Tabs>
                                 </div>
                             </div>
                         </div>

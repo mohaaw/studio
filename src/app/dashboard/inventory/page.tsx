@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine, HardDrive, CheckSquare, FileCog } from "lucide-react";
+import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine, HardDrive, CheckSquare, FileCog, PackagePlus } from "lucide-react";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -51,6 +51,7 @@ export default function InventoryPage() {
   const { toast } = useToast();
   const [isTransferDialogOpen, setTransferDialogOpen] = useState(false);
   const [isStocktakeDialogOpen, setStocktakeDialogOpen] = useState(false);
+  const [isBundleDialogOpen, setBundleDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<(typeof inventoryItems)[0] | null>(null);
   const [selectedLocation, setSelectedLocation] = useState('');
 
@@ -100,6 +101,14 @@ export default function InventoryPage() {
         description: `Scanning for items below reorder points... (This is a placeholder)`,
     });
   }
+  
+  const handleCreateBundle = () => {
+      toast({
+          title: "Bundle Created",
+          description: `The new product bundle has been created successfully.`,
+      });
+      setBundleDialogOpen(false);
+  }
 
 
   return (
@@ -108,6 +117,35 @@ export default function InventoryPage() {
             <h1 className="font-headline text-3xl font-bold">Inventory</h1>
              <div className="flex items-center gap-2 flex-wrap">
                 <Button variant="outline" onClick={handleGeneratePOs}><FileCog className="mr-2"/> Generate POs for Low Stock</Button>
+                <Dialog open={isBundleDialogOpen} onOpenChange={setBundleDialogOpen}>
+                    <DialogTrigger asChild>
+                         <Button variant="outline"><PackagePlus className="mr-2"/> Create Bundle</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Create New Product Bundle</DialogTitle>
+                            <DialogDescription>Select items to create a virtual kit with a special price.</DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4 space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="bundle-name">Bundle Name</Label>
+                                <Input id="bundle-name" placeholder="e.g., Ultimate Gaming Starter Kit" />
+                            </div>
+                             <div className="space-y-2">
+                                <Label>Select Items</Label>
+                                <p className="text-sm text-muted-foreground">(Multi-select UI would be here)</p>
+                            </div>
+                             <div className="space-y-2">
+                                <Label htmlFor="bundle-price">Bundle Price</Label>
+                                <Input id="bundle-price" type="number" placeholder="499.99" />
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
+                            <Button onClick={handleCreateBundle}>Create Bundle</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
                 <Dialog open={isStocktakeDialogOpen} onOpenChange={setStocktakeDialogOpen}>
                     <DialogTrigger asChild>
                          <Button variant="outline"><CheckSquare className="mr-2"/> Start Stocktake</Button>

@@ -1,3 +1,4 @@
+
 'use client'
 
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Save, Sparkles, Lightbulb, Package, Beaker } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, Lightbulb, Package, Beaker, Upload } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -53,6 +54,15 @@ export default function RepairCheckInPage() {
         });
     }
 
+    const handlePhotoUpload = () => {
+        // This is a placeholder for the file upload logic
+        toast({
+            title: "AI Condition Assessment",
+            description: "Photo uploaded. AI is analyzing for cosmetic issues... (simulation complete, condition set to 'B-Grade')",
+        });
+        // Here you would set the condition state based on AI response
+    }
+
     return (
         <div className="space-y-6 max-w-4xl mx-auto">
             <Link href="/dashboard/repairs" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
@@ -95,6 +105,13 @@ export default function RepairCheckInPage() {
                                 <div className="space-y-2">
                                     <Label htmlFor="serial">Serial Number</Label>
                                     <Input id="serial" placeholder="e.g., C02G80F3Q05D" />
+                                </div>
+                                <div className="md:col-span-2 space-y-2">
+                                    <Label htmlFor="photos">Upload Photos for AI Condition Assessment</Label>
+                                    <div className="flex items-center gap-2">
+                                        <Input id="photos" type="file" className="flex-1" />
+                                        <Button type="button" variant="outline" onClick={handlePhotoUpload}><Upload className="mr-2 h-4 w-4" /> Analyze</Button>
+                                    </div>
                                 </div>
                                 <div className="md:col-span-2 space-y-2">
                                      <div className="flex justify-between items-center">
