@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { Download, FileText, DollarSign, Package, Wrench } from "lucide-react";
+import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles } from "lucide-react";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 const reports = [
     { title: "Sales Summary", description: "Detailed report of all sales, revenue, profit, and taxes.", icon: DollarSign },
@@ -13,6 +15,24 @@ const reports = [
     { title: "Supplier Performance", description: "Order history and costs associated with each supplier.", icon: FileText },
     { title: "Employee Sales Performance", description: "Sales figures attributed to each employee.", icon: FileText },
 ];
+
+const forecastData = [
+  { month: "Jan", demand: 186 },
+  { month: "Feb", demand: 305 },
+  { month: "Mar", demand: 237 },
+  { month: "Apr", demand: 273 },
+  { month: "May", demand: 209 },
+  { month: "Jun", demand: 214 },
+  { month: "Jul", demand: 320, predicted: true },
+  { month: "Aug", demand: 350, predicted: true },
+  { month: "Sep", demand: 330, predicted: true },
+]
+const chartConfig = {
+  demand: {
+    label: "Demand",
+    color: "hsl(var(--chart-1))",
+  },
+}
 
 
 export default function ReportingPage() {
@@ -34,6 +54,30 @@ export default function ReportingPage() {
             </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="lg:col-span-2">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg flex items-center gap-2">
+                        <Sparkles className="h-5 w-5 text-primary" />
+                        AI Demand Forecasting
+                    </CardTitle>
+                    <CardDescription>Predicted demand for A-Grade Smartphones for the next quarter.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                   <ChartContainer config={chartConfig} className="h-[250px] w-full">
+                        <RechartsBarChart data={forecastData} accessibilityLayer>
+                            <CartesianGrid vertical={false} />
+                            <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} />
+                            <YAxis tickLine={false} axisLine={false} />
+                            <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+                            <Bar dataKey="demand" radius={8}>
+                                {forecastData.map((item, index) => (
+                                <rect key={index} fill={item.predicted ? "hsla(var(--primary), 0.5)" : "hsl(var(--primary))"} />
+                                ))}
+                            </Bar>
+                        </RechartsBarChart>
+                    </ChartContainer>
+                </CardContent>
+            </Card>
             {reports.map((report, index) => (
                  <Card key={index}>
                     <CardHeader className="flex flex-row items-center gap-4 space-y-0">
@@ -55,4 +99,3 @@ export default function ReportingPage() {
     </div>
   );
 }
-

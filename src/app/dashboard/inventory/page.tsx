@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine, HardDrive, CheckSquare } from "lucide-react";
+import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine, HardDrive, CheckSquare, FileCog } from "lucide-react";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -94,12 +94,20 @@ export default function InventoryPage() {
       setSelectedLocation('');
   }
 
+  const handleGeneratePOs = () => {
+    toast({
+        title: "Generating Purchase Orders",
+        description: `Scanning for items below reorder points... (This is a placeholder)`,
+    });
+  }
+
 
   return (
     <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
             <h1 className="font-headline text-3xl font-bold">Inventory</h1>
              <div className="flex items-center gap-2 flex-wrap">
+                <Button variant="outline" onClick={handleGeneratePOs}><FileCog className="mr-2"/> Generate POs for Low Stock</Button>
                 <Dialog open={isStocktakeDialogOpen} onOpenChange={setStocktakeDialogOpen}>
                     <DialogTrigger asChild>
                          <Button variant="outline"><CheckSquare className="mr-2"/> Start Stocktake</Button>

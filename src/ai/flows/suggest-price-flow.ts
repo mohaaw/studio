@@ -28,12 +28,12 @@ const prompt = ai.definePrompt({
   name: 'suggestPricePrompt',
   input: {schema: SuggestPriceInputSchema},
   output: {schema: z.number()},
-  prompt: `You are a pricing expert for a second-hand electronics shop.
-Your task is to suggest a competitive and profitable resale price for an item.
+  prompt: `You are an advanced pricing expert for a second-hand electronics shop.
+Your task is to suggest a competitive and profitable resale price for an item by simulating a real-time market analysis.
 
 Consider the item's category, condition, and specifications.
 If a purchase price is provided, ensure the suggested sale price provides a reasonable profit margin (typically 20-40%).
-Base your suggestion on current market trends for used electronics.
+Base your suggestion on current market trends for used electronics. You should act as if you are scraping data from 3-4 competitor websites (like Gazelle, BackMarket, or local competitors) and finding an average market price before applying our profit margin logic.
 
 Return only the suggested numerical price, without any currency symbols or text.
 
@@ -44,7 +44,8 @@ Item Details:
 - Specifications: {{{specs}}}
 {{#if purchasePrice}}- Purchase Price: {{{purchasePrice}}}{{/if}}
 
-Suggested Sale Price:`,
+Simulated Competitor Average Price: $...
+Final Suggested Sale Price:`,
 });
 
 const suggestPriceFlow = ai.defineFlow(

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box } from "lucide-react";
+import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -16,6 +16,8 @@ const item = {
   status: 'For Sale',
   purchasePrice: 750.00,
   salePrice: 999.00,
+  stock: 12,
+  reorderPoint: 5,
   warranty: 'Standard 90-Day',
   image: 'https://placehold.co/600x400.png',
   specs: [
@@ -128,6 +130,21 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
                      <div>
                         <p className="text-sm text-muted-foreground">Warranty</p>
                         <p className="font-semibold">{item.warranty}</p>
+                    </div>
+                </CardContent>
+            </Card>
+             <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Stock Control</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                     <div className="flex justify-between items-center">
+                        <p className="text-muted-foreground">Current Stock</p>
+                        <p className="font-semibold text-lg font-mono">{item.stock} units</p>
+                    </div>
+                    <div className="flex justify-between items-center">
+                        <p className="text-muted-foreground">Reorder Point</p>
+                        <p className="font-semibold text-lg font-mono flex items-center gap-2">{item.stock <= item.reorderPoint && <TrendingDown className="h-5 w-5 text-destructive" />} {item.reorderPoint} units</p>
                     </div>
                 </CardContent>
             </Card>
