@@ -11,7 +11,8 @@ import {
   Wrench,
   User,
   Truck,
-  ClipboardList
+  ClipboardList,
+  ArrowRightLeft
 } from 'lucide-react';
 import {
   Sidebar,
@@ -37,6 +38,7 @@ const menuItems = [
   { href: '/dashboard/repairs', label: 'Repairs', icon: Wrench },
   { href: '/dashboard/customers', label: 'Customers', icon: User },
   { href: '/dashboard/intake', label: 'Storehouse Intake', icon: Warehouse },
+  { href: '/dashboard/trade-ins', label: 'Trade-ins', icon: ArrowRightLeft },
   { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
   { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Users },
