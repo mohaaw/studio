@@ -6,30 +6,40 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, PlusCircle, MoreHorizontal, Undo2 } from "lucide-react";
+import { Search, Filter, PlusCircle, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
-const rmaItems = [
-  { id: '1', rmaNumber: 'RMA-2023-001', orderId: 'ORD-1234', customer: 'John Doe', item: 'iPhone 13 Pro', returnDate: '2023-11-20', status: 'Pending Inspection' },
-  { id: '2', rmaNumber: 'RMA-2023-002', orderId: 'ORD-1235', customer: 'Jane Smith', item: 'MacBook Air M2', returnDate: '2023-11-22', status: 'Restocked' },
-  { id: '3', rmaNumber: 'RMA-2023-003', orderId: 'ORD-1236', customer: 'Peter Jones', item: 'Apple Watch S8', returnDate: '2023-11-25', status: 'Refunded' },
-  { id: '4', rmaNumber: 'RMA-2023-004', orderId: 'ORD-1237', customer: 'Mary Johnson', item: 'Dell XPS 13', returnDate: '2023-12-01', status: 'Awaiting Customer' },
+type RmaStatus = "Pending Inspection" | "Restocked" | "Refunded" | "Awaiting Customer";
+
+const initialRmaItems = [
+  { id: '1', rmaNumber: 'RMA-2023-001', orderId: 'ORD-1234', customer: 'John Doe', item: 'iPhone 13 Pro', returnDate: '2023-11-20', status: 'Pending Inspection' as RmaStatus },
+  { id: '2', rmaNumber: 'RMA-2023-002', orderId: 'ORD-1235', customer: 'Jane Smith', item: 'MacBook Air M2', returnDate: '2023-11-22', status: 'Restocked' as RmaStatus },
+  { id: '3', rmaNumber: 'RMA-2023-003', orderId: 'ORD-1236', customer: 'Peter Jones', item: 'Apple Watch S8', returnDate: '2023-11-25', status: 'Refunded' as RmaStatus },
+  { id: '4', rmaNumber: 'RMA-2023-004', orderId: 'ORD-1237', customer: 'Mary Johnson', item: 'Dell XPS 13', returnDate: '2023-12-01', status: 'Awaiting Customer' as RmaStatus },
 ];
 
-const getStatusVariant = (status: string) => {
-    switch (status.toLowerCase()) {
-        case 'refunded':
-        case 'restocked':
+const getStatusVariant = (status: RmaStatus) => {
+    switch (status) {
+        case 'Refunded':
+        case 'Restocked':
             return 'default';
-        case 'pending inspection':
+        case 'Pending Inspection':
             return 'secondary';
-        case 'awaiting customer':
+        case 'Awaiting Customer':
             return 'outline';
         default:
             return 'default';
@@ -37,6 +47,17 @@ const getStatusVariant = (status: string) => {
 }
 
 export default function ReturnsPage() {
+  const { toast } = useToast();
+  const [rmaItems, setRmaItems] = useState(initialRmaItems);
+
+  const handleStatusChange = (rmaId: string, newStatus: RmaStatus) => {
+      setRmaItems(rmaItems.map(item => item.id === rmaId ? { ...item, status: newStatus } : item));
+      toast({
+          title: "RMA Status Updated",
+          description: `RMA for item ID ${rmaId} has been updated to "${newStatus}".`
+      })
+  }
+
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -105,9 +126,19 @@ export default function ReturnsPage() {
                             <DropdownMenuContent align="end">
                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                 <DropdownMenuItem>View Return Details</DropdownMenuItem>
-                                <DropdownMenuItem>Update Status</DropdownMenuItem>
-                                <DropdownMenuItem>Process Refund</DropdownMenuItem>
-                                <DropdownMenuItem>Restock Item</DropdownMenuItem>
+                                <DropdownMenuSub>
+                                    <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                                    <DropdownMenuPortal>
+                                        <DropdownMenuSubContent>
+                                            <DropdownMenuRadioGroup value={rma.status} onValueChange={(value) => handleStatusChange(rma.id, value as RmaStatus)}>
+                                                <DropdownMenuRadioItem value="Pending Inspection">Pending Inspection</DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value="Restocked">Restock Item</DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value="Refunded">Process Refund</DropdownMenuRadioItem>
+                                                <DropdownMenuRadioItem value="Awaiting Customer">Awaiting Customer</DropdownMenuRadioItem>
+                                            </DropdownMenuRadioGroup>
+                                        </DropdownMenuSubContent>
+                                    </DropdownMenuPortal>
+                                </DropdownMenuSub>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>

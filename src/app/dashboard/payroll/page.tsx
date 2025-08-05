@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Banknote, MoreHorizontal, UserCog, Calculator, FileDown } from "lucide-react";
+import { MoreHorizontal, Calculator, FileDown } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,8 +16,20 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
+import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const teamMembers = [
+type PayType = 'Salary' | 'Hourly';
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  basePay: number;
+  payType: PayType;
+}
+
+const teamMembersData: TeamMember[] = [
   { id: '1', name: 'John Doe', role: 'Admin', basePay: 80000, payType: 'Salary' },
   { id: '2', name: 'Jane Smith', role: 'Manager', basePay: 65000, payType: 'Salary' },
   { id: '3', name: 'Peter Jones', role: 'Technician', basePay: 25, payType: 'Hourly' },
@@ -25,6 +37,18 @@ const teamMembers = [
 ];
 
 export default function PayrollPage() {
+    const { toast } = useToast();
+    const [teamMembers, setTeamMembers] = useState(teamMembersData);
+    const [isRunPayrollOpen, setRunPayrollOpen] = useState(false);
+
+    const handleRunPayroll = () => {
+        setRunPayrollOpen(false);
+        toast({
+            title: "Payroll Cycle Running...",
+            description: "Calculating salaries and commissions for all employees."
+        });
+    }
+
   return (
     <div className="space-y-6">
         <div>
@@ -86,7 +110,23 @@ export default function PayrollPage() {
                         </Table>
                     </CardContent>
                     <CardFooter className="justify-end">
-                        <Button><Calculator className="mr-2"/> Run Payroll Cycle</Button>
+                        <Dialog open={isRunPayrollOpen} onOpenChange={setRunPayrollOpen}>
+                            <DialogTrigger asChild>
+                                <Button><Calculator className="mr-2"/> Run Payroll Cycle</Button>
+                            </DialogTrigger>
+                             <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Confirm Payroll Cycle</DialogTitle>
+                                    <DialogDescription>
+                                        You are about to run payroll for the current period (e.g., December 2023). This will calculate salaries, hourly wages, and commissions for all employees. This action cannot be undone.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                 <DialogFooter>
+                                    <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
+                                    <Button onClick={handleRunPayroll}>Confirm & Run Payroll</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
                     </CardFooter>
                 </Card>
             </div>

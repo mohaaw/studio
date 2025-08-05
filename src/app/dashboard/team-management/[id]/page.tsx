@@ -1,49 +1,60 @@
 
 'use client'
 
-import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, User, Phone, Mail, Award, DollarSign, Wrench, BarChart, TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowLeft, User, Phone, Mail, DollarSign, Wrench, BarChart, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-
-const employee = {
-  id: '2',
-  name: 'Jane Smith',
-  role: 'Manager',
-  email: 'jane.smith@techshop.com',
-  phone: '(123) 555-1234',
-  avatar: 'https://placehold.co/100x100.png',
-  hireDate: '2022-01-15',
-  kpis: {
-      sales: [
-        { month: "Jan", value: 12000 }, { month: "Feb", value: 15000 }, { month: "Mar", value: 13500 },
-        { month: "Apr", value: 16000 }, { month: "May", value: 18000 }, { month: "Jun", value: 17500 },
-      ],
-      repairs: [
-        { month: "Jan", value: 25 }, { month: "Feb", value: 30 }, { month: "Mar", value: 28 },
-        { month: "Apr", value: 35 }, { month: "May", value: 40 }, { month: "Jun", value: 38 },
-      ],
-      recentSales: [
-          {id: '1', item: 'iPhone 14 Pro', amount: 1199, commission: 59.95},
-          {id: '2', item: 'Dell XPS 15', amount: 1499, commission: 74.95},
-          {id: '3', item: 'Anker Power Bank', amount: 59, commission: 2.95},
-      ]
+const employeeData = {
+  '1': {
+    id: '1', name: 'John Doe', role: 'Admin', email: 'john.doe@techshop.com', phone: '(123) 555-0001', avatar: 'https://placehold.co/100x100.png', hireDate: '2021-06-01',
+    kpis: {
+        sales: [ { month: "Jan", value: 5000 }, { month: "Feb", value: 6200 }, { month: "Mar", value: 5800 }, { month: "Apr", value: 7100 }, { month: "May", value: 7500 }, { month: "Jun", value: 8200 } ],
+        repairs: [ { month: "Jan", value: 5 }, { month: "Feb", value: 7 }, { month: "Mar", value: 6 }, { month: "Apr", value: 8 }, { month: "May", value: 10 }, { month: "Jun", value: 9 } ],
+        recentSales: [ {id: '1', item: 'Anker Charger', amount: 49, commission: 2.45} ]
+    }
+  },
+  '2': {
+    id: '2', name: 'Jane Smith', role: 'Manager', email: 'jane.smith@techshop.com', phone: '(123) 555-1234', avatar: 'https://placehold.co/100x100.png', hireDate: '2022-01-15',
+    kpis: {
+        sales: [ { month: "Jan", value: 12000 }, { month: "Feb", value: 15000 }, { month: "Mar", value: 13500 }, { month: "Apr", value: 16000 }, { month: "May", value: 18000 }, { month: "Jun", value: 17500 } ],
+        repairs: [ { month: "Jan", value: 25 }, { month: "Feb", value: 30 }, { month: "Mar", value: 28 }, { month: "Apr", value: 35 }, { month: "May", value: 40 }, { month: "Jun", value: 38 } ],
+        recentSales: [ {id: '1', item: 'iPhone 14 Pro', amount: 1199, commission: 59.95}, {id: '2', item: 'Dell XPS 15', amount: 1499, commission: 74.95}, {id: '3', item: 'Anker Power Bank', amount: 59, commission: 2.95} ]
+    }
+  },
+  '3': {
+    id: '3', name: 'Peter Jones', role: 'Technician', email: 'peter.jones@techshop.com', phone: '(123) 555-5678', avatar: 'https://placehold.co/100x100.png', hireDate: '2022-08-01',
+    kpis: {
+        sales: [ { month: "Jan", value: 1200 }, { month: "Feb", value: 1500 }, { month: "Mar", value: 1300 }, { month: "Apr", value: 1800 }, { month: "May", value: 2000 }, { month: "Jun", value: 1900 } ],
+        repairs: [ { month: "Jan", value: 50 }, { month: "Feb", value: 65 }, { month: "Mar", value: 62 }, { month: "Apr", value: 70 }, { month: "May", value: 75 }, { month: "Jun", value: 80 } ],
+        recentSales: []
+    }
+  },
+  '4': {
+    id: '4', name: 'Mary Johnson', role: 'Sales', email: 'mary.j@techshop.com', phone: '(123) 555-8765', avatar: 'https://placehold.co/100x100.png', hireDate: '2023-03-10',
+    kpis: {
+        sales: [ { month: "Jan", value: 25000 }, { month: "Feb", value: 28000 }, { month: "Mar", value: 26000 }, { month: "Apr", value: 32000 }, { month: "May", value: 35000 }, { month: "Jun", value: 33000 } ],
+        repairs: [ { month: "Jan", value: 2 }, { month: "Feb", value: 1 }, { month: "Mar", value: 3 }, { month: "Apr", value: 0 }, { month: "May", value: 4 }, { month: "Jun", value: 2 } ],
+        recentSales: [ {id: '1', item: 'MacBook Pro 16"', amount: 2499, commission: 124.95}, {id: '2', item: 'Samsung S23 Ultra', amount: 1199, commission: 59.95} ]
+    }
   }
 };
+
 
 const salesChartConfig = { value: { label: "Sales", color: "hsl(var(--chart-1))" }};
 const repairsChartConfig = { value: { label: "Repairs", color: "hsl(var(--chart-2))" }};
 
 
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
-
   // In a real app, you would fetch employee data based on params.id
+  // @ts-ignore
+  const employee = employeeData[params.id] || employeeData['1'];
+
   const totalSales = employee.kpis.sales.reduce((acc, s) => acc + s.value, 0);
   const totalRepairs = employee.kpis.repairs.reduce((acc, r) => acc + r.value, 0);
 
@@ -143,13 +154,17 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                      <Table>
                         <TableHeader><TableRow><TableHead>Item</TableHead><TableHead className="text-right">Sale Amount</TableHead><TableHead className="text-right">Commission Earned</TableHead></TableRow></TableHeader>
                         <TableBody>
-                            {employee.kpis.recentSales.map(sale => (
+                            {employee.kpis.recentSales.length > 0 ? employee.kpis.recentSales.map(sale => (
                                 <TableRow key={sale.id}>
                                     <TableCell className="font-medium">{sale.item}</TableCell>
                                     <TableCell className="text-right font-mono">${sale.amount.toFixed(2)}</TableCell>
                                     <TableCell className="text-right font-mono text-green-500 font-semibold">${sale.commission.toFixed(2)}</TableCell>
                                 </TableRow>
-                            ))}
+                            )) : (
+                                <TableRow>
+                                    <TableCell colSpan={3} className="text-center text-muted-foreground">No recent commissionable sales.</TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                      </Table>
                 </CardContent>

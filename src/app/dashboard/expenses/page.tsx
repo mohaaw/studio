@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PlusCircle, DollarSign, Filter, Search } from "lucide-react";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useToast } from "@/hooks/use-toast";
 
 const initialExpenses = [
     { id: '1', date: '2023-12-01', category: 'Rent', description: 'Shop 1 December Rent', amount: 2500.00, location: 'Shop 1' },
@@ -19,6 +20,7 @@ const initialExpenses = [
 ];
 
 export default function ExpensesPage() {
+    const { toast } = useToast();
     const [expenses, setExpenses] = useState(initialExpenses);
 
     const handleAddExpense = (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,6 +35,7 @@ export default function ExpensesPage() {
             location: formData.get('location') as string,
         };
         setExpenses([newExpense, ...expenses]);
+        toast({ title: "Expense Added", description: `${newExpense.description} has been logged.`})
         e.currentTarget.reset();
     }
 
@@ -139,7 +142,7 @@ export default function ExpensesPage() {
                                 <TableBody>
                                     {expenses.map((expense) => (
                                         <TableRow key={expense.id}>
-                                            <TableCell>{expense.date}</TableCell>
+                                            <TableCell>{new Date(expense.date).toLocaleDateString()}</TableCell>
                                             <TableCell>{expense.category}</TableCell>
                                             <TableCell className="font-medium">{expense.description}</TableCell>
                                             <TableCell>{expense.location}</TableCell>
