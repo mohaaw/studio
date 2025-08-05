@@ -56,7 +56,11 @@ type ColorName = keyof typeof defaultCustomColors;
 
 // Helper to convert HSL string to hex
 function hslToHex(hslStr: string) {
-    const [h, s, l] = hslStr.split(' ').map(parseFloat);
+    const parts = hslStr.split(' ');
+    const h = parseFloat(parts[0]);
+    const s = parseFloat(parts[1].replace('%', ''));
+    const l = parseFloat(parts[2].replace('%', ''));
+    
     const s_norm = s / 100;
     const l_norm = l / 100;
     let c = (1 - Math.abs(2 * l_norm - 1)) * s_norm;
@@ -134,6 +138,9 @@ export function UserNav() {
           if (key === 'card') {
              const [h, s, l, a] = value.replace(/%/g, '').split(' ').map(parseFloat);
              root.style.setProperty(`--${key}`, `${h} ${s}% ${l}%`);
+             if (a) {
+                root.style.setProperty(`--${key}`, `${h} ${s}% ${l}% / ${a}`);
+             }
              root.style.setProperty('--card-foreground', customColors.foreground);
           } else {
             root.style.setProperty(`--${key}`, value);
