@@ -4,7 +4,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FileText, Megaphone, Sparkles, Wand2 } from "lucide-react";
+import { FileText, Megaphone, Sparkles, Wand2, Send, Hash, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState, useTransition } from "react";
 import { generateMarketingCopy } from "@/ai/flows/generate-marketing-flow";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
 
 const announcements = [
     { title: "New Q3 Sales Goals", content: "Team, new sales targets are up on the Team Hub. Let's crush them! See the attached document for full details.", author: "Management", date: "2 days ago", authorImage: "https://placehold.co/40x40" },
@@ -20,13 +21,12 @@ const announcements = [
     { title: "Holiday Hours Update", content: "The shop will be closing at 4 PM on Christmas Eve and will be closed on Christmas Day.", author: "Management", date: "1 week ago", authorImage: "https://placehold.co/40x40" },
 ];
 
-const priceList = [
-    { category: "Smartphones (A-Grade)", priceRange: "$500 - $1200" },
-    { category: "Laptops (A-Grade)", priceRange: "$800 - $2000" },
-    { category: "Wearables", priceRange: "$150 - $400" },
-    { category: "Gaming Consoles", priceRange: "$200 - $500" },
-    { category: "Accessories", priceRange: "$20 - $150" },
-];
+const chatMessages = [
+    { author: "Jane Smith", text: "Hey @John Doe, can you check on the status of order #ORD-5678 for me?", time: "10:32 AM", channel: "sales" },
+    { author: "John Doe", text: "On it. Looks like the payment is pending. I'll follow up with the customer.", time: "10:33 AM", channel: "sales" },
+    { author: "Peter Jones", text: "Just received a shipment of iPhone 14 screens. Adding them to inventory now.", time: "11:01 AM", channel: "repairs" },
+    { author: "Mary J", text: "We're running low on packaging tape in Shop 1.", time: "11:15 AM", channel: "general" },
+]
 
 export default function TeamHubPage() {
     const { toast } = useToast();
@@ -35,6 +35,7 @@ export default function TeamHubPage() {
     const [topic, setTopic] = useState('');
     const [platform, setPlatform] = useState('social-media');
     const [generatedCopy, setGeneratedCopy] = useState('');
+    const [activeChannel, setActiveChannel] = useState('sales');
 
     const handleGenerateCopy = () => {
         if (!topic) {
@@ -64,34 +65,73 @@ export default function TeamHubPage() {
              <h1 className="font-headline text-3xl font-bold">Team Hub</h1>
              <div className="grid gap-8 lg:grid-cols-3">
                 <div className="lg:col-span-2 space-y-6">
-                    <div className="flex items-center gap-4">
-                        <Megaphone className="h-6 w-6 text-primary"/>
-                        <h2 className="font-headline text-2xl font-semibold">Latest Announcements</h2>
-                    </div>
-                     {announcements.map((item, index) => (
-                        <Card key={index}>
-                            <CardHeader>
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="space-y-1.5">
-                                        <CardTitle className="font-headline text-xl">{item.title}</CardTitle>
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="font-headline text-2xl flex items-center gap-2"><Megaphone className="h-6 w-6 text-primary"/> Announcements</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                             {announcements.map((item, index) => (
+                                <div key={index} className="p-4 border rounded-lg">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div className="space-y-1.5">
+                                            <h3 className="font-semibold">{item.title}</h3>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground whitespace-nowrap">
+                                            <span>{item.date}</span>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-2 text-xs text-muted-foreground whitespace-nowrap">
-                                        <span>{item.date}</span>
+                                    <p className="text-sm text-muted-foreground mt-2">{item.content}</p>
+                                     <div className="flex items-center gap-2 pt-3 mt-3 border-t border-border/50">
+                                        <Avatar className="h-8 w-8">
+                                            <AvatarImage src={item.authorImage} alt={item.author} data-ai-hint="person portrait"/>
+                                            <AvatarFallback>{item.author.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                        <span className="text-sm font-medium">{item.author}</span>
+                                     </div>
+                                </div>
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="font-headline text-2xl flex items-center gap-2"><Mail className="h-6 w-6 text-primary"/> Communication Hub</CardTitle>
+                            <CardDescription>Real-time chat for cross-departmental communication.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex gap-4">
+                                <div className="w-1/4 space-y-2">
+                                    <Button onClick={() => setActiveChannel('general')} variant={activeChannel === 'general' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> general</Button>
+                                    <Button onClick={() => setActiveChannel('sales')} variant={activeChannel === 'sales' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> sales</Button>
+                                    <Button onClick={() => setActiveChannel('repairs')} variant={activeChannel === 'repairs' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> repairs</Button>
+                                    <Button onClick={() => setActiveChannel('marketing')} variant={activeChannel === 'marketing' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> marketing</Button>
+                                </div>
+                                <div className="w-3/4 bg-muted/50 rounded-lg p-4 h-96 flex flex-col">
+                                    <div className="flex-1 space-y-4 overflow-y-auto">
+                                        {chatMessages.filter(m => m.channel === activeChannel).map((msg, i) => (
+                                            <div key={i} className="flex items-start gap-3">
+                                                <Avatar className="h-8 w-8">
+                                                    <AvatarImage src={`https://placehold.co/40x40`} alt={msg.author} data-ai-hint="person portrait"/>
+                                                    <AvatarFallback>{msg.author.charAt(0)}</AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <div className="flex items-baseline gap-2">
+                                                        <p className="font-semibold">{msg.author}</p>
+                                                        <p className="text-xs text-muted-foreground">{msg.time}</p>
+                                                    </div>
+                                                    <p className="text-sm text-foreground">{msg.text}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-4 flex gap-2">
+                                        <Input placeholder={`Message #${activeChannel}...`} />
+                                        <Button><Send className="h-4 w-4"/></Button>
                                     </div>
                                 </div>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                 <p className="text-muted-foreground">{item.content}</p>
-                                 <div className="flex items-center gap-2 pt-2 border-t border-border/50">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage src={item.authorImage} alt={item.author} data-ai-hint="person portrait"/>
-                                        <AvatarFallback>{item.author.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <span className="text-sm font-medium">{item.author}</span>
-                                 </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
                 <div className="space-y-6">
                      <Card>
@@ -127,35 +167,6 @@ export default function TeamHubPage() {
                                 {isGenerating ? 'Generating...' : 'Generate Content'}
                             </Button>
                         </CardFooter>
-                    </Card>
-
-                    <div className="flex items-center gap-4 pt-4">
-                        <FileText className="h-6 w-6 text-primary"/>
-                        <h2 className="font-headline text-2xl font-semibold">Price List</h2>
-                    </div>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="font-headline text-lg">Master Selling Prices</CardTitle>
-                            <CardDescription>Guideline prices for common categories.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Category</TableHead>
-                                        <TableHead className="text-right">Price Range</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {priceList.map((item) => (
-                                        <TableRow key={item.category}>
-                                            <TableCell className="font-medium">{item.category}</TableCell>
-                                            <TableCell className="text-right font-mono">{item.priceRange}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </CardContent>
                     </Card>
                 </div>
             </div>

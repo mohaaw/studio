@@ -18,9 +18,10 @@ import {
   DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
+import Link from "next/link";
 
 const teamMembers = [
   { id: '1', name: 'John Doe', email: 'john.doe@techshop.com', role: 'Admin', lastActive: 'Online', avatar: 'https://placehold.co/40x40' },
@@ -84,7 +85,7 @@ export default function TeamManagementPage() {
                             <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <p className="font-semibold">{member.name}</p>
+                            <Link href={`/dashboard/team-management/${member.id}`} className="font-semibold hover:underline">{member.name}</Link>
                             <p className="text-sm text-muted-foreground">{member.email}</p>
                         </div>
                       </div>
@@ -119,7 +120,9 @@ export default function TeamManagementPage() {
                                     </DropdownMenuPortal>
                                 </DropdownMenuSub>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>View Performance</DropdownMenuItem>
+                                 <DropdownMenuItem asChild>
+                                    <Link href={`/dashboard/team-management/${member.id}`}>View Performance</Link>
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>Edit Profile</DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="text-destructive">Remove User</DropdownMenuItem>

@@ -5,9 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck, Banknote } from "lucide-react";
 import Image from "next/image";
-import { useState, useEffect, useRef, useTransition } from "react";
+import { useState, useEffect, useRef, useTransition, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -116,12 +116,17 @@ export default function POSPage() {
     }, [toast]);
 
     const handleAddToCart = (product: Product) => {
-        const newItem: CartItem = { ...product, quantity: 1, originalPrice: product.price };
-        if (product.serials && product.serials.length > 0) {
-            setCurrentItemForSerial(newItem);
-            setSerialSelectorOpen(true);
+        const existingItem = cart.find(item => item.id === product.id && !item.selectedSerial); // Only stack non-serialized items
+        if (existingItem) {
+            handleUpdateQuantity(product.id, 1);
         } else {
-            setCart(prevCart => [...prevCart, newItem]);
+            const newItem: CartItem = { ...product, quantity: 1, originalPrice: product.price };
+            if (product.serials && product.serials.length > 0) {
+                setCurrentItemForSerial(newItem);
+                setSerialSelectorOpen(true);
+            } else {
+                setCart(prevCart => [...prevCart, newItem]);
+            }
         }
     };
     
@@ -209,6 +214,7 @@ export default function POSPage() {
 
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const totalDiscount = (subtotal * discount) / 100;
+    const commission = subtotal * 0.05; // 5% commission simulation
     const tax = (subtotal - totalDiscount) * 0.08;
     const total = subtotal - totalDiscount + tax;
     const changeDue = parseFloat(cashTendered) > total ? parseFloat(cashTendered) - total : 0;
@@ -374,7 +380,7 @@ export default function POSPage() {
                 <CardContent className="flex-1 space-y-4 overflow-y-auto p-4">
                     {cart.length > 0 ? (
                         cart.map(cartItem => (
-                            <div key={cartItem.id} className="flex items-center gap-4">
+                            <div key={cartItem.id + (cartItem.selectedSerial || '')} className="flex items-center gap-4">
                                 <Image src={cartItem.image} alt={cartItem.name} width={64} height={64} className="rounded-md border-2 border-primary/50" data-ai-hint="phone"/>
                                 <div className="flex-1">
                                     <p className="font-semibold">{cartItem.name}</p>
@@ -390,9 +396,9 @@ export default function POSPage() {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleShowWarranty(cartItem)}><ShieldCheck className="h-4 w-4"/></Button>
-                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, -1)}><Minus className="h-4 w-4" /></Button>
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, -1)} disabled={!!cartItem.selectedSerial}><Minus className="h-4 w-4" /></Button>
                                     <span className="w-4 text-center">{cartItem.quantity}</span>
-                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, 1)}><Plus className="h-4 w-4" /></Button>
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, 1)} disabled={!!cartItem.selectedSerial}><Plus className="h-4 w-4" /></Button>
                                 </div>
                                 <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemoveItem(cartItem.id)}><XCircle className="h-5 w-5" /></Button>
                             </div>
@@ -422,6 +428,10 @@ export default function POSPage() {
                         <div className="flex justify-between">
                             <p>Tax (8%)</p>
                             <p className="font-medium font-mono">${tax.toFixed(2)}</p>
+                        </div>
+                        <div className="flex justify-between text-xs text-muted-foreground">
+                            <p className="flex items-center gap-1"><Banknote className="h-3 w-3"/>Est. Commission (5%)</p>
+                            <p className="font-mono">${commission.toFixed(2)}</p>
                         </div>
                         <Separator className="my-2" />
                          <div className="flex justify-between text-lg font-bold text-primary">

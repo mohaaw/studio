@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown, Ship, Hammer, Plus, Minus } from "lucide-react";
+import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown, Ship, Hammer, Plus, Minus, ScanEye } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -106,6 +106,15 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
                             </div>
                         ))}
                      </div>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle className="font-headline text-xl font-semibold flex items-center gap-2"><ScanEye className="h-5 w-5 text-primary"/> 3D Model Viewer</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col items-center justify-center bg-muted/50 rounded-lg p-8 aspect-video">
+                    <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="3D Model Placeholder" data-ai-hint="3d model" />
+                    <Button variant="outline" className="mt-4">View Interactive 3D Model</Button>
                 </CardContent>
             </Card>
         </div>

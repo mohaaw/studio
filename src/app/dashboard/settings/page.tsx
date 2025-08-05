@@ -25,13 +25,14 @@ export default function SettingsPage() {
                 <p className="text-muted-foreground">Manage your shop's configuration and preferences.</p>
             </div>
             <Tabs defaultValue="general" className="w-full">
-                <TabsList>
+                <TabsList className="flex-wrap h-auto">
                     <TabsTrigger value="general">General</TabsTrigger>
                     <TabsTrigger value="localization">Localization</TabsTrigger>
                     <TabsTrigger value="invoicing">Invoicing</TabsTrigger>
                     <TabsTrigger value="taxes">Taxes</TabsTrigger>
                     <TabsTrigger value="appearance">Appearance</TabsTrigger>
                     <TabsTrigger value="security">Security</TabsTrigger>
+                    <TabsTrigger value="forms">Form Builder</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="general">
@@ -193,6 +194,20 @@ export default function SettingsPage() {
                                 </div>
                                 <Switch id="2fa-switch" />
                             </div>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="forms">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Form Builder</CardTitle>
+                            <CardDescription>Create and manage custom data input forms for your modules.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground">The Form Builder UI would be implemented here.</p>
+                            <Button asChild variant="link" className="p-0">
+                                <Link href="/dashboard/settings/forms">Open Full Form Builder</Link>
+                            </Button>
                         </CardContent>
                     </Card>
                 </TabsContent>

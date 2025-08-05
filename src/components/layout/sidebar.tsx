@@ -19,7 +19,8 @@ import {
   BarChart2,
   Undo2,
   DollarSign,
-  Settings
+  Settings,
+  Banknote
 } from 'lucide-react';
 import {
   Sidebar,
@@ -51,7 +52,13 @@ const menuItems = [
   { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
   { href: '/dashboard/expenses', label: 'Expenses', icon: DollarSign },
   { href: '/dashboard/reporting', label: 'Reporting', icon: BarChart2 },
-  { href: '/dashboard/team-management', label: 'Team Management', icon: UserCog },
+  {
+    label: 'HR',
+    items: [
+      { href: '/dashboard/team-management', label: 'Team Management', icon: UserCog },
+      { href: '/dashboard/payroll', label: 'Payroll', icon: Banknote },
+    ]
+  },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Megaphone },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   { href: '/kiosk', label: 'Kiosk Mode', icon: Laptop },
@@ -76,19 +83,40 @@ export default function AppSidebar() {
       <SidebarContent className="flex-1 overflow-y-auto p-0">
         <SidebarMenu className="p-2">
           {menuItems.map((item) => (
-            <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
-                  className="justify-start"
-                  tooltip={state === 'collapsed' ? item.label : undefined}
-                >
-                  <Link href={item.href} target={item.href === '/kiosk' ? '_blank' : '_self'}>
-                    <item.icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </Link>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
+             'items' in item ? (
+                <div key={item.label} className="pt-4">
+                  <p className="px-4 text-xs text-muted-foreground uppercase pb-2">{item.label}</p>
+                  {item.items.map(subItem => (
+                     <SidebarMenuItem key={subItem.href}>
+                        <SidebarMenuButton
+                          asChild
+                          isActive={pathname.startsWith(subItem.href)}
+                          className="justify-start"
+                          tooltip={state === 'collapsed' ? subItem.label : undefined}
+                        >
+                          <Link href={subItem.href}>
+                            <subItem.icon className="h-5 w-5" />
+                            <span>{subItem.label}</span>
+                          </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </div>
+              ) : (
+                <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
+                      className="justify-start"
+                      tooltip={state === 'collapsed' ? item.label : undefined}
+                    >
+                      <Link href={item.href} target={item.href === '/kiosk' ? '_blank' : '_self'}>
+                        <item.icon className="h-5 w-5" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                </SidebarMenuItem>
+              )
           ))}
         </SidebarMenu>
       </SidebarContent>
