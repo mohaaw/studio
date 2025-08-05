@@ -17,7 +17,7 @@ import {
     Funnel,
     Megaphone,
     Package,
-    PieChart,
+    PieChart as PieChartIcon,
     ShoppingCart,
     ShoppingBag,
     TrendingUp,
@@ -216,7 +216,7 @@ export default function DashboardPage() {
 
         <Card className="lg:col-span-4">
             <CardHeader>
-                <CardTitle className="font-headline text-lg flex items-center gap-2"><PieChart className="h-5 w-5 text-primary"/> Revenue by Category</CardTitle>
+                <CardTitle className="font-headline text-lg flex items-center gap-2"><PieChartIcon className="h-5 w-5 text-primary"/> Revenue by Category</CardTitle>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={revenueByCategoryConfig} className="h-48 w-full">
@@ -230,7 +230,7 @@ export default function DashboardPage() {
                                 const y = cy + radius * Math.sin(-midAngle * RADIAN);
                                 return (
                                   <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-xs fill-foreground">
-                                    {`${(percent * 100).toFixed(0)}%`}
+                                    {`%${(percent * 100).toFixed(0)}`}
                                   </text>
                                 );
                               }}/>
@@ -289,3 +289,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
