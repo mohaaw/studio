@@ -3,33 +3,21 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
-    AlertTriangle,
-    ArrowRightLeft,
-    Banknote,
-    BarChart as LucideBarChart,
-    Bell,
-    Building,
-    CheckSquare,
     DollarSign,
-    FileCog,
-    FileText,
-    Filter,
-    Funnel,
-    Megaphone,
-    Package,
-    PieChart as PieChartIcon,
-    ShoppingCart,
-    Users,
     Wrench,
-    TrendingUp,
     Truck,
+    Users,
+    Filter,
+    CheckSquare,
+    Funnel,
+    PieChart as PieChartIcon,
+    Banknote,
+    TrendingUp,
     ShoppingBag
 } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart, Pie } from 'recharts';
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 
@@ -289,3 +277,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+    
