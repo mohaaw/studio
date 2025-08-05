@@ -1,30 +1,29 @@
 
 'use client';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles, TrendingDown, PiggyBank, Target, Component, AlertTriangle } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Line, LineChart, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import { Bar, BarChart as RechartsBarChart } from "recharts"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useState, useTransition } from "react";
 import { monitorSupplyChain, SupplyChainDisruption } from "@/ai/flows/monitor-supply-chain-flow";
+import { forecastDemand, ForecastDemandOutput } from "@/ai/flows/demand-forecasting-flow";
 import { useToast } from "@/hooks/use-toast";
+import { CartesianGrid, XAxis, YAxis } from "recharts";
 
-const forecastData = [
-  { month: "Jan", demand: 186 },
-  { month: "Feb", demand: 305 },
-  { month: "Mar", demand: 237 },
-  { month: "Apr", demand: 273 },
-  { month: "May", demand: 209 },
-  { month: "Jun", demand: 214 },
-  { month: "Jul", demand: 320, predicted: true },
-  { month: "Aug", demand: 350, predicted: true },
-  { month: "Sep", demand: 330, predicted: true },
+const initialForecastData = [
+  { month: "Jan", demand: 186, predicted: false },
+  { month: "Feb", demand: 305, predicted: false },
+  { month: "Mar", demand: 237, predicted: false },
+  { month: "Apr", demand: 273, predicted: false },
+  { month: "May", demand: 209, predicted: false },
+  { month: "Jun", demand: 214, predicted: false },
 ]
+
 const chartConfig = {
   demand: {
     label: "Demand",
@@ -37,6 +36,9 @@ export default function ReportingPage() {
     const { toast } = useToast();
     const [isMonitoring, startMonitoringTransition] = useTransition();
     const [disruptions, setDisruptions] = useState<SupplyChainDisruption[]>([]);
+    
+    const [isForecasting, startForecastingTransition] = useTransition();
+    const [forecastData, setForecastData] = useState<(typeof initialForecastData)>(initialForecastData);
 
     const handleExport = (title: string) => {
         toast({ title: `Exporting "${title}" report...` });
@@ -53,6 +55,26 @@ export default function ReportingPage() {
                     variant: 'destructive',
                     title: "Monitoring Failed",
                     description: "Could not monitor the supply chain at this time.",
+                });
+            }
+        });
+    }
+
+    const handleGenerateForecast = () => {
+        startForecastingTransition(async () => {
+            const result = await forecastDemand({
+                historicalData: initialForecastData,
+                productCategory: 'A-Grade Smartphones',
+                forecastPeriod: 3
+            });
+            if (result) {
+                setForecastData(result.forecast);
+                toast({ title: "Forecast Generated", description: "Demand forecast has been updated with new AI predictions." });
+            } else {
+                 toast({
+                    variant: 'destructive',
+                    title: "Forecasting Failed",
+                    description: "Could not generate a demand forecast at this time.",
                 });
             }
         });
@@ -109,11 +131,19 @@ export default function ReportingPage() {
 
             <Card className="lg:col-span-2">
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 text-primary" />
-                        AI Demand Forecasting
-                    </CardTitle>
-                    <CardDescription>Predicted demand for A-Grade Smartphones for the next quarter.</CardDescription>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div>
+                            <CardTitle className="font-headline text-lg flex items-center gap-2">
+                                <Sparkles className="h-5 w-5 text-primary" />
+                                AI Demand Forecasting
+                            </CardTitle>
+                            <CardDescription>Predicted demand for A-Grade Smartphones for the next quarter.</CardDescription>
+                        </div>
+                         <Button size="sm" onClick={handleGenerateForecast} disabled={isForecasting}>
+                            <Wand2 className="mr-2 h-4 w-4" />
+                            {isForecasting ? 'Generating...' : 'Generate Forecast'}
+                        </Button>
+                    </div>
                 </CardHeader>
                 <CardContent>
                    <ChartContainer config={chartConfig} className="h-[250px] w-full">

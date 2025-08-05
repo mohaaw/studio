@@ -8,3 +8,4 @@ import './flows/kiosk-chatbot-flow';
 import './flows/generate-marketing-flow';
 import './flows/suggest-personalized-flow';
 import './flows/monitor-supply-chain-flow';
+import './flows/demand-forecasting-flow';
