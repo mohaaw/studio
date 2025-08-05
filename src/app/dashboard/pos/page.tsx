@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck, Banknote } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck, Banknote, History, FileText, Gift, ArrowLeftRight } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useRef, useTransition, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -39,16 +39,16 @@ interface Customer {
     id: string;
     name: string;
     purchaseHistory: string[];
+    creditLimit: number;
+    creditUsed: number;
 }
 
-// Define the type here instead of importing from the server file
 type SuggestPersonalizedOutput = {
     suggestions: {
         name: string;
         reasoning: string;
     }[];
 };
-
 
 const products: Product[] = [
   { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['F17G83J8Q1J9', 'C39L8B8JHW6H', 'G6TPL0Q7Q1J9'], warranty: 'Expires Nov 2024' },
@@ -62,8 +62,8 @@ const products: Product[] = [
 ];
 
 const customers: Customer[] = [
-    { id: '1', name: 'John Doe', purchaseHistory: ['iPhone 11', 'Anker Charger'] },
-    { id: '2', name: 'Jane Smith', purchaseHistory: ['MacBook Air M1', 'Logitech Mouse'] }
+    { id: '1', name: 'John Doe', purchaseHistory: ['iPhone 11', 'Anker Charger'], creditLimit: 500, creditUsed: 150 },
+    { id: '2', name: 'Jane Smith', purchaseHistory: ['MacBook Air M1', 'Logitech Mouse'], creditLimit: 1000, creditUsed: 0 }
 ]
 
 
@@ -72,6 +72,7 @@ export default function POSPage() {
     const [heldCarts, setHeldCarts] = useState<CartItem[][]>([]);
     const [discount, setDiscount] = useState(0);
     const [isOnline, setIsOnline] = useState(true);
+    const [offlineQueue, setOfflineQueue] = useState<number>(0);
     const [activeCustomer, setActiveCustomer] = useState<Customer | null>(null);
 
     const [isGeneratingSuggestions, startSuggestionsTransition] = useTransition();
@@ -80,13 +81,14 @@ export default function POSPage() {
     const { toast } = useToast();
     const videoRef = useRef<HTMLVideoElement>(null);
     
-    // Dialog states
     const [isPaymentOpen, setPaymentOpen] = useState(false);
     const [isSerialSelectorOpen, setSerialSelectorOpen] = useState(false);
     const [isDiscountModalOpen, setDiscountModalOpen] = useState(false);
     const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
     const [isWarrantyModalOpen, setWarrantyModalOpen] = useState(false);
     const [isHandoverModalOpen, setHandoverModalOpen] = useState(false);
+    const [isPricingRuleModalOpen, setPricingRuleModalOpen] = useState(false);
+
     const [currentItemForSerial, setCurrentItemForSerial] = useState<CartItem | null>(null);
     const [currentItemForWarranty, setCurrentItemForWarranty] = useState<CartItem | null>(null);
 
@@ -94,7 +96,6 @@ export default function POSPage() {
     const [handoverNotes, setHandoverNotes] = useState("- Customer Jane Smith is waiting for a call back about her MacBook repair status.\n- Remember to restock the iPhone charging cables.");
     const [newHandoverNote, setNewHandoverNote] = useState("");
     
-    // Check network status
     useEffect(() => {
         const updateOnlineStatus = () => {
             setIsOnline(navigator.onLine);
@@ -104,6 +105,14 @@ export default function POSPage() {
                     title: "You are offline",
                     description: "You are currently working in offline mode. Sales will be synced when you reconnect.",
                 });
+            } else {
+                if(offlineQueue > 0) {
+                     toast({
+                        title: "You are back online!",
+                        description: `Syncing ${offlineQueue} offline transactions.`,
+                    });
+                    setOfflineQueue(0);
+                }
             }
         };
         window.addEventListener('online', updateOnlineStatus);
@@ -113,10 +122,10 @@ export default function POSPage() {
             window.removeEventListener('online', updateOnlineStatus);
             window.removeEventListener('offline', updateOnlineStatus);
         };
-    }, [toast]);
+    }, [toast, offlineQueue]);
 
     const handleAddToCart = (product: Product) => {
-        const existingItem = cart.find(item => item.id === product.id && !item.selectedSerial); // Only stack non-serialized items
+        const existingItem = cart.find(item => item.id === product.id && !item.selectedSerial); 
         if (existingItem) {
             handleUpdateQuantity(product.id, 1);
         } else {
@@ -214,7 +223,7 @@ export default function POSPage() {
 
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const totalDiscount = (subtotal * discount) / 100;
-    const commission = subtotal * 0.05; // 5% commission simulation
+    const commission = subtotal * 0.05;
     const tax = (subtotal - totalDiscount) * 0.08;
     const total = subtotal - totalDiscount + tax;
     const changeDue = parseFloat(cashTendered) > total ? parseFloat(cashTendered) - total : 0;
@@ -227,6 +236,9 @@ export default function POSPage() {
 
     const completeSale = () => {
         toast({ title: "Sale Complete!", description: `Total: $${total.toFixed(2)}. Change due: $${changeDue.toFixed(2)}` });
+        if (!isOnline) {
+            setOfflineQueue(q => q + 1);
+        }
         handleClearCart();
         setCashTendered("");
         setPaymentOpen(false);
@@ -235,265 +247,284 @@ export default function POSPage() {
     const categories = ['All', ...(activeCustomer ? ['For You'] : []), ...new Set(products.map(p => p.category))];
 
   return (
-    <div className="grid h-[calc(100vh-8rem)] grid-cols-1 gap-6 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-            <Card className="h-full flex flex-col">
-                 <CardHeader>
-                    <div className="flex flex-col md:flex-row gap-4 justify-between">
-                        <div className="relative flex-1">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input placeholder="Search products by name or scan barcode..." className="h-12 text-lg pl-12" />
-                        </div>
-                        <Dialog>
-                            <DialogTrigger asChild>
-                                <Button variant="outline" className="h-12"><ScanLine className="mr-2 h-6 w-6" /> Scan</Button>
-                            </DialogTrigger>
-                             <DialogContent className="max-w-md">
-                                <DialogHeader><DialogTitle className="flex items-center gap-2"><Camera className="h-6 w-6 text-primary"/> Scan Barcode</DialogTitle></DialogHeader>
-                                <div className="p-4 rounded-lg bg-muted border-dashed border-2">
-                                     <video ref={videoRef} className="w-full aspect-video rounded-md bg-black" autoPlay muted />
+    <div className="h-[calc(100vh-8rem)] flex flex-col gap-6">
+        <Tabs defaultValue="sale" className="h-full flex flex-col">
+             <TabsList className="grid grid-cols-5 w-full">
+                <TabsTrigger value="sale">Sale</TabsTrigger>
+                <TabsTrigger value="returns">Returns</TabsTrigger>
+                <TabsTrigger value="customers">Customers</TabsTrigger>
+                <TabsTrigger value="session">Cashier Session</TabsTrigger>
+                <TabsTrigger value="orders">Pending Orders</TabsTrigger>
+            </TabsList>
+            <TabsContent value="sale" className="flex-1 grid grid-cols-1 gap-6 lg:grid-cols-3 mt-4">
+                <div className="lg:col-span-2">
+                    <Card className="h-full flex flex-col">
+                        <CardHeader>
+                            <div className="flex flex-col md:flex-row gap-4 justify-between">
+                                <div className="relative flex-1">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Input placeholder="Search products by name or scan barcode..." className="h-12 text-lg pl-12" />
                                 </div>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
-                </CardHeader>
-                <CardContent className="flex-1 overflow-auto">
-                    <Tabs defaultValue="All" className="w-full">
-                        <TabsList>
-                            {categories.map(category => (
-                                <TabsTrigger 
-                                    key={category} 
-                                    value={category}
-                                    disabled={category === 'For You' && !activeCustomer}
-                                >
-                                    {category === 'For You' && <Sparkles className="mr-2 h-4 w-4 text-primary" />}
-                                    {category}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
-                         <TabsContent value="All">
-                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
-                            {products.map((item) => (
-                                <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
-                                    <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
-                                    <CardFooter className="p-2 flex-col items-start">
-                                        <p className="font-semibold text-sm truncate w-full">{item.name}</p>
-                                        <p className="font-mono text-muted-foreground">${item.price.toFixed(2)}</p>
-                                    </CardFooter>
-                                </Card>
-                            ))}
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="h-12"><ScanLine className="mr-2 h-6 w-6" /> Scan</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-md">
+                                        <DialogHeader><DialogTitle className="flex items-center gap-2"><Camera className="h-6 w-6 text-primary"/> Scan Barcode</DialogTitle></DialogHeader>
+                                        <div className="p-4 rounded-lg bg-muted border-dashed border-2">
+                                            <video ref={videoRef} className="w-full aspect-video rounded-md bg-black" autoPlay muted />
+                                        </div>
+                                    </DialogContent>
+                                </Dialog>
                             </div>
-                        </TabsContent>
-                        {categories.filter(c => c !== 'All' && c !== 'For You').map(category => (
-                            <TabsContent key={category} value={category}>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
-                                {products.filter(p => p.category === category).map((item) => (
-                                    <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
-                                        <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
-                                        <CardFooter className="p-2 flex-col items-start">
-                                            <p className="font-semibold text-sm truncate w-full">{item.name}</p>
-                                            <p className="font-mono text-muted-foreground">${item.price.toFixed(2)}</p>
-                                        </CardFooter>
-                                    </Card>
-                                ))}
-                                </div>
-                            </TabsContent>
-                        ))}
-                        <TabsContent value="For You">
-                            <div className="pt-4">
-                                {isGeneratingSuggestions && <p>Loading suggestions...</p>}
-                                {personalizedSuggestions && (
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                                        {personalizedSuggestions.suggestions.map((suggestion, index) => {
-                                            const product = products.find(p => p.name === suggestion.name);
-                                            return (
-                                            <Card key={index} className="cursor-pointer hover:border-primary transition-colors" onClick={() => product && handleAddToCart(product)}>
-                                                <CardHeader>
-                                                    <CardTitle className="font-headline text-lg">{suggestion.name}</CardTitle>
-                                                </CardHeader>
-                                                <CardContent>
-                                                    <p className="text-sm text-muted-foreground">{suggestion.reasoning}</p>
-                                                </CardContent>
-                                                {product && <CardFooter><p className="font-mono font-bold text-primary">${product.price.toFixed(2)}</p></CardFooter>}
+                        </CardHeader>
+                        <CardContent className="flex-1 overflow-auto">
+                            <Tabs defaultValue="All" className="w-full">
+                                <TabsList>
+                                    {categories.map(category => (
+                                        <TabsTrigger key={category} value={category} disabled={category === 'For You' && !activeCustomer}>
+                                            {category === 'For You' && <Sparkles className="mr-2 h-4 w-4 text-primary" />}
+                                            {category}
+                                        </TabsTrigger>
+                                    ))}
+                                </TabsList>
+                                <TabsContent value="All">
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
+                                        {products.map((item) => (
+                                            <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
+                                                <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
+                                                <CardFooter className="p-2 flex-col items-start">
+                                                    <p className="font-semibold text-sm truncate w-full">{item.name}</p>
+                                                    <p className="font-mono text-muted-foreground">${item.price.toFixed(2)}</p>
+                                                </CardFooter>
                                             </Card>
-                                        )})}
-                                    </div>
-                                )}
-                            </div>
-                        </TabsContent>
-                    </Tabs>
-                </CardContent>
-            </Card>
-        </div>
-        <div>
-            <Card className="h-full flex flex-col bg-card">
-                <CardHeader>
-                    <div className="flex items-center justify-between">
-                         <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
-                         <div className="flex items-center gap-1">
-                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setHandoverModalOpen(true)}>
-                                <BookText className="h-4 w-4"/>
-                            </Button>
-                            <div className={`flex items-center gap-1.5 text-xs font-medium ${isOnline ? 'text-green-500' : 'text-destructive'}`}>
-                                {isOnline ? <Wifi className="h-4 w-4"/> : <WifiOff className="h-4 w-4"/>}
-                                <span>{isOnline ? 'Online' : 'Offline'}</span>
-                            </div>
-                         </div>
-                    </div>
-                     <div className="flex items-center justify-between pt-2">
-                        {activeCustomer ? (
-                            <div className="flex items-center gap-2">
-                                <User className="h-5 w-5 text-primary"/>
-                                <span className="font-semibold">{activeCustomer.name}</span>
-                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => {
-                                    setActiveCustomer(null); 
-                                    setPersonalizedSuggestions(null);
-                                    }}><XCircle className="h-4 w-4"/></Button>
-                            </div>
-                        ) : (
-                             <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="mr-2 h-4 w-4"/>Add Customer</Button>
-                        )}
-
-                        <div className="flex items-center gap-1">
-                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleHoldCart}><Pause className="h-4 w-4"/></Button>
-                            <Dialog>
-                                <DialogTrigger asChild>
-                                    <Button variant="outline" size="icon" className="h-8 w-8" disabled={heldCarts.length === 0}><Play className="h-4 w-4"/></Button>
-                                </DialogTrigger>
-                                 <DialogContent>
-                                    <DialogHeader><DialogTitle>Held Sales</DialogTitle></DialogHeader>
-                                    <div className="space-y-2">
-                                        {heldCarts.map((heldCart, index) => (
-                                            <DialogClose asChild key={index}>
-                                                <Button variant="outline" className="w-full justify-between" onClick={() => handleResumeCart(index)}>
-                                                    <span>Sale with {heldCart.length} item(s)</span>
-                                                    <span>Total: ${heldCart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}</span>
-                                                </Button>
-                                            </DialogClose>
                                         ))}
                                     </div>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-                    </div>
-                </CardHeader>
-                <CardContent className="flex-1 space-y-4 overflow-y-auto p-4">
-                    {cart.length > 0 ? (
-                        cart.map(cartItem => (
-                            <div key={cartItem.id + (cartItem.selectedSerial || '')} className="flex items-center gap-4">
-                                <Image src={cartItem.image} alt={cartItem.name} width={64} height={64} className="rounded-md border-2 border-primary/50" data-ai-hint="phone"/>
-                                <div className="flex-1">
-                                    <p className="font-semibold">{cartItem.name}</p>
-                                    <div className="flex items-center gap-2">
-                                        <Input
-                                            type="number"
-                                            value={cartItem.price.toFixed(2)}
-                                            onChange={(e) => handlePriceChange(cartItem.id, parseFloat(e.target.value))}
-                                            className="h-7 w-24 p-1 text-sm font-mono"
-                                        />
-                                        {cartItem.selectedSerial && <Badge variant="secondary" className="text-xs">{cartItem.selectedSerial}</Badge>}
+                                </TabsContent>
+                                {categories.filter(c => c !== 'All' && c !== 'For You').map(category => (
+                                    <TabsContent key={category} value={category}>
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
+                                            {products.filter(p => p.category === category).map((item) => (
+                                                <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
+                                                    <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
+                                                    <CardFooter className="p-2 flex-col items-start">
+                                                        <p className="font-semibold text-sm truncate w-full">{item.name}</p>
+                                                        <p className="font-mono text-muted-foreground">${item.price.toFixed(2)}</p>
+                                                    </CardFooter>
+                                                </Card>
+                                            ))}
+                                        </div>
+                                    </TabsContent>
+                                ))}
+                                <TabsContent value="For You">
+                                    <div className="pt-4">
+                                        {isGeneratingSuggestions && <p>Loading suggestions...</p>}
+                                        {personalizedSuggestions && (
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                                {personalizedSuggestions.suggestions.map((suggestion, index) => {
+                                                    const product = products.find(p => p.name === suggestion.name);
+                                                    return (
+                                                        <Card key={index} className="cursor-pointer hover:border-primary transition-colors" onClick={() => product && handleAddToCart(product)}>
+                                                            <CardHeader>
+                                                                <CardTitle className="font-headline text-lg">{suggestion.name}</CardTitle>
+                                                            </CardHeader>
+                                                            <CardContent>
+                                                                <p className="text-sm text-muted-foreground">{suggestion.reasoning}</p>
+                                                            </CardContent>
+                                                            {product && <CardFooter><p className="font-mono font-bold text-primary">${product.price.toFixed(2)}</p></CardFooter>}
+                                                        </Card>
+                                                    )
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                </TabsContent>
+                            </Tabs>
+                        </CardContent>
+                    </Card>
+                </div>
+                <div>
+                    <Card className="h-full flex flex-col bg-card">
+                        <CardHeader>
+                            <div className="flex items-center justify-between">
+                                <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
+                                <div className="flex items-center gap-2">
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setHandoverModalOpen(true)}>
+                                        <BookText className="h-4 w-4"/>
+                                    </Button>
+                                    <div className={`flex items-center gap-1.5 text-xs font-medium ${isOnline ? 'text-green-500' : 'text-destructive'}`}>
+                                        {isOnline ? <Wifi className="h-4 w-4"/> : <WifiOff className="h-4 w-4"/>}
+                                        <span>{isOnline ? 'Online' : `Offline (${offlineQueue})`}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleShowWarranty(cartItem)}><ShieldCheck className="h-4 w-4"/></Button>
-                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, -1)} disabled={!!cartItem.selectedSerial}><Minus className="h-4 w-4" /></Button>
-                                    <span className="w-4 text-center">{cartItem.quantity}</span>
-                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, 1)} disabled={!!cartItem.selectedSerial}><Plus className="h-4 w-4" /></Button>
-                                </div>
-                                <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemoveItem(cartItem.id)}><XCircle className="h-5 w-5" /></Button>
                             </div>
-                        ))
-                    ) : (
-                        <div className="text-center text-muted-foreground py-10 flex flex-col items-center gap-4 h-full justify-center">
-                            <ShoppingCart className="h-16 w-16" />
-                            <p>No items in cart</p>
-                        </div>
-                    )}
-                </CardContent>
-                {cart.length > 0 && 
-                <CardFooter className="flex-col !p-4 border-t mt-auto">
-                    <div className="w-full space-y-2 text-sm">
-                        <div className="flex justify-between">
-                            <p>Subtotal</p>
-                            <p className="font-medium font-mono">${subtotal.toFixed(2)}</p>
-                        </div>
-                         <div className="flex justify-between items-center">
-                            <button className="flex items-center gap-1 hover:text-primary" onClick={() => setDiscountModalOpen(true)}>
-                                <Tags className="h-3 w-3" />
-                                Discount ({discount}%)
-                                <Edit2 className="h-3 w-3" />
-                            </button>
-                            <p className="font-medium font-mono text-destructive">-${totalDiscount.toFixed(2)}</p>
-                        </div>
-                        <div className="flex justify-between">
-                            <p>Tax (8%)</p>
-                            <p className="font-medium font-mono">${tax.toFixed(2)}</p>
-                        </div>
-                        <div className="flex justify-between text-xs text-muted-foreground">
-                            <p className="flex items-center gap-1"><Banknote className="h-3 w-3"/>Est. Commission (5%)</p>
-                            <p className="font-mono">${commission.toFixed(2)}</p>
-                        </div>
-                        <Separator className="my-2" />
-                         <div className="flex justify-between text-lg font-bold text-primary">
-                            <p>Total</p>
-                            <p className="font-mono">${total.toFixed(2)}</p>
-                        </div>
-                    </div>
-                     <Dialog open={isPaymentOpen} onOpenChange={setPaymentOpen}>
-                        <DialogTrigger asChild>
-                            <Button size="lg" className="w-full mt-4 h-14 text-lg font-bold"><CreditCard className="mr-2 h-6 w-6" />Proceed to Payment</Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-3xl">
-                             <DialogHeader><DialogTitle className="font-headline text-2xl">Payment</DialogTitle></DialogHeader>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
-                                <div className="space-y-4">
-                                    <h3 className="font-semibold text-lg">Payment Method</h3>
-                                    <Tabs defaultValue="cash" className="w-full">
-                                        <TabsList className="grid w-full grid-cols-3"><TabsTrigger value="cash">Cash</TabsTrigger><TabsTrigger value="card">Card</TabsTrigger><TabsTrigger value="split">Split</TabsTrigger></TabsList>
-                                        <TabsContent value="cash" className="pt-4">
-                                             <div className="space-y-2">
-                                                <Label htmlFor="cash-tendered">Cash Tendered</Label>
-                                                <Input id="cash-tendered" placeholder="0.00" className="h-12 text-xl font-mono text-right" value={cashTendered} onChange={(e) => setCashTendered(e.target.value)} />
+                            <div className="flex items-center justify-between pt-2">
+                                {activeCustomer ? (
+                                    <div className="flex items-center gap-2">
+                                        <User className="h-5 w-5 text-primary"/>
+                                        <span className="font-semibold">{activeCustomer.name}</span>
+                                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { setActiveCustomer(null); setPersonalizedSuggestions(null); }}><XCircle className="h-4 w-4"/></Button>
+                                    </div>
+                                ) : (
+                                    <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="mr-2 h-4 w-4"/>Add Customer</Button>
+                                )}
+                                <div className="flex items-center gap-1">
+                                    <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleHoldCart}><Pause className="h-4 w-4"/></Button>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button variant="outline" size="icon" className="h-8 w-8" disabled={heldCarts.length === 0}><Play className="h-4 w-4"/></Button>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader><DialogTitle>Held Sales</DialogTitle></DialogHeader>
+                                            <div className="space-y-2">
+                                                {heldCarts.map((heldCart, index) => (
+                                                    <DialogClose asChild key={index}>
+                                                        <Button variant="outline" className="w-full justify-between" onClick={() => handleResumeCart(index)}>
+                                                            <span>Sale with {heldCart.length} item(s)</span>
+                                                            <span>Total: ${heldCart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}</span>
+                                                        </Button>
+                                                    </DialogClose>
+                                                ))}
                                             </div>
-                                            <div className="grid grid-cols-3 gap-2 mt-4">
-                                                {[100, 50, 20, 10, 5, 1].map(val => <Button key={val} variant="outline" onClick={() => setCashTendered((prev) => (parseFloat(prev || '0') + val).toString())}>${val}</Button>)}
-                                                <Button variant="outline" onClick={() => setCashTendered(total.toFixed(2))}>Exact</Button>
-                                            </div>
-                                        </TabsContent>
-                                        <TabsContent value="card" className="pt-4 text-center text-muted-foreground"><p>Card payment simulation is not yet implemented.</p><p>Click "Finalize Sale" to complete.</p></TabsContent>
-                                        <TabsContent value="split" className="pt-4 text-center text-muted-foreground"><p>Split payment is not yet implemented.</p></TabsContent>
-                                    </Tabs>
-                                </div>
-                                <div className="flex flex-col">
-                                    <h3 className="font-semibold text-lg mb-4">Summary</h3>
-                                    <Card className="flex-1">
-                                        <CardContent className="p-6 space-y-4">
-                                             <div className="flex justify-between text-2xl font-bold font-mono text-primary"><p>Total Due</p><p>${total.toFixed(2)}</p></div>
-                                            <div className="flex justify-between text-lg font-mono"><p>Cash Tendered</p><p>${parseFloat(cashTendered || "0").toFixed(2)}</p></div>
-                                            <Separator />
-                                            <div className="flex justify-between text-xl font-bold font-mono text-green-500"><p>Change Due</p><p>${changeDue.toFixed(2)}</p></div>
-                                        </CardContent>
-                                        <CardFooter className="p-2">
-                                             <div className="grid grid-cols-4 gap-1 w-full">
-                                                {['1','2','3', 'del', '4','5','6', 'C', '7','8','9', '.', '0'].map(key => <Button key={key} variant="outline" className="h-12 text-lg" onClick={() => handleKeypadClick(key)}>{key === 'del' ? <Trash2/> : key}</Button>)}
-                                             </div>
-                                        </CardFooter>
-                                    </Card>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
                             </div>
-                            <DialogFooter>
-                                <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
-                                <Button className="h-12 text-lg font-bold" onClick={completeSale} disabled={!total || (cashTendered !== '' && parseFloat(cashTendered) < total)}>Finalize Sale</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                    <Button variant="destructive" size="sm" className="w-full mt-2" onClick={handleClearCart}><Trash2 className="mr-2 h-4 w-4" />Clear Cart</Button>
-                </CardFooter>
-                }
-            </Card>
-        </div>
+                            {activeCustomer && (
+                                <div className="text-xs text-muted-foreground">Credit Limit: ${activeCustomer.creditUsed.toFixed(2)} / ${activeCustomer.creditLimit.toFixed(2)}</div>
+                            )}
+                        </CardHeader>
+                        <CardContent className="flex-1 space-y-4 overflow-y-auto p-4">
+                            {cart.length > 0 ? (
+                                cart.map(cartItem => (
+                                    <div key={cartItem.id + (cartItem.selectedSerial || '')} className="flex items-center gap-4">
+                                        <Image src={cartItem.image} alt={cartItem.name} width={64} height={64} className="rounded-md border-2 border-primary/50" data-ai-hint="phone"/>
+                                        <div className="flex-1">
+                                            <p className="font-semibold">{cartItem.name}</p>
+                                            <div className="flex items-center gap-2">
+                                                <Input type="number" value={cartItem.price.toFixed(2)} onChange={(e) => handlePriceChange(cartItem.id, parseFloat(e.target.value))} className="h-7 w-24 p-1 text-sm font-mono" />
+                                                {cartItem.selectedSerial && <Badge variant="secondary" className="text-xs">{cartItem.selectedSerial}</Badge>}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleShowWarranty(cartItem)}><ShieldCheck className="h-4 w-4"/></Button>
+                                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, -1)} disabled={!!cartItem.selectedSerial}><Minus className="h-4 w-4" /></Button>
+                                            <span className="w-4 text-center">{cartItem.quantity}</span>
+                                            <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, 1)} disabled={!!cartItem.selectedSerial}><Plus className="h-4 w-4" /></Button>
+                                        </div>
+                                        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-destructive" onClick={() => handleRemoveItem(cartItem.id)}><XCircle className="h-5 w-5" /></Button>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center text-muted-foreground py-10 flex flex-col items-center gap-4 h-full justify-center">
+                                    <ShoppingCart className="h-16 w-16" />
+                                    <p>No items in cart</p>
+                                </div>
+                            )}
+                        </CardContent>
+                        {cart.length > 0 && 
+                        <CardFooter className="flex-col !p-4 border-t mt-auto">
+                            <div className="w-full space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                    <p>Subtotal</p>
+                                    <p className="font-medium font-mono">${subtotal.toFixed(2)}</p>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <button className="flex items-center gap-1 hover:text-primary" onClick={() => setDiscountModalOpen(true)}><Tags className="h-3 w-3" /> Discount ({discount}%) <Edit2 className="h-3 w-3" /></button>
+                                    <p className="font-medium font-mono text-destructive">-${totalDiscount.toFixed(2)}</p>
+                                </div>
+                                <div className="flex justify-between">
+                                    <p>Tax (8%)</p>
+                                    <p className="font-medium font-mono">${tax.toFixed(2)}</p>
+                                </div>
+                                <div className="flex justify-between text-xs text-muted-foreground">
+                                    <p className="flex items-center gap-1"><Banknote className="h-3 w-3"/>Est. Commission (5%)</p>
+                                    <p className="font-mono">${commission.toFixed(2)}</p>
+                                </div>
+                                <Separator className="my-2" />
+                                <div className="flex justify-between text-lg font-bold text-primary">
+                                    <p>Total</p>
+                                    <p className="font-mono">${total.toFixed(2)}</p>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 w-full mt-4">
+                                <Button variant="outline" onClick={() => setPricingRuleModalOpen(true)}><Gift className="mr-2 h-4 w-4" /> Promotions</Button>
+                                <Dialog open={isPaymentOpen} onOpenChange={setPaymentOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button size="lg" className="h-12 text-lg font-bold"><CreditCard className="mr-2 h-6 w-6" />Pay</Button>
+                                    </DialogTrigger>
+                                    <DialogContent className="max-w-3xl">
+                                        <DialogHeader><DialogTitle className="font-headline text-2xl">Payment</DialogTitle></DialogHeader>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
+                                            <div className="space-y-4">
+                                                <h3 className="font-semibold text-lg">Payment Method</h3>
+                                                <Tabs defaultValue="cash" className="w-full">
+                                                    <TabsList className="grid w-full grid-cols-4"><TabsTrigger value="cash">Cash</TabsTrigger><TabsTrigger value="card">Card</TabsTrigger><TabsTrigger value="credit">On Credit</TabsTrigger><TabsTrigger value="split">Split</TabsTrigger></TabsList>
+                                                    <TabsContent value="cash" className="pt-4">
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="cash-tendered">Cash Tendered</Label>
+                                                            <Input id="cash-tendered" placeholder="0.00" className="h-12 text-xl font-mono text-right" value={cashTendered} onChange={(e) => setCashTendered(e.target.value)} />
+                                                        </div>
+                                                        <div className="grid grid-cols-3 gap-2 mt-4">
+                                                            {[100, 50, 20, 10, 5, 1].map(val => <Button key={val} variant="outline" onClick={() => setCashTendered((prev) => (parseFloat(prev || '0') + val).toString())}>${val}</Button>)}
+                                                            <Button variant="outline" onClick={() => setCashTendered(total.toFixed(2))}>Exact</Button>
+                                                        </div>
+                                                    </TabsContent>
+                                                    <TabsContent value="card" className="pt-4 text-center text-muted-foreground"><p>Card payment simulation is not yet implemented.</p><p>Click "Finalize Sale" to complete.</p></TabsContent>
+                                                    <TabsContent value="credit" className="pt-4 text-center text-muted-foreground"><p>Customer credit payment is not yet implemented.</p></TabsContent>
+                                                    <TabsContent value="split" className="pt-4 text-center text-muted-foreground"><p>Split payment is not yet implemented.</p></TabsContent>
+                                                </Tabs>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <h3 className="font-semibold text-lg mb-4">Summary</h3>
+                                                <Card className="flex-1">
+                                                    <CardContent className="p-6 space-y-4">
+                                                        <div className="flex justify-between text-2xl font-bold font-mono text-primary"><p>Total Due</p><p>${total.toFixed(2)}</p></div>
+                                                        <div className="flex justify-between text-lg font-mono"><p>Cash Tendered</p><p>${parseFloat(cashTendered || "0").toFixed(2)}</p></div>
+                                                        <Separator />
+                                                        <div className="flex justify-between text-xl font-bold font-mono text-green-500"><p>Change Due</p><p>${changeDue.toFixed(2)}</p></div>
+                                                    </CardContent>
+                                                    <CardFooter className="p-2">
+                                                        <div className="grid grid-cols-4 gap-1 w-full">
+                                                            {['1','2','3', 'del', '4','5','6', 'C', '7','8','9', '.', '0'].map(key => <Button key={key} variant="outline" className="h-12 text-lg" onClick={() => handleKeypadClick(key)}>{key === 'del' ? <Trash2/> : key}</Button>)}
+                                                        </div>
+                                                    </CardFooter>
+                                                </Card>
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
+                                            <Button className="h-12 text-lg font-bold" onClick={completeSale} disabled={!total || (cashTendered !== '' && parseFloat(cashTendered) < total)}>Finalize Sale</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                            <Button variant="destructive" size="sm" className="w-full mt-2" onClick={handleClearCart}><Trash2 className="mr-2 h-4 w-4" />Clear Cart</Button>
+                        </CardFooter>
+                        }
+                    </Card>
+                </div>
+            </TabsContent>
 
-        {/* Dialog for Serial Number Selection */}
+            <TabsContent value="returns" className="flex-1 mt-4">
+                <iframe src="/dashboard/pos/returns" className="w-full h-full border-0" />
+            </TabsContent>
+            <TabsContent value="customers" className="flex-1 mt-4">
+                <iframe src="/dashboard/pos/customers" className="w-full h-full border-0" />
+            </TabsContent>
+            <TabsContent value="session" className="flex-1 mt-4">
+                <iframe src="/dashboard/pos/session" className="w-full h-full border-0" />
+            </TabsContent>
+            <TabsContent value="orders" className="flex-1 mt-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Pending & Online Orders</CardTitle>
+                        <CardDescription>This feature is not yet implemented.</CardDescription>
+                    </CardHeader>
+                </Card>
+            </TabsContent>
+        </Tabs>
+        
         <Dialog open={isSerialSelectorOpen} onOpenChange={setSerialSelectorOpen}>
             <DialogContent>
                 <DialogHeader>
@@ -516,7 +547,6 @@ export default function POSPage() {
             </DialogContent>
         </Dialog>
         
-        {/* Dialog for Discount */}
         <Dialog open={isDiscountModalOpen} onOpenChange={setDiscountModalOpen}>
             <DialogContent>
                 <DialogHeader>
@@ -534,7 +564,6 @@ export default function POSPage() {
             </DialogContent>
         </Dialog>
 
-        {/* Dialog for Customer Selection */}
         <Dialog open={isCustomerModalOpen} onOpenChange={setCustomerModalOpen}>
             <DialogContent>
                 <DialogHeader>
@@ -550,7 +579,6 @@ export default function POSPage() {
             </DialogContent>
         </Dialog>
         
-        {/* Dialog for Warranty Lookup */}
         <Dialog open={isWarrantyModalOpen} onOpenChange={setWarrantyModalOpen}>
             <DialogContent>
                 <DialogHeader>
@@ -574,7 +602,6 @@ export default function POSPage() {
             </DialogContent>
         </Dialog>
         
-        {/* Dialog for Handover Notes */}
         <Dialog open={isHandoverModalOpen} onOpenChange={setHandoverModalOpen}>
             <DialogContent>
                 <DialogHeader>
@@ -599,8 +626,26 @@ export default function POSPage() {
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-
-
+        
+        <Dialog open={isPricingRuleModalOpen} onOpenChange={setPricingRuleModalOpen}>
+            <DialogContent>
+                 <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                        <Gift className="h-6 w-6 text-primary" />
+                        Apply Promotion
+                    </DialogTitle>
+                     <DialogDescription>Select an available pricing rule or promotion to apply to the cart.</DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-2">
+                    <Button variant="outline" className="w-full justify-start">Buy One Get One Free on Screen Protectors</Button>
+                    <Button variant="outline" className="w-full justify-start">20% Off All Accessories with Phone Purchase</Button>
+                    <Button variant="outline" className="w-full justify-start">Student Discount - 10% Off Laptops</Button>
+                </div>
+                <DialogFooter>
+                    <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     </div>
   );
 }
