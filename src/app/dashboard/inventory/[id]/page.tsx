@@ -1,13 +1,18 @@
 
+'use client'
+
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown, Ship, Hammer, Plus, Minus, ScanEye } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
 
-const item = {
+const itemData = {
   id: '1',
   name: 'iPhone 13 Pro',
   sku: 'IP13P-256-GR',
@@ -45,11 +50,29 @@ const item = {
   ]
 };
 
-const totalLandedCost = Object.values(item.costs).reduce((acc, cost) => acc + cost, 0);
-const profitMargin = ((item.salePrice - totalLandedCost) / item.salePrice) * 100;
-
 export default function ItemProfilePage({ params }: { params: { id: string } }) {
   // In a real app, you would fetch item data based on params.id
+  const { toast } = useToast();
+  const [item, setItem] = useState(itemData);
+  const [stockAdjustment, setStockAdjustment] = useState(0);
+
+  const totalLandedCost = Object.values(item.costs).reduce((acc, cost) => acc + cost, 0);
+  const profitMargin = ((item.salePrice - totalLandedCost) / item.salePrice) * 100;
+
+  const handleAdjustStock = () => {
+    if (stockAdjustment === 0) return;
+    setItem(prevItem => ({
+        ...prevItem,
+        stock: prevItem.stock + stockAdjustment
+    }));
+    toast({
+        title: "Stock Adjusted",
+        description: `Stock for ${item.name} updated by ${stockAdjustment > 0 ? '+' : ''}${stockAdjustment} units.`
+    });
+    setStockAdjustment(0);
+  };
+
+
   return (
     <div className="space-y-6">
        <div className="flex items-center justify-between">
@@ -167,12 +190,28 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
                 <CardContent className="space-y-4 text-sm">
                      <div className="flex justify-between items-center">
                         <p className="text-muted-foreground">Current Stock</p>
-                        <p className="font-semibold text-lg font-mono">{item.stock} units</p>
+                        <p className="font-semibold text-2xl font-mono">{item.stock} <span className="text-sm text-muted-foreground">units</span></p>
                     </div>
                     <div className="flex justify-between items-center">
                         <p className="text-muted-foreground">Reorder Point</p>
                         <p className="font-semibold text-lg font-mono flex items-center gap-2">{item.stock <= item.reorderPoint && <TrendingDown className="h-5 w-5 text-destructive" />} {item.reorderPoint} units</p>
                     </div>
+                     <Separator />
+                     <div className="space-y-2">
+                        <p className="font-medium">Quick Stock Adjustment</p>
+                        <div className="flex items-center gap-2">
+                             <Button size="icon" variant="outline" onClick={() => setStockAdjustment(stockAdjustment - 1)}><Minus/></Button>
+                            <Input
+                                type="number"
+                                className="w-20 text-center font-mono"
+                                value={stockAdjustment}
+                                onChange={(e) => setStockAdjustment(parseInt(e.target.value) || 0)}
+                            />
+                            <Button size="icon" variant="outline" onClick={() => setStockAdjustment(stockAdjustment + 1)}><Plus/></Button>
+                            <Button onClick={handleAdjustStock}>Apply</Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Enter a positive or negative value to adjust the stock level.</p>
+                     </div>
                 </CardContent>
             </Card>
              <Card>

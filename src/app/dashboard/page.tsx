@@ -2,10 +2,12 @@
 "use client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart as LucideBarChart, Package, Megaphone, MapPin, DollarSign, ShoppingCart, ArrowRightLeft } from "lucide-react";
+import { BarChart as LucideBarChart, Package, Megaphone, MapPin, DollarSign, ShoppingCart, ArrowRightLeft, AlertTriangle, FileCog, Bell } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const salesData = [
   { day: "Mon", sales: 2400 },
@@ -31,11 +33,10 @@ const topItems = [
     { name: "Dell XPS 13", sold: 5, revenue: 5495 },
 ];
 
-const recentActivity = [
-    { type: "Sale", description: "Sold iPhone 13 Pro", amount: "+$999.00", time: "2m ago", icon: DollarSign, color: "text-green-500" },
-    { type: "Transfer", description: "MacBook Air M2 to Shop 2", amount: "", time: "1h ago", icon: ArrowRightLeft, color: "text-blue-500" },
-    { type: "Intake", description: "Received Dell XPS 13", amount: "-$800.00", time: "3h ago", icon: Package, color: "text-orange-500" },
-    { type: "Sale", description: "Sold AirPods Pro 2", amount: "+$249.00", time: "5h ago", icon: DollarSign, color: "text-green-500" },
+const priorityItems = [
+    { type: "Stock Alert", description: "Apple Watch Series 8 is below reorder point (3 units left).", action: "Generate PO", link: "/dashboard/purchase-orders", icon: AlertTriangle, color: "text-amber-500" },
+    { type: "Repair", description: "Repair RPR-004 is ready for pickup.", action: "Notify Customer", link: "/dashboard/repairs/4", icon: Bell, color: "text-blue-500" },
+    { type: "Stock Alert", description: "Dell XPS 13 is below reorder point (2 units left).", action: "Generate PO", link: "/dashboard/purchase-orders", icon: AlertTriangle, color: "text-amber-500" },
 ];
 
 
@@ -113,20 +114,21 @@ export default function DashboardPage() {
         
         <Card>
           <CardHeader>
-            <CardTitle className="font-headline text-lg">Recent Activity</CardTitle>
-            <CardDescription>Latest transactions and movements.</CardDescription>
+            <CardTitle className="font-headline text-lg">Priorities & Alerts</CardTitle>
+            <CardDescription>Actionable insights and tasks.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-              {recentActivity.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                        <item.icon className="h-4 w-4 text-primary" />
+              {priorityItems.map((item, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                      <div className={`flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 ${item.color}`}>
+                        <item.icon className="h-5 w-5" />
                       </div>
                       <div className="flex-1">
-                          <p className="text-sm font-medium">{item.description}</p>
-                          <p className="text-xs text-muted-foreground">{item.time}</p>
+                          <p className="text-sm font-medium leading-tight">{item.description}</p>
+                          <Link href={item.link}>
+                            <Button variant="link" size="sm" className="p-0 h-auto text-xs">{item.action}</Button>
+                          </Link>
                       </div>
-                      <p className={`text-sm font-mono font-semibold ${item.color}`}>{item.amount}</p>
                   </div>
               ))}
           </CardContent>

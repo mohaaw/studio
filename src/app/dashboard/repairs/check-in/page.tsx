@@ -28,6 +28,10 @@ export default function RepairCheckInPage() {
         e.preventDefault();
         // In a real app, you would submit this data to your backend
         // For now, we'll just navigate back to the repairs list
+        toast({
+            title: "Repair Ticket Created",
+            description: "The new repair has been added to the system."
+        });
         router.push('/dashboard/repairs');
     };
 
