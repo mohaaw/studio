@@ -1,7 +1,7 @@
 
 'use client'
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
@@ -11,7 +11,7 @@ import { useState, useEffect, useRef, useTransition, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -518,7 +518,7 @@ export default function POSPage() {
             <TabsContent value="orders" className="flex-1 mt-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Pending & Online Orders</CardTitle>
+                        <CardTitle>Pending &amp; Online Orders</CardTitle>
                         <CardDescription>This feature is not yet implemented.</CardDescription>
                     </CardHeader>
                 </Card>
@@ -530,7 +530,7 @@ export default function POSPage() {
                 <DialogHeader>
                     <DialogTitle>Select Serial Number for {currentItemForSerial?.name}</DialogTitle>
                 </DialogHeader>
-                <div className="space-y-2 py-4">
+                <div className="py-4 space-y-2">
                     <Label>Available Serial Numbers</Label>
                     <Select onValueChange={handleSelectSerial}>
                         <SelectTrigger><SelectValue placeholder="Select a serial..." /></SelectTrigger>
@@ -551,7 +551,7 @@ export default function POSPage() {
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Apply Discount</DialogTitle>
-                    <AlertDescription>Enter a percentage discount to apply to the entire sale.</AlertDescription>
+                    <DialogDescription>Enter a percentage discount to apply to the entire sale.</DialogDescription>
                 </DialogHeader>
                 <div className="py-4">
                     <Label htmlFor="discount">Discount Percentage</Label>
