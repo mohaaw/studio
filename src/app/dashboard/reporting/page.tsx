@@ -3,13 +3,16 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles, TrendingDown, PiggyBank, Target, BarChart3D, Component } from "lucide-react";
+import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles, TrendingDown, PiggyBank, Target, Component, AlertTriangle } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Line, LineChart, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useState, useTransition } from "react";
+import { monitorSupplyChain, SupplyChainDisruption } from "@/ai/flows/monitor-supply-chain-flow";
+import { useToast } from "@/hooks/use-toast";
 
 const forecastData = [
   { month: "Jan", demand: 186 },
@@ -31,10 +34,28 @@ const chartConfig = {
 
 
 export default function ReportingPage() {
+    const { toast } = useToast();
+    const [isMonitoring, startMonitoringTransition] = useTransition();
+    const [disruptions, setDisruptions] = useState<SupplyChainDisruption[]>([]);
 
     const handleExport = (title: string) => {
-        // In a real app, this would trigger a download of a CSV file.
-        alert(`Exporting "${title}" report...`);
+        toast({ title: `Exporting "${title}" report...` });
+    }
+
+    const handleMonitorChain = () => {
+        startMonitoringTransition(async () => {
+            const result = await monitorSupplyChain();
+            if (result) {
+                setDisruptions(result.disruptions);
+                toast({ title: "Supply Chain Scan Complete", description: `${result.disruptions.length} potential disruptions identified.` });
+            } else {
+                 toast({
+                    variant: 'destructive',
+                    title: "Monitoring Failed",
+                    description: "Could not monitor the supply chain at this time.",
+                });
+            }
+        });
     }
 
   return (
@@ -132,26 +153,35 @@ export default function ReportingPage() {
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
                         <Component className="h-5 w-5 text-primary" />
                         Supply Chain Disruption Monitor
-                    </Title>
-                    <CardDescription>AI-powered alerts for potential supply chain issues.</CardDescription>
+                    </CardTitle>
+                    <CardDescription>AI-powered alerts for potential supply chain issues based on simulated real-world events.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <Alert variant="destructive">
-                        <AlertTitle className="font-bold">High-Risk Alert: Typhoon Forecast</AlertTitle>
-                        <AlertDescription>
-                            A major storm is forecast near your primary supplier's (Apple Parts Pro) distribution hub.
-                            <Separator className="my-2" />
-                            <p className="font-semibold">Recommendation:</p> 
-                            <p>Consider placing a larger order with your secondary supplier (Samsung Components) to mitigate potential stockouts on screen assemblies.</p>
-                        </AlertDescription>
-                    </Alert>
-                     <Alert>
-                        <AlertTitle className="font-bold">Medium-Risk Alert: Port Congestion</AlertTitle>
-                        <AlertDescription>
-                            Increased congestion reported at the Port of Los Angeles. Shipments from 'Laptop Screens Inc.' may be delayed by 2-3 business days.
-                        </AlertDescription>
-                    </Alert>
+                    {isMonitoring ? (
+                        <p className="text-muted-foreground">AI is scanning global data sources for potential disruptions...</p>
+                    ) : disruptions.length > 0 ? (
+                        disruptions.map((d, i) => (
+                             <Alert key={i} variant={d.riskLevel === 'High' ? 'destructive' : 'default'}>
+                                <AlertTriangle className="h-4 w-4" />
+                                <AlertTitle className="font-bold">{d.riskLevel}-Risk Alert: {d.event}</AlertTitle>
+                                <AlertDescription>
+                                    {d.impact}
+                                    <Separator className="my-2" />
+                                    <p className="font-semibold">Recommendation:</p> 
+                                    <p>{d.recommendation}</p>
+                                </AlertDescription>
+                            </Alert>
+                        ))
+                    ) : (
+                        <p className="text-sm text-muted-foreground">No immediate disruptions detected in the supply chain.</p>
+                    )}
                 </CardContent>
+                <CardFooter>
+                    <Button onClick={handleMonitorChain} disabled={isMonitoring}>
+                        <Sparkles className="mr-2 h-4 w-4" />
+                        {isMonitoring ? 'Scanning...' : 'Run AI Supply Chain Scan'}
+                    </Button>
+                </CardFooter>
             </Card>
         </div>
     </div>
