@@ -35,6 +35,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Separator } from '../ui/separator';
 import { UserNav } from './user-nav';
+import { useSettings } from '@/context/settings-context';
 
 
 const menuItems = [
@@ -60,13 +61,16 @@ const menuItems = [
 export default function AppSidebar() {
   const pathname = usePathname();
   const { state } = useSidebar();
+  const { settings } = useSettings();
 
   return (
     <Sidebar>
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-2">
           <CircuitBoard className="h-8 w-8 text-primary" />
-          <h1 className="font-headline text-xl font-bold text-primary" style={{ opacity: state === 'collapsed' ? 0 : 1, transition: 'opacity 0.2s ease-in-out' }}>TechShop</h1>
+          <h1 className="font-headline text-xl font-bold text-primary" style={{ opacity: state === 'collapsed' ? 0 : 1, transition: 'opacity 0.2s ease-in-out' }}>
+            {settings.shopName}
+          </h1>
         </Link>
       </SidebarHeader>
       <SidebarContent className="flex-1 overflow-y-auto p-0">

@@ -11,10 +11,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "next-themes";
 import { Rocket, Save } from "lucide-react";
+import { useSettings } from "@/context/settings-context";
 
 
 export default function SettingsPage() {
     const { theme, setTheme } = useTheme();
+    const { settings, updateSetting } = useSettings();
 
     return (
         <div className="space-y-6">
@@ -41,7 +43,11 @@ export default function SettingsPage() {
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
                                 <Label htmlFor="shop-name">Shop Name</Label>
-                                <Input id="shop-name" defaultValue="TechShop" />
+                                <Input 
+                                    id="shop-name" 
+                                    value={settings.shopName} 
+                                    onChange={(e) => updateSetting('shopName', e.target.value)}
+                                />
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="shop-email">Contact Email</Label>
