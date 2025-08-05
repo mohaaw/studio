@@ -7,20 +7,12 @@ import {
     Wrench,
     Truck,
     Users,
-    Filter,
-    CheckSquare,
-    Funnel,
-    PieChart as PieChartIcon,
-    Banknote,
-    TrendingUp,
-    ShoppingBag
+    Filter
 } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart, Pie } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Tooltip, Legend, ResponsiveContainer, Pie, PieChart as RechartsPieChart } from 'recharts';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Progress } from "@/components/ui/progress";
-
 
 const salesData = [
   { month: "Jan", sales: 4000, profit: 2400 },
@@ -35,39 +27,6 @@ const chartConfig = {
   sales: { label: "Sales", color: "hsl(var(--primary))" },
   profit: { label: "Profit", color: "hsl(var(--chart-2))" },
 };
-
-const revenueByCategoryData = [
-    { name: 'Laptops', value: 45000, fill: 'var(--color-laptops)' },
-    { name: 'Phones', value: 32000, fill: 'var(--color-phones)' },
-    { name: 'Accessories', value: 18500, fill: 'var(--color-accessories)' },
-    { name: 'Repairs', value: 21000, fill: 'var(--color-repairs)' },
-];
-const revenueByCategoryConfig = {
-    laptops: { label: "Laptops", color: "hsl(var(--chart-1))" },
-    phones: { label: "Phones", color: "hsl(var(--chart-2))" },
-    accessories: { label: "Accessories", color: "hsl(var(--chart-3))" },
-    repairs: { label: "Repairs", color: "hsl(var(--chart-4))" },
-}
-
-const expenseData = [
-    { name: 'Rent', value: 2500, fill: 'var(--color-rent)' },
-    { name: 'Salaries', value: 8500, fill: 'var(--color-salaries)' },
-    { name: 'Marketing', value: 1200, fill: 'var(--color-marketing)' },
-    { name: 'COGS', value: 15000, fill: 'var(--color-cogs)' },
-];
-const expenseConfig = {
-    rent: { label: "Rent", color: "hsl(var(--chart-1))" },
-    salaries: { label: "Salaries", color: "hsl(var(--chart-2))" },
-    marketing: { label: "Marketing", color: "hsl(var(--chart-3))" },
-    cogs: { label: "COGS", color: "hsl(var(--chart-5))" },
-}
-
-const salesFunnelData = [
-    { stage: 'Leads', value: 1200 },
-    { stage: 'Qualified', value: 800 },
-    { stage: 'Proposals', value: 500 },
-    { stage: 'Deals Won', value: 350 },
-];
 
 const myTasks = [
     { id: '1', label: 'Follow up with Jane Smith on PO-2023-002', completed: false },
@@ -151,7 +110,7 @@ export default function DashboardPage() {
                   <LineChart data={salesData} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
                       <CartesianGrid vertical={false} strokeDasharray="3 3" />
                       <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-                      <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `$${value / 1000}k`} />
+                      <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `$${"$"}{value / 1000}k`} />
                       <Tooltip content={<ChartTooltipContent />} />
                       <Legend />
                       <Line type="monotone" dataKey="sales" stroke="var(--color-sales)" strokeWidth={2} dot={false} />
@@ -169,83 +128,15 @@ export default function DashboardPage() {
           <CardContent className="space-y-2">
               {myTasks.map((task) => (
                   <div key={task.id} className="flex items-center space-x-2">
-                      <Checkbox id={`task-${task.id}`} checked={task.completed} />
-                      <label htmlFor={`task-${task.id}`} className={`text-sm ${task.completed ? 'line-through text-muted-foreground' : ''}`}>
+                      <Checkbox id={`task-${"$"}{task.id}`} checked={task.completed} />
+                      <label htmlFor={`task-${"$"}{task.id}`} className={`text-sm ${"$"}{task.completed ? 'line-through text-muted-foreground' : ''}`}>
                           {task.label}
                       </label>
                   </div>
               ))}
           </CardContent>
         </Card>
-
-         <Card className="lg:col-span-4">
-          <CardHeader>
-            <CardTitle className="font-headline text-lg flex items-center gap-2"><Funnel className="h-5 w-5 text-primary"/> Sales Funnel</CardTitle>
-          </CardHeader>
-          <CardContent>
-             <div className="space-y-3">
-                {salesFunnelData.map((stage, index) => {
-                    const prevValue = index > 0 ? salesFunnelData[index-1].value : stage.value;
-                    const conversionRate = index > 0 ? ((stage.value / prevValue) * 100).toFixed(1) : 100;
-                    return (
-                         <div key={stage.stage}>
-                            <div className="flex justify-between text-sm font-medium">
-                                <span>{stage.stage}</span>
-                                <span>{stage.value}</span>
-                            </div>
-                            <Progress value={(stage.value / salesFunnelData[0].value) * 100} className="h-2 mt-1" />
-                            {index > 0 && <p className="text-right text-xs text-muted-foreground">{conversionRate}% conversion</p>}
-                        </div>
-                    )
-                })}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-4">
-            <CardHeader>
-                <CardTitle className="font-headline text-lg flex items-center gap-2"><PieChartIcon className="h-5 w-5 text-primary"/> Revenue by Category</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <ChartContainer config={revenueByCategoryConfig} className="h-48 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                         <RechartsPieChart>
-                            <Tooltip content={<ChartTooltipContent nameKey="name" />} />
-                            <Pie data={revenueByCategoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={40} outerRadius={60} labelLine={false} label={({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }) => {
-                                const RADIAN = Math.PI / 180;
-                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                                const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                                const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                                return (
-                                  <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" className="text-xs fill-foreground">
-                                    {`%${(percent * 100).toFixed(0)}`}
-                                  </text>
-                                );
-                              }}/>
-                              <Legend content={<ChartTooltipContent hideLabel nameKey="name" />} />
-                        </RechartsPieChart>
-                    </ResponsiveContainer>
-                </ChartContainer>
-            </CardContent>
-        </Card>
-
-        <Card className="lg:col-span-4">
-            <CardHeader>
-                <CardTitle className="font-headline text-lg flex items-center gap-2"><Banknote className="h-5 w-5 text-primary"/> Expense Breakdown</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <ChartContainer config={expenseConfig} className="h-48 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                         <RechartsPieChart>
-                            <Tooltip content={<ChartTooltipContent nameKey="name" />} />
-                            <Pie data={expenseData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={70} />
-                            <Legend content={<ChartTooltipContent hideLabel nameKey="name" />} />
-                        </RechartsPieChart>
-                    </ResponsiveContainer>
-                </ChartContainer>
-            </CardContent>
-        </Card>
-
+        
         <Card className="lg:col-span-12">
             <CardHeader>
                 <CardTitle className="font-headline text-lg">Activity Feed</CardTitle>
@@ -277,5 +168,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
