@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "next-themes";
 import { Rocket, Save } from "lucide-react";
 import { useSettings } from "@/context/settings-context";
+import Link from "next/link";
 
 
 export default function SettingsPage() {
