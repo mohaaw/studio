@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import Link from "next/link";
 
-const teamMembers = [
+const initialTeamMembers = [
   { id: '1', name: 'John Doe', email: 'john.doe@techshop.com', role: 'Admin', lastActive: 'Online', avatar: 'https://placehold.co/40x40' },
   { id: '2', name: 'Jane Smith', email: 'jane.smith@techshop.com', role: 'Manager', lastActive: '2 hours ago', avatar: 'https://placehold.co/40x40' },
   { id: '3', name: 'Peter Jones', email: 'peter.jones@techshop.com', role: 'Technician', lastActive: '8 hours ago', avatar: 'https://placehold.co/40x40' },
@@ -33,7 +33,7 @@ const teamMembers = [
 type Role = "Admin" | "Manager" | "Technician" | "Sales";
 
 export default function TeamManagementPage() {
-    const [members, setMembers] = useState(teamMembers);
+    const [members, setMembers] = useState(initialTeamMembers);
 
     const handleRoleChange = (memberId: string, newRole: Role) => {
         setMembers(members.map(m => m.id === memberId ? { ...m, role: newRole } : m));
@@ -122,7 +122,7 @@ export default function TeamManagementPage() {
                                 <DropdownMenuSeparator />
                                  <DropdownMenuItem asChild>
                                     <Link href={`/dashboard/team-management/${member.id}`}>View Performance</Link>
-                                </DropdownMenuItem>
+                                 </DropdownMenuItem>
                                 <DropdownMenuItem>Edit Profile</DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem className="text-destructive">Remove User</DropdownMenuItem>

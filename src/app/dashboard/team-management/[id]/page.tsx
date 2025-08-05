@@ -43,6 +43,7 @@ const repairsChartConfig = { value: { label: "Repairs", color: "hsl(var(--chart-
 
 export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
 
+  // In a real app, you would fetch employee data based on params.id
   const totalSales = employee.kpis.sales.reduce((acc, s) => acc + s.value, 0);
   const totalRepairs = employee.kpis.repairs.reduce((acc, r) => acc + r.value, 0);
 
@@ -120,7 +121,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-xl flex items-center gap-2"><TrendingUp className="h-5 w-5 text-primary"/> Repair Performance (6 Months)</CardTitle>
+                    <CardTitle className="font-headline text-xl flex items-center gap-2"><Wrench className="h-5 w-5 text-primary"/> Repair Performance (6 Months)</CardTitle>
                 </CardHeader>
                 <CardContent>
                      <ChartContainer config={repairsChartConfig} className="h-[200px] w-full">
