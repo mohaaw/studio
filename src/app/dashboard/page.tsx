@@ -2,9 +2,31 @@
 "use client"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { BarChart as LucideBarChart, Package, Megaphone, MapPin, DollarSign, ShoppingCart, ArrowRightLeft, AlertTriangle, FileCog, Bell, Users, Wrench, Truck, FileText, CheckSquare, TrendingUp, Filter, Funnel, PieChart, ShoppingBag, Banknote, Building } from "lucide-react";
+import { 
+    AlertTriangle,
+    ArrowRightLeft,
+    Banknote,
+    BarChart as LucideBarChart,
+    Bell,
+    Building,
+    CheckSquare,
+    DollarSign,
+    FileCog,
+    FileText,
+    Filter,
+    Funnel,
+    Megaphone,
+    Package,
+    PieChart,
+    ShoppingCart,
+    ShoppingBag,
+    TrendingUp,
+    Truck,
+    Users,
+    Wrench
+} from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Pie, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart, Pie } from 'recharts';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
