@@ -1,5 +1,3 @@
-
-'use client';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -20,7 +18,6 @@ import {
   DropdownMenuRadioItem
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
 import Link from "next/link";
 
 const initialTeamMembers = [
@@ -33,11 +30,7 @@ const initialTeamMembers = [
 type Role = "Admin" | "Manager" | "Technician" | "Sales";
 
 export default function TeamManagementPage() {
-    const [members, setMembers] = useState(initialTeamMembers);
-
-    const handleRoleChange = (memberId: string, newRole: Role) => {
-        setMembers(members.map(m => m.id === memberId ? { ...m, role: newRole } : m));
-    }
+    const members = initialTeamMembers;
 
     const getRoleVariant = (role: Role) => {
         switch(role) {
@@ -111,7 +104,7 @@ export default function TeamManagementPage() {
                                     <DropdownMenuSubTrigger>Change Role</DropdownMenuSubTrigger>
                                     <DropdownMenuPortal>
                                         <DropdownMenuSubContent>
-                                            <DropdownMenuRadioGroup value={member.role} onValueChange={(value) => handleRoleChange(member.id, value as Role)}>
+                                            <DropdownMenuRadioGroup value={member.role} onValueChange={(value) => alert(`Role changed to ${value}`)}>
                                                 <DropdownMenuRadioItem value="Manager">Manager</DropdownMenuRadioItem>
                                                 <DropdownMenuRadioItem value="Technician">Technician</DropdownMenuRadioItem>
                                                 <DropdownMenuRadioItem value="Sales">Sales</DropdownMenuRadioItem>
