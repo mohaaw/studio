@@ -18,7 +18,8 @@ import {
   UserCog,
   BarChart2,
   Undo2,
-  DollarSign
+  DollarSign,
+  Settings
 } from 'lucide-react';
 import {
   Sidebar,
@@ -51,6 +52,7 @@ const menuItems = [
   { href: '/dashboard/reporting', label: 'Reporting', icon: BarChart2 },
   { href: '/dashboard/team-management', label: 'Team Management', icon: UserCog },
   { href: '/dashboard/team-hub', label: 'Team Hub', icon: Megaphone },
+  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
   { href: '/kiosk', label: 'Kiosk Mode', icon: Laptop },
 ];
 
