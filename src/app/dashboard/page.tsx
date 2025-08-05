@@ -19,11 +19,11 @@ import {
     Package,
     PieChart as PieChartIcon,
     ShoppingCart,
-    ShoppingBag,
+    Users,
+    Wrench,
     TrendingUp,
     Truck,
-    Users,
-    Wrench
+    ShoppingBag
 } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Tooltip, Legend, ResponsiveContainer, PieChart as RechartsPieChart, Pie } from 'recharts';
@@ -289,5 +289,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-
-    
