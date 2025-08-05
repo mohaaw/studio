@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Search, UserPlus, FileText, ShoppingBag, Award } from "lucide-react";
+import { Search, UserPlus, FileText, ShoppingBag, Award, CreditCard } from "lucide-react";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
 

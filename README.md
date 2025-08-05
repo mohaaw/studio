@@ -58,58 +58,79 @@ The overall design aims to create a powerful yet user-friendly platform that ser
 
 ## Getting Started
 
-To get a local copy up and running, follow these simple steps. This guide is compatible with **Windows, macOS, and Linux**.
+This guide provides instructions for setting up and running the TechShop Manager project on both **EndeavourOS (Linux)** and **Windows 11**.
 
 ### Prerequisites
 
-You need to have [Node.js](https://nodejs.org/) (version 18 or later) and npm installed on your system. You can verify this by running the following commands in your terminal:
+Before you begin, ensure you have the following installed on your system:
 
+*   **Node.js**: Version 18.x or later.
+*   **npm**: Node Package Manager, which comes with Node.js.
+*   **Git**: For cloning the repository.
+*   **Visual Studio Code (Recommended)**: With the integrated terminal.
+
+You can verify your Node.js and npm installations by running:
 ```sh
 node -v
 npm -v
 ```
 
-### Installation & Setup
+### 1. Clone the Repository
 
-1.  **Clone the repository**
-    To get started, clone this repository to your local machine:
-    ```sh
-    git clone <YOUR_REPOSITORY_URL>
-    cd <YOUR_REPOSITORY_DIRECTORY>
+First, clone the project repository to your local machine using Git. Open your terminal or command prompt and run:
+
+```sh
+git clone <YOUR_REPOSITORY_URL>
+cd <YOUR_REPOSITORY_DIRECTORY>
+```
+
+### 2. Install Dependencies
+
+Once you are inside the project directory, install all the required Node.js packages:
+
+```sh
+npm install
+```
+
+### 3. Set Up Environment Variables
+
+This project uses Google's Genkit for its AI features, which requires a Google AI (Gemini) API key.
+
+1.  Create a new file named `.env` in the root directory of the project.
+2.  Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+3.  Add your API key to the `.env` file as follows:
+
+    ```
+    GEMINI_API_KEY=your_api_key_here
     ```
 
-2.  **Install dependencies**
-    Once inside the project directory, install all the necessary packages using npm:
-    ```sh
-    npm install
-    ```
+### 4. Running the Application
 
-3.  **Set up environment variables**
-    This project uses Google's Genkit for its AI features, which requires an API key.
-    *   Create a copy of the `.env.example` file (if it exists) or create a new file named `.env` in the root of the project.
-    *   Obtain a Gemini API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
-    *   Add your API key to the `.env` file like this:
-        ```
-        GEMINI_API_KEY=your_api_key_here
-        ```
+The application requires two separate processes to run concurrently: the **Next.js front-end** and the **Genkit AI server**. The following instructions are for using the integrated terminal within Visual Studio Code, which is the recommended approach.
 
-### Running the Application
+1.  **Open the project in Visual Studio Code.**
 
-This application requires running two processes simultaneously: the Next.js front-end and the Genkit AI flows.
+2.  **Open two integrated terminals:**
+    *   You can open a terminal by going to `Terminal > New Terminal` in the menu bar.
+    *   Split the terminal by clicking the "Split Terminal" icon (a square with a vertical line). You should now have two terminal panels side-by-side.
 
-1.  **Start the Genkit server**
-    In your first terminal window, run the following command to start the AI agent:
+3.  **Start the Genkit AI Server (Terminal 1):**
+    In the first terminal panel, run the following command to start the Genkit server. This server handles all the AI-powered features.
+
     ```sh
     npm run genkit:dev
     ```
-    This will start the Genkit development server, usually on port 3400.
+    You should see output indicating that the Genkit server has started, typically on port 3400.
 
-2.  **Start the Next.js development server**
-    In a second terminal window, run the following command to start the main application:
+4.  **Start the Next.js Development Server (Terminal 2):**
+    In the second terminal panel, run the following command to start the main Next.js application.
+
     ```sh
     npm run dev
     ```
-    This will start the Next.js development server, usually on port 9002.
+    This will start the front-end development server, usually on port 9002.
 
-3.  **Open the app**
-    Open your web browser and navigate to [http://localhost:9002](http://localhost:9002) to see the application in action!
+5.  **Access the Application:**
+    Open your web browser and navigate to **http://localhost:9002**. You should now see the TechShop Manager login screen.
+
+You are all set! The application is now running locally on your machine.

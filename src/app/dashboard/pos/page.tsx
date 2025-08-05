@@ -518,7 +518,7 @@ export default function POSPage() {
             <TabsContent value="orders" className="flex-1 mt-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Pending &amp; Online Orders</CardTitle>
+                        <CardTitle>Pending & Online Orders</CardTitle>
                         <CardDescription>This feature is not yet implemented.</CardDescription>
                     </CardHeader>
                 </Card>
