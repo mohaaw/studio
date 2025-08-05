@@ -6,21 +6,12 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Search, Filter, PlusCircle, MoreHorizontal, ArrowUpFromLine, ArrowDownToLine, HardDrive, CheckSquare, FileCog, PackagePlus } from "lucide-react";
-import Image from "next/image";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { Search, Filter, PlusCircle, ArrowUpFromLine, ArrowDownToLine, FileCog, PackagePlus, CheckSquare } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
+import InventoryTableRow from "./inventory-table-row";
 
 const inventoryItems = [
   { id: '1', sku: 'IP13P-256-GR', name: 'iPhone 13 Pro', serial: 'F17G83J8Q1J9', category: 'Phones', location: 'Shop 1', status: 'For Sale', purchasePrice: 750.00, salePrice: 999.00, image: 'https://placehold.co/64x64.png' },
@@ -31,28 +22,10 @@ const inventoryItems = [
   { id: '6', sku: 'AP-PRO2-W', name: 'AirPods Pro 2', serial: 'GX7Y2345Z123', category: 'Accessories', location: 'Shop 1', status: 'For Sale', purchasePrice: 180.00, salePrice: 249.00, image: 'https://placehold.co/64x64.png' },
 ];
 
-const getStatusVariant = (status: string) => {
-    switch (status.toLowerCase()) {
-        case 'for sale':
-            return 'secondary';
-        case 'sold':
-            return 'destructive';
-        case 'intake':
-            return 'default';
-        case 'under repair':
-            return 'outline';
-        default:
-            return 'default';
-    }
-}
-
-
 export default function InventoryClientPage() {
   const { toast } = useToast();
-  const [isTransferDialogOpen, setTransferDialogOpen] = useState(false);
   const [isStocktakeDialogOpen, setStocktakeDialogOpen] = useState(false);
   const [isBundleDialogOpen, setBundleDialogOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<(typeof inventoryItems)[0] | null>(null);
   const [selectedLocation, setSelectedLocation] = useState('');
 
   const handleExport = () => {
@@ -67,22 +40,6 @@ export default function InventoryClientPage() {
       title: "Importing Data",
       description: "Please select a CSV file to import. (This is a placeholder)",
     });
-  }
-
-  const openTransferDialog = (item: (typeof inventoryItems)[0]) => {
-    setSelectedItem(item);
-    setTransferDialogOpen(true);
-  }
-  
-  const handleTransferItem = () => {
-      if (!selectedItem || !selectedLocation) return;
-      toast({
-          title: "Item Transfer Initiated",
-          description: `${selectedItem.name} is being transferred to ${selectedLocation}.`,
-      });
-      setTransferDialogOpen(false);
-      setSelectedItem(null);
-      setSelectedLocation('');
   }
 
   const handleStartStocktake = () => {
@@ -109,7 +66,6 @@ export default function InventoryClientPage() {
       });
       setBundleDialogOpen(false);
   }
-
 
   return (
     <div className="space-y-6">
@@ -232,82 +188,13 @@ export default function InventoryClientPage() {
               </TableHeader>
               <TableBody>
                 {inventoryItems.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      <Link href={`/dashboard/inventory/${item.id}`} className="flex items-center gap-4 font-medium hover:underline">
-                        <Image src={item.image} alt={item.name} width={64} height={64} className="rounded-md object-cover" data-ai-hint="phone laptop"/>
-                        <div>
-                            <p className="font-semibold text-primary">{item.name}</p>
-                            <p className="text-xs text-muted-foreground">{item.category} / {item.sku}</p>
-                        </div>
-                      </Link>
-                    </TableCell>
-                    <TableCell className="font-mono text-xs">{item.serial}</TableCell>
-                    <TableCell>{item.location}</TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(item.status)} className="capitalize whitespace-nowrap">
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-mono">${item.purchasePrice.toFixed(2)}</TableCell>
-                    <TableCell className="text-right font-mono font-bold">${item.salePrice.toFixed(2)}</TableCell>
-                    <TableCell className="text-right">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost">
-                                    <MoreHorizontal className="h-4 w-4"/>
-                                    <span className="sr-only">More actions</span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem onSelect={() => openTransferDialog(item)}>Transfer Location</DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Link href={`/dashboard/inventory/${item.id}`} className="w-full h-full">Edit Item</Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>View Item History</DropdownMenuItem>
-                                <DropdownMenuItem>Print Label</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-destructive">Delete Item</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
+                  <InventoryTableRow key={item.id} item={item} />
                 ))}
               </TableBody>
             </Table>
           </div>
         </CardContent>
       </Card>
-
-       <Dialog open={isTransferDialogOpen} onOpenChange={setTransferDialogOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Transfer Item</DialogTitle>
-                    <DialogDescription>
-                        Transferring "{selectedItem?.name}" ({selectedItem?.serial}) from "{selectedItem?.location}" to a new location.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="py-4">
-                    <Label htmlFor="transfer-location">New Location</Label>
-                    <Select onValueChange={setSelectedLocation}>
-                        <SelectTrigger id="transfer-location">
-                            <SelectValue placeholder="Select a destination" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Shop 1">Shop 1</SelectItem>
-                            <SelectItem value="Shop 2">Shop 2</SelectItem>
-                            <SelectItem value="Storehouse">Storehouse</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
-                    <Button onClick={handleTransferItem} disabled={!selectedLocation}>Confirm Transfer</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
     </div>
   );
 }
