@@ -28,21 +28,13 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from '@/components/ui/dialog';
 import { useSidebar } from '../ui/sidebar';
 import { useTheme } from 'next-themes';
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '../ui/dialog';
 import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Switch } from "@/components/ui/switch";
+import { Switch } from '../ui/switch';
+
 
 const ThemeCustomizerDialog = lazy(() => import('./theme-customizer-dialog'));
 
@@ -112,7 +104,7 @@ export function UserNav() {
                   <Rocket className="mr-2 h-4 w-4" />
                   <span>Pro</span>
                 </DropdownMenuItem>
-                 <DropdownMenuItem onClick={() => setCustomizerOpen(true)}>
+                 <DropdownMenuItem onSelect={() => setCustomizerOpen(true)}>
                   <Palette className="mr-2 h-4 w-4" />
                   <span>Custom</span>
                 </DropdownMenuItem>
@@ -143,7 +135,7 @@ export function UserNav() {
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
-          <DropdownMenuItem onClick={() => setSecurityOpen(true)}>
+          <DropdownMenuItem onSelect={() => setSecurityOpen(true)}>
             <ShieldCheck className="mr-2 h-4 w-4" />
             <span>Security</span>
           </DropdownMenuItem>
@@ -157,17 +149,16 @@ export function UserNav() {
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-
-    {isCustomizerOpen && (
-        <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={null}>
+        {isCustomizerOpen && (
             <ThemeCustomizerDialog
                 isOpen={isCustomizerOpen}
                 onOpenChange={setCustomizerOpen}
             />
-        </Suspense>
-    )}
+        )}
+    </Suspense>
 
-    <Dialog open={isSecurityOpen} onOpenChange={setSecurityOpen}>
+    {isSecurityOpen && <Dialog open={isSecurityOpen} onOpenChange={setSecurityOpen}>
         <DialogContent>
             <DialogHeader>
                 <DialogTitle>Security Settings</DialogTitle>
@@ -192,7 +183,7 @@ export function UserNav() {
                 </DialogClose>
             </DialogFooter>
         </DialogContent>
-    </Dialog>
+    </Dialog>}
     </>
   );
 }

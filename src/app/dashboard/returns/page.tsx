@@ -1,5 +1,11 @@
 
-import ReturnsClientPage from "@/components/returns/returns-client-page";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const ReturnsClientPage = dynamic(() => import('@/components/returns/returns-client-page'), {
+    ssr: false,
+    loading: () => <p>Loading returns...</p>
+});
 
 const initialRmaItems = [
   { id: '1', rmaNumber: 'RMA-2023-001', orderId: 'ORD-1234', customer: 'John Doe', item: 'iPhone 13 Pro', returnDate: '2023-11-20', status: 'Pending Inspection' },
@@ -10,5 +16,9 @@ const initialRmaItems = [
 
 export default function ReturnsPage() {
   // In a real app, this data would be fetched from an API
-  return <ReturnsClientPage initialRmas={initialRmaItems} />;
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+        <ReturnsClientPage initialRmas={initialRmaItems} />
+    </Suspense>
+  );
 }

@@ -13,7 +13,8 @@ import { MoreHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const TransferItemDialog = dynamic(() => import('./transfer-item-dialog'), {
-    loading: () => <p>Loading...</p>
+    loading: () => <p>Loading...</p>,
+    ssr: false
 });
 
 type InventoryItem = {

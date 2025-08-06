@@ -468,7 +468,7 @@ export default function POSPage() {
             </TabsContent>
         </Tabs>
         
-        <Suspense fallback={null}>
+        <Suspense fallback={<p>Loading Dialog...</p>}>
             {isSerialSelectorOpen && <SerialSelectorDialog open={isSerialSelectorOpen} onOpenChange={setSerialSelectorOpen} currentItem={currentItemForSerial} onSelectSerial={handleSelectSerial} />}
             {isDiscountModalOpen && <DiscountDialog open={isDiscountModalOpen} onOpenChange={setDiscountModalOpen} discount={discount} setDiscount={setDiscount} />}
             {isCustomerModalOpen && <CustomerDialog open={isCustomerModalOpen} onOpenChange={setCustomerModalOpen} customers={customers} onSelectCustomer={handleSelectCustomer} />}

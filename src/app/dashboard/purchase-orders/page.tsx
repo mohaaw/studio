@@ -1,5 +1,12 @@
 
-import PurchaseOrdersClientPage from "@/components/purchase-orders/purchase-orders-client-page";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const PurchaseOrdersClientPage = dynamic(() => import('@/components/purchase-orders/purchase-orders-client-page'), {
+    ssr: false,
+    loading: () => <p>Loading purchase orders...</p>
+});
+
 
 const initialPurchaseOrders = [
   { id: '1', poNumber: 'PO-2023-001', supplier: 'Apple Parts Pro', orderDate: '2023-11-20', expectedDelivery: '2023-11-27', status: 'Completed', total: 5500.00 },
@@ -10,5 +17,9 @@ const initialPurchaseOrders = [
 
 export default function PurchaseOrdersPage() {
   // In a real app, this data would be fetched from an API
-  return <PurchaseOrdersClientPage initialPOs={initialPurchaseOrders} />;
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+        <PurchaseOrdersClientPage initialPOs={initialPurchaseOrders} />
+    </Suspense>
+  );
 }

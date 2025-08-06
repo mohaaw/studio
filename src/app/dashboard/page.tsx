@@ -1,5 +1,4 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
     DollarSign,
     Wrench,
@@ -10,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const DashboardClient = dynamic(() => import('@/components/dashboard/dashboard-client'), {
     loading: () => <p>Loading dashboard content...</p>

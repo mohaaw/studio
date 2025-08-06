@@ -1,5 +1,10 @@
 
-import InventoryClientPage from "@/components/inventory/inventory-client-page";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+
+const InventoryClientPage = dynamic(() => import('@/components/inventory/inventory-client-page'), {
+    loading: () => <p>Loading inventory...</p>
+});
 
 // Note: This data would typically be fetched from a database.
 const inventoryItems = [
@@ -13,5 +18,9 @@ const inventoryItems = [
 
 export default function InventoryPage() {
   // In a real app, you'd fetch inventoryItems from an API
-  return <InventoryClientPage initialItems={inventoryItems} />;
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+        <InventoryClientPage initialItems={inventoryItems} />
+    </Suspense>
+    );
 }
