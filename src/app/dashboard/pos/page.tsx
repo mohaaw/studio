@@ -1,22 +1,29 @@
 
 'use client'
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Calculator, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck, Banknote, History, FileText, Gift, ArrowLeftRight } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck, Gift, ArrowLeftRight } from "lucide-react";
 import Image from "next/image";
-import { useState, useEffect, useRef, useTransition, useMemo } from "react";
+import { useState, useEffect, useTransition, useMemo, lazy, Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { suggestPersonalized } from "@/ai/flows/suggest-personalized-flow";
-import { Textarea } from "@/components/ui/textarea";
+import dynamic from "next/dynamic";
+
+const PaymentDialog = dynamic(() => import('@/components/pos/payment-dialog'));
+const HandoverDialog = dynamic(() => import('@/components/pos/handover-dialog'));
+const WarrantyDialog = dynamic(() => import('@/components/pos/warranty-dialog'));
+const CustomerDialog = dynamic(() => import('@/components/pos/customer-dialog'));
+const DiscountDialog = dynamic(() => import('@/components/pos/discount-dialog'));
+const PromotionsDialog = dynamic(() => import('@/components/pos/promotions-dialog'));
+const SerialSelectorDialog = dynamic(() => import('@/components/pos/serial-selector-dialog'));
 
 interface Product {
     id: string;
@@ -79,7 +86,6 @@ export default function POSPage() {
     const [personalizedSuggestions, setPersonalizedSuggestions] = useState<SuggestPersonalizedOutput | null>(null);
 
     const { toast } = useToast();
-    const videoRef = useRef<HTMLVideoElement>(null);
     
     const [isPaymentOpen, setPaymentOpen] = useState(false);
     const [isSerialSelectorOpen, setSerialSelectorOpen] = useState(false);
@@ -87,14 +93,12 @@ export default function POSPage() {
     const [isCustomerModalOpen, setCustomerModalOpen] = useState(false);
     const [isWarrantyModalOpen, setWarrantyModalOpen] = useState(false);
     const [isHandoverModalOpen, setHandoverModalOpen] = useState(false);
-    const [isPricingRuleModalOpen, setPricingRuleModalOpen] = useState(false);
+    const [isPromotionsModalOpen, setPromotionsModalOpen] = useState(false);
 
     const [currentItemForSerial, setCurrentItemForSerial] = useState<CartItem | null>(null);
     const [currentItemForWarranty, setCurrentItemForWarranty] = useState<CartItem | null>(null);
 
     const [cashTendered, setCashTendered] = useState("");
-    const [handoverNotes, setHandoverNotes] = useState("- Customer Jane Smith is waiting for a call back about her MacBook repair status.\n- Remember to restock the iPhone charging cables.");
-    const [newHandoverNote, setNewHandoverNote] = useState("");
     
     useEffect(() => {
         const updateOnlineStatus = () => {
@@ -211,31 +215,15 @@ export default function POSPage() {
         setCurrentItemForWarranty(item);
         setWarrantyModalOpen(true);
     }
-    
-    const handleSaveHandoverNotes = () => {
-        if (newHandoverNote.trim() !== "") {
-            const timestamp = new Date().toLocaleString();
-            setHandoverNotes(prev => `${prev}\n- ${newHandoverNote} [${timestamp}]`);
-            setNewHandoverNote("");
-        }
-        setHandoverModalOpen(false);
-    }
 
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const totalDiscount = (subtotal * discount) / 100;
     const commission = subtotal * 0.05;
     const tax = (subtotal - totalDiscount) * 0.08;
     const total = subtotal - totalDiscount + tax;
-    const changeDue = parseFloat(cashTendered) > total ? parseFloat(cashTendered) - total : 0;
-
-    const handleKeypadClick = (value: string) => {
-        if (value === 'C') { setCashTendered(''); } 
-        else if (value === 'del') { setCashTendered(cashTendered.slice(0, -1));} 
-        else { setCashTendered(cashTendered + value); }
-    }
 
     const completeSale = () => {
-        toast({ title: "Sale Complete!", description: `Total: $${total.toFixed(2)}. Change due: $${changeDue.toFixed(2)}` });
+        toast({ title: "Sale Complete!", description: `Total: $${total.toFixed(2)}.` });
         if (!isOnline) {
             setOfflineQueue(q => q + 1);
         }
@@ -272,7 +260,8 @@ export default function POSPage() {
                                     <DialogContent className="max-w-md">
                                         <DialogHeader><DialogTitle className="flex items-center gap-2"><Camera className="h-6 w-6 text-primary"/> Scan Barcode</DialogTitle></DialogHeader>
                                         <div className="p-4 rounded-lg bg-muted border-dashed border-2">
-                                            <video ref={videoRef} className="w-full aspect-video rounded-md bg-black" autoPlay muted />
+                                            {/* In a real app, a camera component would be rendered here */}
+                                            <div className="w-full aspect-video rounded-md bg-black" />
                                         </div>
                                     </DialogContent>
                                 </Dialog>
@@ -438,7 +427,7 @@ export default function POSPage() {
                                     <p className="font-medium font-mono">${tax.toFixed(2)}</p>
                                 </div>
                                 <div className="flex justify-between text-xs text-muted-foreground">
-                                    <p className="flex items-center gap-1"><Banknote className="h-3 w-3"/>Est. Commission (5%)</p>
+                                    <p>Est. Commission (5%)</p>
                                     <p className="font-mono">${commission.toFixed(2)}</p>
                                 </div>
                                 <Separator className="my-2" />
@@ -448,56 +437,8 @@ export default function POSPage() {
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2 w-full mt-4">
-                                <Button variant="outline" onClick={() => setPricingRuleModalOpen(true)}><Gift className="mr-2 h-4 w-4" /> Promotions</Button>
-                                <Dialog open={isPaymentOpen} onOpenChange={setPaymentOpen}>
-                                    <DialogTrigger asChild>
-                                        <Button size="lg" className="h-12 text-lg font-bold"><CreditCard className="mr-2 h-6 w-6" />Pay</Button>
-                                    </DialogTrigger>
-                                    <DialogContent className="max-w-3xl">
-                                        <DialogHeader><DialogTitle className="font-headline text-2xl">Payment</DialogTitle></DialogHeader>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
-                                            <div className="space-y-4">
-                                                <h3 className="font-semibold text-lg">Payment Method</h3>
-                                                <Tabs defaultValue="cash" className="w-full">
-                                                    <TabsList className="grid w-full grid-cols-4"><TabsTrigger value="cash">Cash</TabsTrigger><TabsTrigger value="card">Card</TabsTrigger><TabsTrigger value="credit">On Credit</TabsTrigger><TabsTrigger value="split">Split</TabsTrigger></TabsList>
-                                                    <TabsContent value="cash" className="pt-4">
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="cash-tendered">Cash Tendered</Label>
-                                                            <Input id="cash-tendered" placeholder="0.00" className="h-12 text-xl font-mono text-right" value={cashTendered} onChange={(e) => setCashTendered(e.target.value)} />
-                                                        </div>
-                                                        <div className="grid grid-cols-3 gap-2 mt-4">
-                                                            {[100, 50, 20, 10, 5, 1].map(val => <Button key={val} variant="outline" onClick={() => setCashTendered((prev) => (parseFloat(prev || '0') + val).toString())}>${val}</Button>)}
-                                                            <Button variant="outline" onClick={() => setCashTendered(total.toFixed(2))}>Exact</Button>
-                                                        </div>
-                                                    </TabsContent>
-                                                    <TabsContent value="card" className="pt-4 text-center text-muted-foreground"><p>Card payment simulation is not yet implemented.</p><p>Click "Finalize Sale" to complete.</p></TabsContent>
-                                                    <TabsContent value="credit" className="pt-4 text-center text-muted-foreground"><p>Customer credit payment is not yet implemented.</p></TabsContent>
-                                                    <TabsContent value="split" className="pt-4 text-center text-muted-foreground"><p>Split payment is not yet implemented.</p></TabsContent>
-                                                </Tabs>
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <h3 className="font-semibold text-lg mb-4">Summary</h3>
-                                                <Card className="flex-1">
-                                                    <CardContent className="p-6 space-y-4">
-                                                        <div className="flex justify-between text-2xl font-bold font-mono text-primary"><p>Total Due</p><p>${total.toFixed(2)}</p></div>
-                                                        <div className="flex justify-between text-lg font-mono"><p>Cash Tendered</p><p>${parseFloat(cashTendered || "0").toFixed(2)}</p></div>
-                                                        <Separator />
-                                                        <div className="flex justify-between text-xl font-bold font-mono text-green-500"><p>Change Due</p><p>${changeDue.toFixed(2)}</p></div>
-                                                    </CardContent>
-                                                    <CardFooter className="p-2">
-                                                        <div className="grid grid-cols-4 gap-1 w-full">
-                                                            {['1','2','3', 'del', '4','5','6', 'C', '7','8','9', '.', '0'].map(key => <Button key={key} variant="outline" className="h-12 text-lg" onClick={() => handleKeypadClick(key)}>{key === 'del' ? <Trash2/> : key}</Button>)}
-                                                        </div>
-                                                    </CardFooter>
-                                                </Card>
-                                            </div>
-                                        </div>
-                                        <DialogFooter>
-                                            <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
-                                            <Button className="h-12 text-lg font-bold" onClick={completeSale} disabled={!total || (cashTendered !== '' && parseFloat(cashTendered) < total)}>Finalize Sale</Button>
-                                        </DialogFooter>
-                                    </DialogContent>
-                                </Dialog>
+                                <Button variant="outline" onClick={() => setPromotionsModalOpen(true)}><Gift className="mr-2 h-4 w-4" /> Promotions</Button>
+                                <Button size="lg" className="h-12 text-lg font-bold" onClick={() => setPaymentOpen(true)}><CreditCard className="mr-2 h-6 w-6" />Pay</Button>
                             </div>
                             <Button variant="destructive" size="sm" className="w-full mt-2" onClick={handleClearCart}><Trash2 className="mr-2 h-4 w-4" />Clear Cart</Button>
                         </CardFooter>
@@ -519,137 +460,23 @@ export default function POSPage() {
                 <Card>
                     <CardHeader>
                         <CardTitle>Pending & Online Orders</CardTitle>
-                        <CardDescription>This feature is not yet implemented.</CardDescription>
                     </CardHeader>
+                    <CardContent>
+                        <p className="text-muted-foreground">This feature is not yet implemented.</p>
+                    </CardContent>
                 </Card>
             </TabsContent>
         </Tabs>
         
-        <Dialog open={isSerialSelectorOpen} onOpenChange={setSerialSelectorOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Select Serial Number for {currentItemForSerial?.name}</DialogTitle>
-                </DialogHeader>
-                <div className="py-4 space-y-2">
-                    <Label>Available Serial Numbers</Label>
-                    <Select onValueChange={handleSelectSerial}>
-                        <SelectTrigger><SelectValue placeholder="Select a serial..." /></SelectTrigger>
-                        <SelectContent>
-                            {currentItemForSerial?.serials.map(serial => (
-                                <SelectItem key={serial} value={serial}>{serial}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={() => setSerialSelectorOpen(false)}>Cancel</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-        
-        <Dialog open={isDiscountModalOpen} onOpenChange={setDiscountModalOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Apply Discount</DialogTitle>
-                    <DialogDescription>Enter a percentage discount to apply to the entire sale.</DialogDescription>
-                </DialogHeader>
-                <div className="py-4">
-                    <Label htmlFor="discount">Discount Percentage</Label>
-                    <Input id="discount" type="number" value={discount} onChange={e => setDiscount(parseFloat(e.target.value) || 0)} placeholder="e.g. 10" />
-                </div>
-                <DialogFooter>
-                    <Button onClick={() => { setDiscount(0); setDiscountModalOpen(false); }} variant="destructive">Remove Discount</Button>
-                    <Button onClick={() => setDiscountModalOpen(false)}>Apply</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-
-        <Dialog open={isCustomerModalOpen} onOpenChange={setCustomerModalOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Select Customer</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-2 py-4">
-                    {customers.map(customer => (
-                        <Button key={customer.id} variant="outline" className="w-full justify-start" onClick={() => handleSelectCustomer(customer.id)}>
-                            {customer.name}
-                        </Button>
-                    ))}
-                </div>
-            </DialogContent>
-        </Dialog>
-        
-        <Dialog open={isWarrantyModalOpen} onOpenChange={setWarrantyModalOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <ShieldCheck className="h-6 w-6 text-primary" />
-                        Warranty Status
-                    </DialogTitle>
-                    <DialogDescription>
-                        Warranty details for {currentItemForWarranty?.name}
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="py-4 text-center">
-                    <p className="text-lg font-semibold">{currentItemForWarranty?.warranty}</p>
-                    {currentItemForWarranty?.selectedSerial && 
-                        <p className="text-sm text-muted-foreground mt-1">Serial: {currentItemForWarranty.selectedSerial}</p>
-                    }
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild><Button>Close</Button></DialogClose>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-        
-        <Dialog open={isHandoverModalOpen} onOpenChange={setHandoverModalOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <BookText className="h-6 w-6 text-primary" />
-                        Shift Handover Notes
-                    </DialogTitle>
-                </DialogHeader>
-                <div className="py-4 space-y-4">
-                    <div>
-                        <Label>Previous Notes</Label>
-                        <Textarea value={handoverNotes} readOnly rows={5} className="bg-muted"/>
-                    </div>
-                     <div>
-                        <Label htmlFor="new-note">Add New Note</Label>
-                        <Textarea id="new-note" value={newHandoverNote} onChange={(e) => setNewHandoverNote(e.target.value)} placeholder="Type your note here..." />
-                    </div>
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild><Button variant="outline">Cancel</Button></DialogClose>
-                    <Button onClick={handleSaveHandoverNotes}>Save Notes</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-        
-        <Dialog open={isPricingRuleModalOpen} onOpenChange={setPricingRuleModalOpen}>
-            <DialogContent>
-                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <Gift className="h-6 w-6 text-primary" />
-                        Apply Promotion
-                    </DialogTitle>
-                     <DialogDescription>Select an available pricing rule or promotion to apply to the cart.</DialogDescription>
-                </DialogHeader>
-                <div className="py-4 space-y-2">
-                    <Button variant="outline" className="w-full justify-start">Buy One Get One Free on Screen Protectors</Button>
-                    <Button variant="outline" className="w-full justify-start">20% Off All Accessories with Phone Purchase</Button>
-                    <Button variant="outline" className="w-full justify-start">Student Discount - 10% Off Laptops</Button>
-                </div>
-                <DialogFooter>
-                    <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+        <Suspense fallback={null}>
+            {isSerialSelectorOpen && <SerialSelectorDialog open={isSerialSelectorOpen} onOpenChange={setSerialSelectorOpen} currentItem={currentItemForSerial} onSelectSerial={handleSelectSerial} />}
+            {isDiscountModalOpen && <DiscountDialog open={isDiscountModalOpen} onOpenChange={setDiscountModalOpen} discount={discount} setDiscount={setDiscount} />}
+            {isCustomerModalOpen && <CustomerDialog open={isCustomerModalOpen} onOpenChange={setCustomerModalOpen} customers={customers} onSelectCustomer={handleSelectCustomer} />}
+            {isWarrantyModalOpen && <WarrantyDialog open={isWarrantyModalOpen} onOpenChange={setWarrantyModalOpen} currentItem={currentItemForWarranty} />}
+            {isHandoverModalOpen && <HandoverDialog open={isHandoverModalOpen} onOpenChange={setHandoverModalOpen} />}
+            {isPromotionsModalOpen && <PromotionsDialog open={isPromotionsModalOpen} onOpenChange={setPromotionsModalOpen} />}
+            {isPaymentOpen && <PaymentDialog open={isPaymentOpen} onOpenChange={setPaymentOpen} total={total} onCompleteSale={completeSale} />}
+        </Suspense>
     </div>
   );
 }
-
-    
-
-    

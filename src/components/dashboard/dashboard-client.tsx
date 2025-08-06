@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, LineChart as RechartsLineChart } from 'recharts';
 import { Checkbox } from "@/components/ui/checkbox";
+import { Suspense } from "react";
 
 const salesData = [
   { month: "Jan", sales: 4000, profit: 2400 },

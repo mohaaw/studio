@@ -1,5 +1,5 @@
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
     DollarSign,
     Wrench,
@@ -8,7 +8,8 @@ import {
     Filter
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import DashboardClient from '@/components/dashboard/dashboard-client';
+import { Suspense } from "react";
+import DashboardClient from "@/components/dashboard/dashboard-client";
 
 const myTasks = [
     { id: '1', label: 'Follow up with Jane Smith on PO-2023-002', completed: false },
@@ -81,8 +82,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-
-      <DashboardClient myTasks={myTasks} activityFeed={activityFeed} />
+      <Suspense fallback={<p>Loading...</p>}>
+        <DashboardClient myTasks={myTasks} activityFeed={activityFeed} />
+      </Suspense>
     </div>
   );
 }
