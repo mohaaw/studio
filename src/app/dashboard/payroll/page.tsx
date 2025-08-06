@@ -3,12 +3,12 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 
 const PayrollClientPage = dynamic(() => import('@/components/payroll/payroll-client-page'), {
-    loading: () => <p>Loading Payroll Page...</p>,
+    loading: () => <div className="text-center p-8">Loading Payroll Page...</div>
 });
 
 export default function PayrollPage() {
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<div className="text-center p-8">Loading Payroll Page...</div>}>
       <PayrollClientPage />
     </Suspense>
   );

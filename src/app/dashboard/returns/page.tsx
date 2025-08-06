@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 const ReturnsClientPage = dynamic(() => import('@/components/returns/returns-client-page'), {
-    loading: () => <p>Loading returns...</p>
+    loading: () => <div className="text-center p-8">Loading returns...</div>
 });
 
 const initialRmaItems = [
@@ -16,7 +16,7 @@ const initialRmaItems = [
 export default function ReturnsPage() {
   // In a real app, this data would be fetched from an API
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<div className="text-center p-8">Loading returns...</div>}>
         <ReturnsClientPage initialRmas={initialRmaItems} />
     </Suspense>
   );

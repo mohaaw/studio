@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 const PurchaseOrdersClientPage = dynamic(() => import('@/components/purchase-orders/purchase-orders-client-page'), {
-    loading: () => <p>Loading purchase orders...</p>
+    loading: () => <div className="text-center p-8">Loading purchase orders...</div>
 });
 
 
@@ -17,7 +17,7 @@ const initialPurchaseOrders = [
 export default function PurchaseOrdersPage() {
   // In a real app, this data would be fetched from an API
   return (
-    <Suspense fallback={<p>Loading...</p>}>
+    <Suspense fallback={<div className="text-center p-8">Loading purchase orders...</div>}>
         <PurchaseOrdersClientPage initialPOs={initialPurchaseOrders} />
     </Suspense>
   );
