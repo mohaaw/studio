@@ -8,14 +8,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components
 import { Search, Filter, PlusCircle } from "lucide-react";
 import RmaTableRow, { RmaItem } from "./rma-table-row";
 
-const initialRmaItems: RmaItem[] = [
-  { id: '1', rmaNumber: 'RMA-2023-001', orderId: 'ORD-1234', customer: 'John Doe', item: 'iPhone 13 Pro', returnDate: '2023-11-20', status: 'Pending Inspection' },
-  { id: '2', rmaNumber: 'RMA-2023-002', orderId: 'ORD-1235', customer: 'Jane Smith', item: 'MacBook Air M2', returnDate: '2023-11-22', status: 'Restocked' },
-  { id: '3', rmaNumber: 'RMA-2023-003', orderId: 'ORD-1236', customer: 'Peter Jones', item: 'Apple Watch S8', returnDate: '2023-11-25', status: 'Refunded' },
-  { id: '4', rmaNumber: 'RMA-2023-004', orderId: 'ORD-1237', customer: 'Mary Johnson', item: 'Dell XPS 13', returnDate: '2023-12-01', status: 'Awaiting Customer' },
-];
-
-export default function ReturnsClientPage() {
+export default function ReturnsClientPage({ initialRmas }: { initialRmas: RmaItem[] }) {
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -62,7 +55,7 @@ export default function ReturnsClientPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {initialRmaItems.map((rma) => (
+                {initialRmas.map((rma) => (
                   <RmaTableRow key={rma.id} rma={rma} />
                 ))}
               </TableBody>
