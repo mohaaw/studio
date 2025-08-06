@@ -8,12 +8,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search, Filter, PlusCircle, ArrowUpFromLine, ArrowDownToLine, FileCog, PackagePlus, CheckSquare } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import InventoryTableRow from "./inventory-table-row";
 
-const CreateBundleDialog = dynamic(() => import('./create-bundle-dialog'), { ssr: false });
-const StocktakeDialog = dynamic(() => import('./stocktake-dialog'), { ssr: false });
+const CreateBundleDialog = dynamic(() => import('./create-bundle-dialog'), {
+    loading: () => <p>Loading...</p>
+});
+const StocktakeDialog = dynamic(() => import('./stocktake-dialog'), {
+    loading: () => <p>Loading...</p>
+});
 
 type InventoryItem = {
     id: string;
@@ -129,9 +133,10 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
           </div>
         </CardContent>
       </Card>
-
-      <CreateBundleDialog isOpen={isBundleDialogOpen} onOpenChange={setBundleDialogOpen} />
-      <StocktakeDialog isOpen={isStocktakeDialogOpen} onOpenChange={setStocktakeDialogOpen} />
+      <Suspense fallback={null}>
+        {isBundleDialogOpen && <CreateBundleDialog isOpen={isBundleDialogOpen} onOpenChange={setBundleDialogOpen} />}
+        {isStocktakeDialogOpen && <StocktakeDialog isOpen={isStocktakeDialogOpen} onOpenChange={setStocktakeDialogOpen} />}
+      </Suspense>
     </div>
   );
 }

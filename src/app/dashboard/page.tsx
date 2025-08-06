@@ -9,7 +9,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Suspense } from "react";
-import DashboardClient from "@/components/dashboard/dashboard-client";
+import dynamic from "next/dynamic";
+
+const DashboardClient = dynamic(() => import('@/components/dashboard/dashboard-client'), {
+    loading: () => <p>Loading dashboard content...</p>
+});
+
 
 const myTasks = [
     { id: '1', label: 'Follow up with Jane Smith on PO-2023-002', completed: false },

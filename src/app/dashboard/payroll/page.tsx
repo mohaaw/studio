@@ -1,6 +1,15 @@
 
-import PayrollClientPage from "@/components/payroll/payroll-client-page";
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+const PayrollClientPage = dynamic(() => import('@/components/payroll/payroll-client-page'), {
+    loading: () => <p>Loading Payroll Page...</p>
+});
 
 export default function PayrollPage() {
-  return <PayrollClientPage />;
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <PayrollClientPage />
+    </Suspense>
+  );
 }

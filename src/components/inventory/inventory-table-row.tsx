@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import dynamic from "next/dynamic";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +12,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { MoreHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const TransferItemDialog = dynamic(() => import('./transfer-item-dialog'));
+const TransferItemDialog = dynamic(() => import('./transfer-item-dialog'), {
+    loading: () => <p>Loading...</p>
+});
 
 type InventoryItem = {
     id: string;
@@ -95,14 +97,16 @@ export default function InventoryTableRow({ item }: { item: InventoryItem }) {
                     </DropdownMenu>
                 </TableCell>
             </TableRow>
-            {isTransferDialogOpen && (
-                 <TransferItemDialog
-                    item={item}
-                    isOpen={isTransferDialogOpen}
-                    onOpenChange={setTransferDialogOpen}
-                    onConfirm={handleTransferItem}
-                />
-            )}
+            <Suspense fallback={null}>
+                {isTransferDialogOpen && (
+                    <TransferItemDialog
+                        item={item}
+                        isOpen={isTransferDialogOpen}
+                        onOpenChange={setTransferDialogOpen}
+                        onConfirm={handleTransferItem}
+                    />
+                )}
+            </Suspense>
         </>
     );
 }
