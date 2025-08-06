@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 const ReturnsClientPage = dynamic(() => import('@/components/returns/returns-client-page'), {
-    ssr: false,
     loading: () => <p>Loading returns...</p>
 });
 

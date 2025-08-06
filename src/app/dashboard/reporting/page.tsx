@@ -216,5 +216,4 @@ export default function ReportingPage() {
         </div>
     </div>
   );
-
-    
+}

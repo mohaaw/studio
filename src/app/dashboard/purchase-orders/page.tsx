@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import dynamic from "next/dynamic";
 
 const PurchaseOrdersClientPage = dynamic(() => import('@/components/purchase-orders/purchase-orders-client-page'), {
-    ssr: false,
     loading: () => <p>Loading purchase orders...</p>
 });
 
