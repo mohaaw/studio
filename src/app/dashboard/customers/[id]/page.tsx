@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, User, Phone, Mail, Award, BarChart, Sparkles, MessageSquare, History, FileText, ShoppingBag, Wrench, Bot } from "lucide-react";
+import { ArrowLeft, User, Phone, Mail, Award, BarChart, Sparkles, MessageSquare, History, FileText, ShoppingBag, Wrench, Bot, ShieldCheck, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -27,6 +27,7 @@ const customer = {
   totalSpent: 1248.00,
   loyaltyPoints: 125,
   tier: 'Gold',
+  satisfactionScore: 95,
   purchaseHistory: [
     { id: '1', date: '2023-11-15', item: 'iPhone 13 Pro', price: 999.00 },
     { id: '2', date: '2023-09-02', item: 'Anker Power Bank', price: 50.00 },
@@ -36,8 +37,9 @@ const customer = {
     { id: '1', date: '2023-05-20', ticket: 'RPR-001', device: 'iPhone 12', status: 'Completed' },
   ],
   communicationLog: [
-      { author: 'Jane S.', note: 'Called customer to confirm repair pickup.', date: '2023-05-25' },
+      { author: 'Jane S.', note: 'Called customer to confirm repair pickup. Very pleasant.', date: '2023-05-25' },
       { author: 'System', note: 'Sent marketing email for accessory sale.', date: '2023-10-10' },
+      { author: 'John D.', note: 'Customer called to ask about trade-in values for an iPad. Seemed happy with the quote.', date: '2023-11-05' },
   ]
 };
 
@@ -50,13 +52,14 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
 
   const handleGetSuggestions = () => {
       setError(null);
+      setSuggestions(null);
       startGenerationTransition(async () => {
           try {
               const result = await suggestPersonalized({
                   customerName: customer.name,
                   purchaseHistory: customer.purchaseHistory.map(p => p.item)
               });
-              if (result) {
+              if (result && result.suggestions) {
                   setSuggestions(result);
               } else {
                   throw new Error("The AI flow returned an empty result.");
@@ -121,18 +124,30 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                         <p className="text-muted-foreground">Loyalty Points</p>
                         <p className="font-bold text-lg font-mono flex items-center gap-1.5"><Award className="h-4 w-4 text-primary"/> {customer.loyaltyPoints}</p>
                     </div>
+                     <div className="flex justify-between items-center text-sm">
+                        <p className="text-muted-foreground">AI Sentiment Score</p>
+                        <p className={`font-bold text-lg font-mono flex items-center gap-1.5 ${customer.satisfactionScore > 80 ? 'text-green-500' : 'text-amber-500'}`}>
+                            <ShieldCheck className="h-4 w-4"/> {customer.satisfactionScore}/100
+                        </p>
+                    </div>
                 </CardContent>
             </Card>
 
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
-                        <Bot className="h-5 w-5 text-primary"/> AI Suggestions
+                        <Bot className="h-5 w-5 text-primary"/> AI Upsell Suggestions
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     {isGenerating && <p className="text-sm text-muted-foreground">Analyzing purchase history...</p>}
-                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    {error && (
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertTitle>Suggestion Failed</AlertTitle>
+                            <AlertDescription className="text-xs">{error}</AlertDescription>
+                        </Alert>
+                    )}
                     {suggestions && suggestions.suggestions.length > 0 ? (
                         <div className="space-y-3">
                             {suggestions.suggestions.map((suggestion, index) => (
@@ -226,3 +241,5 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
     </div>
   );
 }
+
+    

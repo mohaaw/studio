@@ -47,15 +47,25 @@ export default function TeamManagementPage() {
     const [members, setMembers] = useState<TeamMember[]>(initialTeamMembers);
 
     const handleRoleChange = (memberId: string, newRole: Role) => {
+        const member = members.find(m => m.id === memberId);
+        if (member?.role === 'Admin') {
+            toast({
+                variant: 'destructive',
+                title: "Permission Denied",
+                description: "The Admin role cannot be changed."
+            });
+            return;
+        }
+
         setMembers(prevMembers => 
-            prevMembers.map(member => 
-                member.id === memberId ? { ...member, role: newRole } : member
+            prevMembers.map(m => 
+                m.id === memberId ? { ...m, role: newRole } : m
             )
         );
         toast({
             title: "Role Updated",
             description: `${members.find(m => m.id === memberId)?.name}'s role has been changed to ${newRole}.`
-        })
+        });
     };
 
     const getRoleVariant = (role: Role) => {
@@ -158,3 +168,5 @@ export default function TeamManagementPage() {
     </div>
   );
 }
+
+    

@@ -85,7 +85,7 @@ export default function AppSidebar() {
           {menuItems.map((item) => (
              'items' in item ? (
                 <div key={item.label} className="pt-4">
-                  <p className="px-4 text-xs text-muted-foreground uppercase pb-2">{item.label}</p>
+                  <p className="px-4 text-xs text-muted-foreground uppercase pb-2" style={{ opacity: state === 'collapsed' ? 0 : 1 }}>{item.label}</p>
                   {item.items.map(subItem => (
                      <SidebarMenuItem key={subItem.href}>
                         <SidebarMenuButton
@@ -127,3 +127,5 @@ export default function AppSidebar() {
     </Sidebar>
   );
 }
+
+    
