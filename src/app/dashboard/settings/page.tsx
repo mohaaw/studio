@@ -201,12 +201,12 @@ export default function SettingsPage() {
                 <TabsContent value="forms">
                      <Card>
                         <CardHeader>
-                            <CardTitle>Form Builder</CardTitle>
-                            <CardDescription>Create and manage custom data input forms for your modules.</CardDescription>
+                            <CardTitle>Flexi-Data Form Builder</CardTitle>
+                            <CardDescription>Design custom data input forms for any module in your ERP.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground">The Form Builder UI would be implemented here.</p>
-                            <Button asChild variant="link" className="p-0">
+                        <CardContent className="flex flex-col items-center justify-center text-center py-12 gap-4">
+                            <p className="text-muted-foreground">This powerful feature allows you to create custom forms without code.</p>
+                            <Button asChild>
                                 <Link href="/dashboard/settings/forms">Open Full Form Builder</Link>
                             </Button>
                         </CardContent>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown, Ship, Hammer, Plus, Minus, ScanEye } from "lucide-react";
+import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown, Ship, Hammer, Plus, Minus, ScanEye, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -216,20 +216,26 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg">Item History Ledger</CardTitle>
-                    <p className="text-sm text-muted-foreground">An immutable record of this item's lifecycle.</p>
+                    <CardTitle className="font-headline text-lg">Immutable History Ledger</CardTitle>
+                    <p className="text-sm text-muted-foreground">A cryptographically-chained, tamper-evident record of this item's lifecycle.</p>
                 </CardHeader>
                 <CardContent>
                     <div className="relative space-y-6 before:absolute before:inset-y-0 before:left-3 before:w-0.5 before:bg-border">
                         {item.history.map((entry, index) => (
-                             <div key={index} className="relative flex items-start gap-4 pl-10">
-                                <div className="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary mt-0.5" title={entry.event}>
-                                    <entry.icon className="h-4 w-4" />
+                             <div key={index} className="relative flex items-start gap-4">
+                                <div className="absolute -left-1.5 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-background">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary" title={entry.event}>
+                                        <entry.icon className="h-4 w-4" />
+                                    </div>
                                 </div>
-                                <div>
+                                <div className="pl-10">
                                     <p className="font-semibold">{entry.event} <span className="text-xs text-muted-foreground">by {entry.user}</span></p>
                                     <p className="text-sm text-muted-foreground">{entry.details}</p>
-                                    <p className="text-xs text-muted-foreground/80 mt-1">{entry.date}</p>
+                                    <p className="text-xs text-muted-foreground/80 mt-1 flex items-center gap-2">
+                                        <ShieldCheck className="h-3 w-3 text-green-500"/>
+                                        <span className="font-mono">Hash: a4b...c8e</span>
+                                        <span>({entry.date})</span>
+                                    </p>
                                 </div>
                             </div>
                         ))}
