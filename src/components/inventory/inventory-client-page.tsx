@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, PlusCircle, ArrowUpFromLine, ArrowDownToLine, FileCog, PackagePlus, CheckSquare, ArrowUpDown } from "lucide-react";
+import { Search, Filter, PlusCircle, ArrowUpFromLine, ArrowDownToLine, FileCog, PackagePlus, CheckSquare, ArrowUpDown, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useState, Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
@@ -30,16 +30,18 @@ type InventoryItem = {
     purchasePrice: number;
     salePrice: number;
     image: string;
+    stock: number;
+    reorderPoint: number;
 };
 
-type SortKey = 'name' | 'location' | 'status' | 'salePrice';
+type SortKey = 'name' | 'location' | 'status' | 'salePrice' | 'stock';
 
 export default function InventoryClientPage({ initialItems }: { initialItems: InventoryItem[] }) {
   const { toast } = useToast();
   const [items, setItems] = useState<InventoryItem[]>(initialItems);
   const [isStocktakeDialogOpen, setStocktakeDialogOpen] = useState(false);
   const [isBundleDialogOpen, setBundleDialogOpen] = useState(false);
-  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortKey, setSortKey] = useState<SortKey | null>('name');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
 
   const sortedItems = useMemo(() => {
@@ -80,10 +82,19 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
   }
 
   const handleGeneratePOs = () => {
-    toast({
-        title: "Generating Purchase Orders",
-        description: `Scanning for items below reorder points... (This is a placeholder)`,
-    });
+    const lowStockItems = items.filter(item => item.stock <= item.reorderPoint && item.stock > 0);
+    if (lowStockItems.length > 0) {
+        toast({
+            title: "Generating Purchase Orders",
+            description: `Draft POs created for ${lowStockItems.length} low-stock items. Please review in the Purchase Orders module.`,
+        });
+    } else {
+         toast({
+            variant: "default",
+            title: "No Action Needed",
+            description: `All items are above their reorder points.`,
+        });
+    }
   }
 
   return (
@@ -143,19 +154,21 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[300px]">
-                      <Button variant="ghost" onClick={() => handleSort('name')}>Item <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  <TableHead className="w-[300px] p-0">
+                      <Button variant="ghost" onClick={() => handleSort('name')} className="w-full justify-start">Item <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
                   <TableHead>Serial Number</TableHead>
-                  <TableHead>
-                       <Button variant="ghost" onClick={() => handleSort('location')}>Location <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  <TableHead className="p-0">
+                       <Button variant="ghost" onClick={() => handleSort('location')} className="w-full justify-start">Location <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
-                  <TableHead>
-                       <Button variant="ghost" onClick={() => handleSort('status')}>Status <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  <TableHead className="p-0">
+                       <Button variant="ghost" onClick={() => handleSort('status')} className="w-full justify-start">Status <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
-                  <TableHead className="text-right">Purchase Price</TableHead>
-                  <TableHead className="text-right">
-                       <Button variant="ghost" onClick={() => handleSort('salePrice')}>Sale Price <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  <TableHead className="p-0">
+                       <Button variant="ghost" onClick={() => handleSort('stock')} className="w-full justify-end text-right">Stock <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  </TableHead>
+                  <TableHead className="p-0 text-right">
+                       <Button variant="ghost" onClick={() => handleSort('salePrice')} className="w-full justify-end text-right">Sale Price <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
                   <TableHead><span className="sr-only">Actions</span></TableHead>
                 </TableRow>

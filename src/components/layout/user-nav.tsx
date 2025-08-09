@@ -49,7 +49,7 @@ export function UserNav() {
   const [isCustomizerOpen, setCustomizerOpen] = useState(false);
   const [isSecurityOpen, setSecurityOpen] = useState(false);
   const [displayDensity, setDisplayDensity] = useState('comfortable');
-  
+
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
   };
@@ -111,7 +111,7 @@ export function UserNav() {
                 </DropdownMenuItem>
                  <DropdownMenuItem onSelect={() => setCustomizerOpen(true)}>
                   <Palette className="mr-2 h-4 w-4" />
-                  <span>Custom</span>
+                  <span>Custom...</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => handleThemeChange('system')}>
@@ -192,7 +192,7 @@ export function UserNav() {
             <div className="py-4">
                 <div className="flex items-center justify-between rounded-lg border p-4">
                     <div>
-                        <Label htmlFor="2fa-switch" className="font-bold">Two-Factor Authentication</Label>
+                        <Label className="font-bold">Two-Factor Authentication</Label>
                         <p className="text-sm text-muted-foreground">
                             Add an extra layer of security to your account.
                         </p>
@@ -210,5 +210,3 @@ export function UserNav() {
     </>
   );
 }
-
-    

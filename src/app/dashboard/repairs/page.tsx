@@ -1,3 +1,5 @@
+
+'use client'
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, PlusCircle, MoreHorizontal, Wrench } from "lucide-react";
+import { Search, Filter, PlusCircle, MoreHorizontal, Wrench, ArrowUpDown } from "lucide-react";
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -14,8 +16,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useMemo, useState } from "react";
 
-const repairItems = [
+type RepairItem = {
+    id: string;
+    ticket: string;
+    device: string;
+    serial: string;
+    customer: string;
+    status: string;
+    checkedIn: string;
+    image: string;
+};
+
+type SortKey = 'device' | 'customer' | 'status' | 'checkedIn';
+
+
+const repairItems: RepairItem[] = [
   { id: '1', ticket: 'RPR-001', device: 'iPhone 12', serial: 'F17G83J8Q1J9', customer: 'John Doe', status: 'In Progress', checkedIn: '2023-12-01', image: 'https://placehold.co/64x64.png' },
   { id: '2', ticket: 'RPR-002', device: 'MacBook Pro 14"', serial: 'C02H1234ABCD', customer: 'Jane Smith', status: 'Awaiting Parts', checkedIn: '2023-12-02', image: 'https://placehold.co/64x64.png' },
   { id: '3', ticket: 'RPR-003', device: 'Samsung Galaxy Watch 5', serial: 'G99KAP123XYZ', customer: 'Peter Jones', status: 'Completed', checkedIn: '2023-11-28', image: 'https://placehold.co/64x64.png' },
@@ -39,6 +56,33 @@ const getStatusVariant = (status: string) => {
 }
 
 export default function RepairsPage() {
+    const [sortKey, setSortKey] = useState<SortKey | null>('checkedIn');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+
+    const sortedItems = useMemo(() => {
+        let sortableItems = [...repairItems];
+        if (sortKey) {
+            sortableItems.sort((a, b) => {
+                const aValue = a[sortKey];
+                const bValue = b[sortKey];
+                if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+        return sortableItems;
+    }, [sortKey, sortDirection]);
+
+    const handleSort = (key: SortKey) => {
+        if (sortKey === key) {
+            setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortKey(key);
+            setSortDirection('asc');
+        }
+    }
+
+
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
@@ -77,17 +121,17 @@ export default function RepairsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[300px]">Device</TableHead>
+                  <TableHead className="w-[300px] p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('device')}>Device <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
                   <TableHead>Ticket #</TableHead>
                   <TableHead>Serial Number</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Checked In</TableHead>
+                  <TableHead className="p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('customer')}>Customer <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
+                  <TableHead className="p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('status')}>Status <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
+                  <TableHead className="text-right p-0"><Button variant="ghost" className="w-full justify-end" onClick={() => handleSort('checkedIn')}>Checked In <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
                   <TableHead><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {repairItems.map((item) => (
+                {sortedItems.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
                       <Link href={`/dashboard/repairs/${item.id}`} className="flex items-center gap-4 font-medium text-primary hover:underline">

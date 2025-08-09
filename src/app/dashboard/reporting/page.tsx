@@ -89,9 +89,21 @@ export default function ReportingPage() {
             </div>
             <div className="flex items-center gap-2">
                 <DateRangePicker />
-                <Button variant="secondary"><Download className="mr-2"/> Export All</Button>
             </div>
         </div>
+        <Card className="lg:col-span-3">
+            <CardHeader>
+                <CardTitle className="font-headline text-lg flex items-center gap-2">
+                    <Target className="h-5 w-5 text-primary" />
+                    Custom Report Builder
+                </CardTitle>
+                <CardDescription>This is a placeholder for a powerful, user-configurable report builder.</CardDescription>
+            </CardHeader>
+             <CardContent className="flex flex-col items-center justify-center text-center gap-4 py-12 bg-muted/30">
+                <p className="text-muted-foreground">Select data points, choose columns, and apply filters to build your own reports.</p>
+                <Button>Build Custom Report</Button>
+            </CardContent>
+        </Card>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="lg:col-span-3">
                 <CardHeader>
@@ -165,8 +177,8 @@ export default function ReportingPage() {
             <Card>
                 <CardHeader>
                      <CardTitle className="font-headline text-lg flex items-center gap-2">
-                        <Target className="h-5 w-5 text-primary" />
-                        Generate Reports
+                        <Download className="h-5 w-5 text-primary" />
+                        Standard Reports
                     </CardTitle>
                     <CardDescription>Export detailed CSV reports for analysis.</CardDescription>
                 </CardHeader>
@@ -174,7 +186,7 @@ export default function ReportingPage() {
                     <Button variant="outline" className="w-full justify-start"><DollarSign className="mr-2"/> Sales Summary</Button>
                     <Button variant="outline" className="w-full justify-start"><Package className="mr-2"/> Inventory Value</Button>
                     <Button variant="outline" className="w-full justify-start"><Wrench className="mr-2"/> Repair Statistics</Button>
-                    <Button variant="outline" className="w-full justify-start"><FileText className="mr-2"/> Customer Spending</Button>
+                    <Button variant="outline" className="w-full justify-start"><Users className="mr-2"/> Customer Spending</Button>
                     <Button variant="outline" className="w-full justify-start"><TrendingDown className="mr-2"/> Aging Inventory</Button>
                     <Button variant="outline" className="w-full justify-start"><Users className="mr-2"/> Customer Lifetime Value</Button>
                  </CardContent>

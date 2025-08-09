@@ -9,7 +9,7 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const TransferItemDialog = dynamic(() => import('./transfer-item-dialog'), {
@@ -28,6 +28,8 @@ type InventoryItem = {
     purchasePrice: number;
     salePrice: number;
     image: string;
+    stock: number;
+    reorderPoint: number;
 };
 
 const getStatusVariant = (status: string) => {
@@ -73,7 +75,12 @@ export default function InventoryTableRow({ item }: { item: InventoryItem }) {
                         {item.status}
                     </Badge>
                 </TableCell>
-                <TableCell className="text-right font-mono">${item.purchasePrice.toFixed(2)}</TableCell>
+                <TableCell className="text-right">
+                    <div className="flex items-center justify-end gap-2 font-mono">
+                        {item.stock <= item.reorderPoint && item.stock > 0 && <AlertCircle className="h-4 w-4 text-destructive" title="Low Stock" />}
+                        {item.stock}
+                    </div>
+                </TableCell>
                 <TableCell className="text-right font-mono font-bold">${item.salePrice.toFixed(2)}</TableCell>
                 <TableCell className="text-right">
                     <DropdownMenu>

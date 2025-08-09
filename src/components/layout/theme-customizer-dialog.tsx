@@ -12,7 +12,7 @@ import { Save } from 'lucide-react';
 const defaultCustomColors = {
   background: '204 10% 4%',
   foreground: '210 40% 98%',
-  card: '222 47% 11% / 0.5',
+  card: '222 47% 11%',
   primary: '180 100% 50%',
   accent: '174 78% 52%',
 };
@@ -20,36 +20,33 @@ const defaultCustomColors = {
 type ColorName = keyof typeof defaultCustomColors;
 
 // Helper to convert HSL string to hex
-function hslToHex(hslStr: string) {
-    const parts = hslStr.split(' ');
-    const h = parseFloat(parts[0]);
-    const s = parseFloat(parts[1].replace('%', ''));
-    const l = parseFloat(parts[2].replace('%', ''));
-    
-    const s_norm = s / 100;
-    const l_norm = l / 100;
-    let c = (1 - Math.abs(2 * l_norm - 1)) * s_norm;
-    let x = c * (1 - Math.abs(((h / 60) % 2) - 1));
-    let m = l_norm - c / 2;
-    let r = 0, g = 0, b = 0;
-
+function hslToHex(h: number, s: number, l: number) {
+    s /= 100;
+    l /= 100;
+  
+    let c = (1 - Math.abs(2 * l - 1)) * s;
+    let x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    let m = l - c/2;
+    let r = 0, g = 0, b = 0; 
+  
     if (0 <= h && h < 60) {
-        r = c; g = x; b = 0;
+      r = c; g = x; b = 0;
     } else if (60 <= h && h < 120) {
-        r = x; g = c; b = 0;
+      r = x; g = c; b = 0;
     } else if (120 <= h && h < 180) {
-        r = 0; g = c; b = x;
+      r = 0; g = c; b = x;
     } else if (180 <= h && h < 240) {
-        r = 0; g = x; b = c;
+      r = 0; g = x; b = c;
     } else if (240 <= h && h < 300) {
-        r = x; g = 0; b = c;
+      r = x; g = 0; b = c;
     } else if (300 <= h && h < 360) {
-        r = c; g = 0; b = x;
+      r = c; g = 0; b = x;
     }
+    
     r = Math.round((r + m) * 255);
     g = Math.round((g + m) * 255);
     b = Math.round((b + m) * 255);
-
+  
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
@@ -93,41 +90,39 @@ export default function ThemeCustomizerDialog({ isOpen, onOpenChange }: ThemeCus
   useEffect(() => {
     const savedColors = localStorage.getItem('custom-theme-colors');
     if (savedColors) {
-      setCustomColors(JSON.parse(savedColors));
+      try {
+        const parsedColors = JSON.parse(savedColors);
+        setCustomColors(parsedColors);
+      } catch (e) {
+        console.error("Failed to parse custom theme colors from localStorage", e);
+      }
     }
   }, []);
 
+  const applyCustomTheme = (colors: typeof defaultCustomColors) => {
+    const root = document.documentElement;
+    Object.entries(colors).forEach(([key, value]) => {
+      root.style.setProperty(`--${key}`, value);
+    });
+    root.style.setProperty('--card-foreground', `hsl(${colors.foreground})`);
+    root.style.setProperty('--popover', `hsl(${colors.background})`);
+    root.style.setProperty('--popover-foreground', `hsl(${colors.foreground})`);
+    root.style.setProperty('--muted', `hsl(${colors.accent} / 0.5)`);
+    root.style.setProperty('--muted-foreground', `hsl(${colors.foreground} / 0.8)`);
+    root.style.setProperty('--border', `hsl(${colors.primary} / 0.2)`);
+    root.style.setProperty('--input', `hsl(${colors.accent} / 0.3)`);
+    root.style.setProperty('--ring', `hsl(${colors.primary})`);
+  }
+
   useEffect(() => {
     if (theme === 'custom') {
-      const root = document.documentElement;
-      Object.entries(customColors).forEach(([key, value]) => {
-          if (key === 'card') {
-             const [h, s, l, a] = value.replace(/%/g, '').split(' ').map(parseFloat);
-             root.style.setProperty(`--${key}`, `${h} ${s}% ${l}%`);
-             if (a) {
-                root.style.setProperty(`--${key}`, `${h} ${s}% ${l}% / ${a}`);
-             }
-             root.style.setProperty('--card-foreground', customColors.foreground);
-          } else {
-            root.style.setProperty(`--${key}`, value);
-            root.style.setProperty(`--${key}-foreground`, customColors.foreground);
-          }
-      });
-      // Set other vars based on the main ones
-      root.style.setProperty('--popover', `hsl(${customColors.background})`);
-      root.style.setProperty('--popover-foreground', `hsl(${customColors.foreground})`);
-      root.style.setProperty('--muted', `hsl(${customColors.accent})`);
-      root.style.setProperty('--muted-foreground', `hsl(${customColors.foreground})`);
-      root.style.setProperty('--border', `hsl(${customColors.primary} / 0.2)`);
-      root.style.setProperty('--input', `hsl(${customColors.accent})`);
-      root.style.setProperty('--ring', `hsl(${customColors.primary})`);
+      applyCustomTheme(customColors);
     } else {
-        // Reset styles when switching away from custom
          const root = document.documentElement;
          Object.keys(defaultCustomColors).forEach(key => {
              root.style.removeProperty(`--${key}`);
-             root.style.removeProperty(`--${key}-foreground`);
          });
+         root.style.removeProperty('--card-foreground');
          root.style.removeProperty('--popover');
          root.style.removeProperty('--popover-foreground');
          root.style.removeProperty('--muted');
@@ -146,7 +141,13 @@ export default function ThemeCustomizerDialog({ isOpen, onOpenChange }: ThemeCus
   const saveCustomTheme = () => {
       localStorage.setItem('custom-theme-colors', JSON.stringify(customColors));
       setTheme('custom');
+      applyCustomTheme(customColors);
       onOpenChange(false);
+  }
+
+  const getHexFromHslString = (hslStr: string) => {
+      const [h, s, l] = hslStr.split(' ').map(str => parseFloat(str.replace('%','')));
+      return hslToHex(h,s,l);
   }
 
   return (
@@ -165,7 +166,7 @@ export default function ThemeCustomizerDialog({ isOpen, onOpenChange }: ThemeCus
                          <Input
                             id={name}
                             type="color"
-                            value={hslToHex(customColors[name].split(' / ')[0])}
+                            value={getHexFromHslString(customColors[name])}
                             className="h-10 p-1"
                             onChange={(e) => handleColorChange(name, e.target.value)}
                          />

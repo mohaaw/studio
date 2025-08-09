@@ -26,6 +26,12 @@ export default function PaymentDialog({ open, onOpenChange, total, onCompleteSal
         else if (value === 'del') { setCashTendered(cashTendered.slice(0, -1));} 
         else { setCashTendered(cashTendered + value); }
     }
+    
+    const quickCashValues = [5, 10, 20, 50, 100];
+    
+    // Find the next highest bill for quick tendering
+    const nextBill = [...quickCashValues, Math.ceil(total / 10) * 10, Math.ceil(total)].find(v => v >= total) || Math.ceil(total);
+
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -39,10 +45,11 @@ export default function PaymentDialog({ open, onOpenChange, total, onCompleteSal
                             <TabsContent value="cash" className="pt-4">
                                 <div className="space-y-2">
                                     <Label htmlFor="cash-tendered">Cash Tendered</Label>
-                                    <Input id="cash-tendered" placeholder="0.00" className="h-12 text-xl font-mono text-right" value={cashTendered} onChange={(e) => setCashTendered(e.target.value)} />
+                                    <Input id="cash-tendered" placeholder="0.00" className="h-12 text-xl font-mono text-right" value={parseFloat(cashTendered || "0").toFixed(2)} onChange={(e) => setCashTendered(e.target.value.replace(/[^0-9.]/g, ''))} />
                                 </div>
                                 <div className="grid grid-cols-3 gap-2 mt-4">
-                                    {[100, 50, 20, 10, 5, 1].map(val => <Button key={val} variant="outline" onClick={() => setCashTendered((prev) => (parseFloat(prev || '0') + val).toString())}>${val}</Button>)}
+                                    {quickCashValues.map(val => <Button key={val} variant="outline" onClick={() => setCashTendered((prev) => (parseFloat(prev || '0') + val).toFixed(2))}>+${val}</Button>)}
+                                    <Button variant="outline" onClick={() => setCashTendered(nextBill.toFixed(2))}>${nextBill}</Button>
                                     <Button variant="outline" onClick={() => setCashTendered(total.toFixed(2))}>Exact</Button>
                                 </div>
                             </TabsContent>
@@ -61,8 +68,8 @@ export default function PaymentDialog({ open, onOpenChange, total, onCompleteSal
                                 <div className="flex justify-between text-xl font-bold font-mono text-green-500"><p>Change Due</p><p>${changeDue.toFixed(2)}</p></div>
                             </CardContent>
                             <CardFooter className="p-2">
-                                <div className="grid grid-cols-4 gap-1 w-full">
-                                    {['1','2','3', 'del', '4','5','6', 'C', '7','8','9', '.', '0'].map(key => <Button key={key} variant="outline" className="h-12 text-lg" onClick={() => handleKeypadClick(key)}>{key === 'del' ? <Trash2/> : key}</Button>)}
+                                <div className="grid grid-cols-3 gap-1 w-full">
+                                    {['1','2','3', '4','5','6', '7','8','9', 'C', '0', 'del'].map(key => <Button key={key} variant="outline" className="h-12 text-lg" onClick={() => handleKeypadClick(key)}>{key === 'del' ? <Trash2/> : key}</Button>)}
                                 </div>
                             </CardFooter>
                         </Card>

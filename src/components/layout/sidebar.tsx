@@ -75,7 +75,7 @@ export default function AppSidebar() {
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-2">
           <CircuitBoard className="h-8 w-8 text-primary" />
-          <h1 className="font-headline text-xl font-bold text-primary" style={{ opacity: state === 'collapsed' ? 0 : 1, transition: 'opacity 0.2s ease-in-out' }}>
+          <h1 className="font-headline text-xl font-bold text-primary truncate" style={{ opacity: state === 'collapsed' ? 0 : 1, transition: 'opacity 0.2s ease-in-out' }}>
             {settings.shopName}
           </h1>
         </Link>
@@ -127,5 +127,3 @@ export default function AppSidebar() {
     </Sidebar>
   );
 }
-
-    
