@@ -10,7 +10,9 @@ import {
   Rocket,
   Palette,
   Save,
-  ShieldCheck
+  ShieldCheck,
+  PanelTopOpen,
+  PanelBottomOpen
 } from 'lucide-react';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -27,6 +29,8 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem
 } from '@/components/ui/dropdown-menu';
 import { useSidebar } from '../ui/sidebar';
 import { useTheme } from 'next-themes';
@@ -44,6 +48,7 @@ export function UserNav() {
   const { theme, setTheme } = useTheme();
   const [isCustomizerOpen, setCustomizerOpen] = useState(false);
   const [isSecurityOpen, setSecurityOpen] = useState(false);
+  const [displayDensity, setDisplayDensity] = useState('comfortable');
   
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
@@ -135,6 +140,24 @@ export function UserNav() {
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
+           <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                    {displayDensity === 'comfortable' ? <PanelTopOpen className="mr-2 h-4 w-4" /> : <PanelBottomOpen className="mr-2 h-4 w-4" />}
+                    <span>Display Density</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                    <DropdownMenuRadioGroup value={displayDensity} onValueChange={setDisplayDensity}>
+                        <DropdownMenuRadioItem value="comfortable">
+                            <PanelTopOpen className="mr-2 h-4 w-4" /> Comfortable
+                        </DropdownMenuRadioItem>
+                         <DropdownMenuRadioItem value="compact">
+                            <PanelBottomOpen className="mr-2 h-4 w-4" /> Compact
+                        </DropdownMenuRadioItem>
+                    </DropdownMenuRadioGroup>
+                </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+           </DropdownMenuSub>
           <DropdownMenuItem onSelect={() => setSecurityOpen(true)}>
             <ShieldCheck className="mr-2 h-4 w-4" />
             <span>Security</span>

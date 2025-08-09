@@ -6,9 +6,9 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Search, Filter, PlusCircle, ArrowUpFromLine, ArrowDownToLine, FileCog, PackagePlus, CheckSquare } from "lucide-react";
+import { Search, Filter, PlusCircle, ArrowUpFromLine, ArrowDownToLine, FileCog, PackagePlus, CheckSquare, ArrowUpDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useState, Suspense } from "react";
+import { useState, Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
 import InventoryTableRow from "./inventory-table-row";
 
@@ -32,10 +32,38 @@ type InventoryItem = {
     image: string;
 };
 
+type SortKey = 'name' | 'location' | 'status' | 'salePrice';
+
 export default function InventoryClientPage({ initialItems }: { initialItems: InventoryItem[] }) {
   const { toast } = useToast();
+  const [items, setItems] = useState<InventoryItem[]>(initialItems);
   const [isStocktakeDialogOpen, setStocktakeDialogOpen] = useState(false);
   const [isBundleDialogOpen, setBundleDialogOpen] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  const sortedItems = useMemo(() => {
+    let sortableItems = [...items];
+    if (sortKey) {
+        sortableItems.sort((a, b) => {
+            const aValue = a[sortKey];
+            const bValue = b[sortKey];
+            if (aValue < bValue) return sortDirection === 'asc' ? -1 : 1;
+            if (aValue > bValue) return sortDirection === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+    return sortableItems;
+  }, [items, sortKey, sortDirection]);
+
+  const handleSort = (key: SortKey) => {
+    if (sortKey === key) {
+        setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
+    } else {
+        setSortKey(key);
+        setSortDirection('asc');
+    }
+  }
 
   const handleExport = () => {
     toast({
@@ -115,17 +143,25 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[300px]">Item</TableHead>
+                  <TableHead className="w-[300px]">
+                      <Button variant="ghost" onClick={() => handleSort('name')}>Item <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  </TableHead>
                   <TableHead>Serial Number</TableHead>
-                  <TableHead>Location</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>
+                       <Button variant="ghost" onClick={() => handleSort('location')}>Location <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  </TableHead>
+                  <TableHead>
+                       <Button variant="ghost" onClick={() => handleSort('status')}>Status <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  </TableHead>
                   <TableHead className="text-right">Purchase Price</TableHead>
-                  <TableHead className="text-right">Sale Price</TableHead>
+                  <TableHead className="text-right">
+                       <Button variant="ghost" onClick={() => handleSort('salePrice')}>Sale Price <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  </TableHead>
                   <TableHead><span className="sr-only">Actions</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {initialItems.map((item) => (
+                {sortedItems.map((item) => (
                   <InventoryTableRow key={item.id} item={item} />
                 ))}
               </TableBody>

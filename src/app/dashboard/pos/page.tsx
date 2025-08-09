@@ -5,17 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
-import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck, Gift, ArrowLeftRight } from "lucide-react";
+import { Search, ScanLine, XCircle, Plus, Minus, CreditCard, ShoppingCart, Trash2, Camera, UserPlus, Pause, Play, Wifi, WifiOff, Tags, Edit2, Bot, User, Sparkles, BookText, ShieldCheck, Gift, ArrowLeftRight, Info, AlertCircle } from "lucide-react";
 import Image from "next/image";
 import { useState, useEffect, useTransition, useMemo, lazy, Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { suggestPersonalized } from "@/ai/flows/suggest-personalized-flow";
 import dynamic from "next/dynamic";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const PaymentDialog = dynamic(() => import('@/components/pos/payment-dialog'));
 const HandoverDialog = dynamic(() => import('@/components/pos/handover-dialog'));
@@ -34,6 +35,7 @@ interface Product {
     category: string;
     serials: string[];
     warranty: string;
+    description: string;
 }
 
 interface CartItem extends Product {
@@ -58,14 +60,14 @@ type SuggestPersonalizedOutput = {
 };
 
 const products: Product[] = [
-  { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['F17G83J8Q1J9', 'C39L8B8JHW6H', 'G6TPL0Q7Q1J9'], warranty: 'Expires Nov 2024' },
-  { id: '2', name: 'MacBook Air M2', price: 1199.00, stock: 8, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['C02H1234ABCD', 'C02H5678WXYZ'], warranty: 'Expires Oct 2024' },
-  { id: '3', name: 'Apple Watch S8', price: 399.00, stock: 15, image: 'https://placehold.co/150x150.png', category: 'Wearables', serials: ['G99KAP123XYZ'], warranty: 'Expires Jan 2025' },
-  { id: '4', name: 'AirPods Pro 2', price: 249.00, stock: 30, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: ['GX7Y2345Z123'], warranty: 'Standard 90-Day' },
-  { id: '5', name: 'Dell XPS 13', price: 1099.00, stock: 7, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['5CG1234567'], warranty: 'Standard 90-Day' },
-  { id: '6', name: 'Samsung S23', price: 899.00, stock: 12, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['R58R3ABC123'], warranty: 'Expires Sep 2024' },
-  { id: '7', name: 'Anker Charger', price: 39.99, stock: 50, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [], warranty: 'Manufacturer Limited' },
-  { id: '8', name: 'Logitech Mouse', price: 79.99, stock: 25, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [], warranty: 'Manufacturer Limited' },
+  { id: '1', name: 'iPhone 13 Pro', price: 999.00, stock: 5, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['F17G83J8Q1J9', 'C39L8B8JHW6H', 'G6TPL0Q7Q1J9'], warranty: 'Expires Nov 2024', description: 'Apple iPhone 13 Pro with 256GB storage in Graphite. A-Grade condition.' },
+  { id: '2', name: 'MacBook Air M2', price: 1199.00, stock: 8, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['C02H1234ABCD', 'C02H5678WXYZ'], warranty: 'Expires Oct 2024', description: 'Apple MacBook Air with M2 chip, 8GB RAM, 512GB SSD. Space Gray.' },
+  { id: '3', name: 'Apple Watch S8', price: 399.00, stock: 15, image: 'https://placehold.co/150x150.png', category: 'Wearables', serials: ['G99KAP123XYZ'], warranty: 'Expires Jan 2025', description: '45mm Apple Watch Series 8 GPS in Midnight Aluminum.' },
+  { id: '4', name: 'AirPods Pro 2', price: 249.00, stock: 30, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: ['GX7Y2345Z123'], warranty: 'Standard 90-Day', description: 'Second Generation AirPods Pro with MagSafe Charging Case.' },
+  { id: '5', name: 'Dell XPS 13', price: 1099.00, stock: 0, image: 'https://placehold.co/150x150.png', category: 'Laptops', serials: ['5CG1234567'], warranty: 'Standard 90-Day', description: 'Dell XPS 13 with Intel i7, 16GB RAM, 512GB SSD. B-Grade condition.' },
+  { id: '6', name: 'Samsung S23', price: 899.00, stock: 12, image: 'https://placehold.co/150x150.png', category: 'Phones', serials: ['R58R3ABC123'], warranty: 'Expires Sep 2024', description: 'Samsung Galaxy S23, 256GB in Phantom Black. Unlocked.' },
+  { id: '7', name: 'Anker Charger', price: 39.99, stock: 50, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [], warranty: 'Manufacturer Limited', description: 'Anker 735 Charger (GaNPrime 65W) for fast charging multiple devices.' },
+  { id: '8', name: 'Logitech Mouse', price: 79.99, stock: 25, image: 'https://placehold.co/150x150.png', category: 'Accessories', serials: [], warranty: 'Manufacturer Limited', description: 'Logitech MX Master 3S Wireless Performance Mouse.' },
 ];
 
 const customers: Customer[] = [
@@ -129,6 +131,15 @@ export default function POSPage() {
     }, [toast, offlineQueue]);
 
     const handleAddToCart = (product: Product) => {
+        if (product.stock <= 0) {
+            toast({
+                variant: 'destructive',
+                title: 'Out of Stock',
+                description: `${product.name} is currently out of stock.`
+            })
+            return;
+        }
+
         const existingItem = cart.find(item => item.id === product.id && !item.selectedSerial); 
         if (existingItem) {
             handleUpdateQuantity(product.id, 1);
@@ -154,13 +165,23 @@ export default function POSPage() {
 
     const handleUpdateQuantity = (productId: string, amount: number) => {
         setCart((prevCart) => {
-            return prevCart.map((item) => {
+            const updatedCart = prevCart.map((item) => {
                 if (item.id === productId) {
+                    const productInfo = products.find(p => p.id === productId);
                     const newQuantity = item.quantity + amount;
+                    if (productInfo && newQuantity > productInfo.stock) {
+                        toast({
+                            variant: 'destructive',
+                            title: 'Stock Limit Exceeded',
+                            description: `Only ${productInfo.stock} units of ${productInfo.name} available.`
+                        });
+                        return item;
+                    }
                     return newQuantity > 0 ? { ...item, quantity: newQuantity } : null;
                 }
                 return item;
-            }).filter(Boolean) as CartItem[];
+            });
+            return updatedCart.filter(Boolean) as CartItem[];
         });
     };
     
@@ -281,7 +302,10 @@ export default function POSPage() {
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
                                         {products.map((item) => (
                                             <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
-                                                <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
+                                                <CardContent className="p-2 relative">
+                                                    <Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/>
+                                                    {item.stock <= 0 && <Badge variant="destructive" className="absolute top-1 left-1">Out of Stock</Badge>}
+                                                </CardContent>
                                                 <CardFooter className="p-2 flex-col items-start">
                                                     <p className="font-semibold text-sm truncate w-full">{item.name}</p>
                                                     <p className="font-mono text-muted-foreground">${item.price.toFixed(2)}</p>
@@ -295,7 +319,10 @@ export default function POSPage() {
                                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 pt-4">
                                             {products.filter(p => p.category === category).map((item) => (
                                                 <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
-                                                    <CardContent className="p-2"><Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/></CardContent>
+                                                    <CardContent className="p-2 relative">
+                                                        <Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/>
+                                                        {item.stock <= 0 && <Badge variant="destructive" className="absolute top-1 left-1">Out of Stock</Badge>}
+                                                    </CardContent>
                                                     <CardFooter className="p-2 flex-col items-start">
                                                         <p className="font-semibold text-sm truncate w-full">{item.name}</p>
                                                         <p className="font-mono text-muted-foreground">${item.price.toFixed(2)}</p>
@@ -349,11 +376,20 @@ export default function POSPage() {
                             </div>
                             <div className="flex items-center justify-between pt-2">
                                 {activeCustomer ? (
-                                    <div className="flex items-center gap-2">
-                                        <User className="h-5 w-5 text-primary"/>
-                                        <span className="font-semibold">{activeCustomer.name}</span>
-                                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => { setActiveCustomer(null); setPersonalizedSuggestions(null); }}><XCircle className="h-4 w-4"/></Button>
-                                    </div>
+                                     <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button variant="outline" size="sm" className="flex items-center gap-2">
+                                                <User className="h-5 w-5 text-primary"/>
+                                                <span className="font-semibold">{activeCustomer.name}</span>
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent>
+                                            <h4 className="font-semibold mb-2">Purchase History</h4>
+                                            <ul className="list-disc list-inside text-sm text-muted-foreground">
+                                                {activeCustomer.purchaseHistory.map(item => <li key={item}>{item}</li>)}
+                                            </ul>
+                                        </PopoverContent>
+                                    </Popover>
                                 ) : (
                                     <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="mr-2 h-4 w-4"/>Add Customer</Button>
                                 )}
@@ -390,12 +426,17 @@ export default function POSPage() {
                                         <Image src={cartItem.image} alt={cartItem.name} width={64} height={64} className="rounded-md border-2 border-primary/50" data-ai-hint="phone"/>
                                         <div className="flex-1">
                                             <p className="font-semibold">{cartItem.name}</p>
-                                            <div className="flex items-center gap-2">
+                                            {cartItem.stock < 5 && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3"/> Low Stock ({cartItem.stock} left)</p>}
+                                            <div className="flex items-center gap-2 mt-1">
                                                 <Input type="number" value={cartItem.price.toFixed(2)} onChange={(e) => handlePriceChange(cartItem.id, parseFloat(e.target.value))} className="h-7 w-24 p-1 text-sm font-mono" />
                                                 {cartItem.selectedSerial && <Badge variant="secondary" className="text-xs">{cartItem.selectedSerial}</Badge>}
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-1">
+                                             <Popover>
+                                                <PopoverTrigger asChild><Button variant="outline" size="icon" className="h-8 w-8"><Info className="h-4 w-4"/></Button></PopoverTrigger>
+                                                <PopoverContent><p className="text-sm">{cartItem.description}</p></PopoverContent>
+                                            </Popover>
                                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleShowWarranty(cartItem)}><ShieldCheck className="h-4 w-4"/></Button>
                                             <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleUpdateQuantity(cartItem.id, -1)} disabled={!!cartItem.selectedSerial}><Minus className="h-4 w-4" /></Button>
                                             <span className="w-4 text-center">{cartItem.quantity}</span>

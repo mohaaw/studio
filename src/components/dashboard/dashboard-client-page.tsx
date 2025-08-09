@@ -6,11 +6,11 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend, LineChart as RechartsLineChart } from 'recharts';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
-import { DollarSign, Wrench, Truck, Users, Settings, Package, ShoppingCart, UserCheck, Server, Target, Trophy, Bell, Ship } from "lucide-react";
+import { DollarSign, Wrench, Truck, Users, Settings, Package, ShoppingCart, UserCheck, Server, Target, Trophy, Bell, Ship, AlertCircle } from "lucide-react";
 import { DateRangePicker } from "../ui/date-range-picker";
 import { Progress } from "../ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -64,26 +64,59 @@ const initialWidgetVisibility = {
     upcomingDeliveries: true,
 }
 
+const notifications = [
+    { id: 1, icon: Ship, title: 'Shipment Delayed', description: 'PO-2023-002 from Samsung Components is delayed by 2 days.', time: '10m ago', read: false },
+    { id: 2, icon: AlertCircle, title: 'Low Stock Warning', description: 'iPhone 14 Screens are below reorder point (2 remaining).', time: '1h ago', read: false },
+    { id: 3, icon: DollarSign, title: 'Large Sale Processed', description: 'Mary J. closed a $2,500 deal in the POS.', time: '4h ago', read: true },
+]
+
 export default function DashboardClientPage({ myTasks, activityFeed }: DashboardClientProps) {
     const [isCustomizeOpen, setCustomizeOpen] = useState(false);
+    const [isSessionTimeoutOpen, setSessionTimeoutOpen] = useState(false);
     const [widgetVisibility, setWidgetVisibility] = useState(initialWidgetVisibility);
 
     const handleVisibilityChange = (widget: keyof typeof initialWidgetVisibility, checked: boolean) => {
         setWidgetVisibility(prev => ({ ...prev, [widget]: checked }));
     }
+    
+    // Simulate session timeout warning
+    // In a real app, this would be triggered by an inactivity timer
+    // setTimeout(() => setSessionTimeoutOpen(true), 60000 * 14); // 14 minutes
 
   return (
     <div className="flex-1 space-y-6">
        <div className="flex items-center justify-between space-y-2">
         <h1 className="font-headline text-3xl font-bold tracking-tight">Command Center</h1>
         <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5"/>
-                <span className="absolute top-1 right-1 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                </span>
-            </Button>
+            <Dialog>
+                <DialogTrigger asChild>
+                     <Button variant="ghost" size="icon" className="relative">
+                        <Bell className="h-5 w-5"/>
+                        <span className="absolute top-1 right-1 flex h-2.5 w-2.5">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary ring-1 ring-background"></span>
+                        </span>
+                    </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Notifications</DialogTitle>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                        {notifications.map(n => (
+                            <div key={n.id} className={`flex items-start gap-4 p-3 rounded-lg ${!n.read ? 'bg-muted' : ''}`}>
+                                <n.icon className="h-5 w-5 text-muted-foreground mt-1" />
+                                <div className="flex-1">
+                                    <p className="font-semibold">{n.title}</p>
+                                    <p className="text-sm text-muted-foreground">{n.description}</p>
+                                    <p className="text-xs text-muted-foreground/80 mt-1">{n.time}</p>
+                                </div>
+                                {!n.read && <div className="h-2 w-2 rounded-full bg-primary mt-2"></div>}
+                            </div>
+                        ))}
+                    </div>
+                </DialogContent>
+            </Dialog>
           <DateRangePicker />
           <Button variant="outline" onClick={() => setCustomizeOpen(true)}>
             <Settings className="mr-2 h-4 w-4" />
@@ -344,6 +377,21 @@ export default function DashboardClientPage({ myTasks, activityFeed }: Dashboard
                 </div>
                 <DialogFooter>
                     <DialogClose asChild><Button>Done</Button></DialogClose>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+        
+         <Dialog open={isSessionTimeoutOpen} onOpenChange={setSessionTimeoutOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Are you still there?</DialogTitle>
+                    <DialogDescription>
+                        Your session is about to expire due to inactivity. You will be logged out in 1 minute.
+                    </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                    <Button variant="outline" onClick={() => setSessionTimeoutOpen(false)}>Stay Logged In</Button>
+                    <DialogClose asChild><Button variant="destructive">Logout</Button></DialogClose>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

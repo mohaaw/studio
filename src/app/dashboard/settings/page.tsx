@@ -10,14 +10,23 @@ import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "next-themes";
-import { Rocket, Save } from "lucide-react";
+import { Rocket, Save, Shield, ServerCrash } from "lucide-react";
 import { useSettings } from "@/context/settings-context";
 import Link from "next/link";
+import { useToast } from "@/hooks/use-toast";
 
 
 export default function SettingsPage() {
     const { theme, setTheme } = useTheme();
     const { settings, updateSetting } = useSettings();
+    const { toast } = useToast();
+
+    const handleSave = () => {
+        toast({
+            title: "Settings Saved",
+            description: "Your changes have been saved successfully."
+        });
+    }
 
     return (
         <div className="space-y-6">
@@ -34,6 +43,7 @@ export default function SettingsPage() {
                     <TabsTrigger value="appearance">Appearance</TabsTrigger>
                     <TabsTrigger value="security">Security</TabsTrigger>
                     <TabsTrigger value="forms">Form Builder</TabsTrigger>
+                     <TabsTrigger value="advanced">Advanced</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="general">
@@ -213,9 +223,29 @@ export default function SettingsPage() {
                     </Card>
                 </TabsContent>
 
+                 <TabsContent value="advanced">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Advanced Settings</CardTitle>
+                            <CardDescription>Manage system-level settings. Use with caution.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex items-center justify-between rounded-lg border p-4">
+                                <div>
+                                    <Label htmlFor="maintenance-mode" className="font-bold">Maintenance Mode</Label>
+                                    <p className="text-sm text-muted-foreground">
+                                        Puts the application into maintenance mode, disabling access for non-admins.
+                                    </p>
+                                </div>
+                                <Switch id="maintenance-mode" />
+                            </div>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
             </Tabs>
              <div className="flex justify-end">
-                <Button>
+                <Button onClick={handleSave}>
                     <Save className="mr-2 h-4 w-4" />
                     Save all changes
                 </Button>

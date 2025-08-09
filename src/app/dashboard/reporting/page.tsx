@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
-import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles, TrendingDown, PiggyBank, Target, Component, AlertTriangle, Wand2 } from "lucide-react";
+import { Download, FileText, DollarSign, Package, Wrench, BarChart, TrendingUp, Sparkles, TrendingDown, PiggyBank, Target, Component, AlertTriangle, Wand2, Users } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Bar, BarChart as RechartsBarChart, LineChart as RechartsLineChart, Line, Legend } from "recharts"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -176,6 +176,7 @@ export default function ReportingPage() {
                     <Button variant="outline" className="w-full justify-start"><Wrench className="mr-2"/> Repair Statistics</Button>
                     <Button variant="outline" className="w-full justify-start"><FileText className="mr-2"/> Customer Spending</Button>
                     <Button variant="outline" className="w-full justify-start"><TrendingDown className="mr-2"/> Aging Inventory</Button>
+                    <Button variant="outline" className="w-full justify-start"><Users className="mr-2"/> Customer Lifetime Value</Button>
                  </CardContent>
             </Card>
              <Card className="lg:col-span-3">
