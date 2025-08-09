@@ -10,8 +10,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
-import { DollarSign, Wrench, Truck, Users, Filter, Settings } from "lucide-react";
+import { DollarSign, Wrench, Truck, Users, Filter, Settings, Package, ShoppingCart, UserCheck, ShieldQuestion, Server, GanttChartSquare, Target, Trophy, Bell, Ship } from "lucide-react";
 import { DateRangePicker } from "../ui/date-range-picker";
+import { Progress } from "../ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 const salesData = [
   { month: "Jan", sales: 4000, profit: 2400 },
@@ -50,6 +52,16 @@ const initialWidgetVisibility = {
     salesChart: true,
     tasks: true,
     activityFeed: true,
+    salesLeaderboard: true,
+    recentSales: true,
+    recentRepairs: true,
+    lowStock: true,
+    pendingPOs: true,
+    quickActions: true,
+    teamOverview: true,
+    salesGoal: true,
+    systemHealth: true,
+    upcomingDeliveries: true,
 }
 
 export default function DashboardClientPage({ myTasks, activityFeed }: DashboardClientProps) {
@@ -158,9 +170,114 @@ export default function DashboardClientPage({ myTasks, activityFeed }: Dashboard
             </CardContent>
             </Card>
         )}
+
+        {widgetVisibility.quickActions && (
+            <Card className="lg:col-span-3">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-2">
+                    <Button variant="outline"><Package className="mr-2"/> New Item</Button>
+                    <Button variant="outline"><Users className="mr-2"/> New Customer</Button>
+                    <Button variant="outline"><Wrench className="mr-2"/> New Repair</Button>
+                    <Button variant="outline"><ShoppingCart className="mr-2"/> New Sale</Button>
+                </CardContent>
+            </Card>
+        )}
+
+        {widgetVisibility.salesGoal && (
+             <Card className="lg:col-span-4">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Monthly Sales Goal</CardTitle>
+                    <CardDescription>You are 75% of the way to this month's goal!</CardDescription>
+                </CardHeader>
+                <CardContent>
+                     <Progress value={75} />
+                     <div className="mt-2 flex justify-between text-xs text-muted-foreground">
+                        <span>$11,250 / $15,000</span>
+                        <span>Target</span>
+                     </div>
+                </CardContent>
+            </Card>
+        )}
         
+        {widgetVisibility.teamOverview && (
+            <Card className="lg:col-span-5">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Team Overview</CardTitle>
+                    <CardDescription>Who's currently active.</CardDescription>
+                </CardHeader>
+                 <CardContent className="flex flex-wrap gap-4">
+                     <div className="flex items-center gap-2">
+                        <Avatar><AvatarImage src="https://placehold.co/40x40" /><AvatarFallback>JD</AvatarFallback></Avatar>
+                        <p>John Doe</p>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <Avatar><AvatarImage src="https://placehold.co/40x40" /><AvatarFallback>JS</AvatarFallback></Avatar>
+                        <p>Jane Smith</p>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <Avatar><AvatarImage src="https://placehold.co/40x40" /><AvatarFallback>MJ</AvatarFallback></Avatar>
+                        <p>Mary J</p>
+                     </div>
+                 </CardContent>
+            </Card>
+        )}
+
+        {widgetVisibility.salesLeaderboard && (
+             <Card className="lg:col-span-4">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Sales Leaderboard</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableBody>
+                            <TableRow><TableCell><div className="flex items-center gap-2"><Trophy className="text-yellow-500"/>Mary J.</div></TableCell><TableCell className="text-right font-mono">$5,250</TableCell></TableRow>
+                            <TableRow><TableCell><div className="flex items-center gap-2"><Trophy className="text-gray-400"/>Jane S.</div></TableCell><TableCell className="text-right font-mono">$4,100</TableCell></TableRow>
+                            <TableRow><TableCell><div className="flex items-center gap-2"><Trophy className="text-yellow-700"/>John D.</div></TableCell><TableCell className="text-right font-mono">$1,900</TableCell></TableRow>
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        )}
+
+        {widgetVisibility.lowStock && (
+            <Card className="lg:col-span-4">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Low Stock Items</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader><TableRow><TableHead>Item</TableHead><TableHead className="text-right">Stock</TableHead></TableRow></TableHeader>
+                         <TableBody>
+                            <TableRow><TableCell>iPhone 14 Screens</TableCell><TableCell className="text-right">2</TableCell></TableRow>
+                            <TableRow><TableCell>MacBook Pro Chargers</TableCell><TableCell className="text-right">4</TableCell></TableRow>
+                            <TableRow><TableCell>Anker Power Bank</TableCell><TableCell className="text-right">5</TableCell></TableRow>
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        )}
+
+        {widgetVisibility.upcomingDeliveries && (
+            <Card className="lg:col-span-4">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">Upcoming Deliveries</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader><TableRow><TableHead>Supplier</TableHead><TableHead className="text-right">ETA</TableHead></TableRow></TableHeader>
+                         <TableBody>
+                            <TableRow><TableCell>Apple Parts Pro</TableCell><TableCell className="text-right">Tomorrow</TableCell></TableRow>
+                            <TableRow><TableCell>Accessory World</TableCell><TableCell className="text-right">3 days</TableCell></TableRow>
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        )}
+
         {widgetVisibility.activityFeed && (
-            <Card className="lg:col-span-12">
+            <Card className="lg:col-span-6">
                 <CardHeader>
                     <CardTitle className="font-headline text-lg">Activity Feed</CardTitle>
                     <CardDescription>A live feed of recent system events.</CardDescription>
@@ -187,31 +304,36 @@ export default function DashboardClientPage({ myTasks, activityFeed }: Dashboard
                 </CardContent>
             </Card>
         )}
+
+        {widgetVisibility.systemHealth && (
+            <Card className="lg:col-span-6">
+                <CardHeader>
+                    <CardTitle className="font-headline text-lg">System Health</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between"><p>API Response Time</p><p className="text-green-500">25ms</p></div>
+                    <div className="flex items-center justify-between"><p>Database Connection</p><p className="text-green-500">Healthy</p></div>
+                    <div className="flex items-center justify-between"><p>POS Service</p><p className="text-green-500">Online</p></div>
+                </CardContent>
+            </Card>
+        )}
       </div>
 
        <Dialog open={isCustomizeOpen} onOpenChange={setCustomizeOpen}>
-            <DialogContent>
+            <DialogContent className="max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle>Customize Dashboard</DialogTitle>
                     <DialogDescription>Select the widgets you want to see on your dashboard.</DialogDescription>
                 </DialogHeader>
-                <div className="py-4 space-y-4">
-                    <div className="flex items-center justify-between rounded-lg border p-3">
-                        <Label htmlFor="kpi-switch" className="font-medium">KPI Summary Cards</Label>
-                        <Switch id="kpi-switch" checked={widgetVisibility.kpiCards} onCheckedChange={(c) => handleVisibilityChange('kpiCards', c)} />
-                    </div>
-                    <div className="flex items-center justify-between rounded-lg border p-3">
-                        <Label htmlFor="chart-switch" className="font-medium">Sales vs. Profit Chart</Label>
-                        <Switch id="chart-switch" checked={widgetVisibility.salesChart} onCheckedChange={(c) => handleVisibilityChange('salesChart', c)} />
-                    </div>
-                     <div className="flex items-center justify-between rounded-lg border p-3">
-                        <Label htmlFor="tasks-switch" className="font-medium">My Tasks</Label>
-                        <Switch id="tasks-switch" checked={widgetVisibility.tasks} onCheckedChange={(c) => handleVisibilityChange('tasks', c)} />
-                    </div>
-                     <div className="flex items-center justify-between rounded-lg border p-3">
-                        <Label htmlFor="feed-switch" className="font-medium">Activity Feed</Label>
-                        <Switch id="feed-switch" checked={widgetVisibility.activityFeed} onCheckedChange={(c) => handleVisibilityChange('activityFeed', c)} />
-                    </div>
+                <div className="py-4 grid grid-cols-2 gap-4">
+                    {Object.keys(widgetVisibility).map((key) => (
+                        <div key={key} className="flex items-center justify-between rounded-lg border p-3">
+                            <Label htmlFor={`${key}-switch`} className="font-medium capitalize">
+                                {key.replace(/([A-Z])/g, ' $1').trim()}
+                            </Label>
+                            <Switch id={`${key}-switch`} checked={widgetVisibility[key as keyof typeof widgetVisibility]} onCheckedChange={(c) => handleVisibilityChange(key as keyof typeof widgetVisibility, c)} />
+                        </div>
+                    ))}
                 </div>
                 <DialogFooter>
                     <DialogClose asChild><Button>Done</Button></DialogClose>
