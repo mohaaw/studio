@@ -131,7 +131,7 @@ export default function ExpensesPage() {
                         <div className="overflow-x-auto">
                             <Table>
                                 <TableHeader>
-                                    <TableRow>
+                                    <TableRow className="sticky top-0 bg-background z-10">
                                         <TableHead>Date</TableHead>
                                         <TableHead>Category</TableHead>
                                         <TableHead>Description</TableHead>

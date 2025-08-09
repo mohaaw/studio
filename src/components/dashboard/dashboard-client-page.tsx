@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
-import { DollarSign, Wrench, Truck, Users, Filter, Settings, Package, ShoppingCart, UserCheck, ShieldQuestion, Server, GanttChartSquare, Target, Trophy, Bell, Ship } from "lucide-react";
+import { DollarSign, Wrench, Truck, Users, Settings, Package, ShoppingCart, UserCheck, Server, Target, Trophy, Bell, Ship } from "lucide-react";
 import { DateRangePicker } from "../ui/date-range-picker";
 import { Progress } from "../ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -53,10 +53,10 @@ const initialWidgetVisibility = {
     tasks: true,
     activityFeed: true,
     salesLeaderboard: true,
-    recentSales: true,
-    recentRepairs: true,
+    recentSales: false,
+    recentRepairs: false,
     lowStock: true,
-    pendingPOs: true,
+    pendingPOs: false,
     quickActions: true,
     teamOverview: true,
     salesGoal: true,
@@ -77,6 +77,13 @@ export default function DashboardClientPage({ myTasks, activityFeed }: Dashboard
        <div className="flex items-center justify-between space-y-2">
         <h1 className="font-headline text-3xl font-bold tracking-tight">Command Center</h1>
         <div className="flex items-center space-x-2">
+            <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5"/>
+                <span className="absolute top-1 right-1 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                </span>
+            </Button>
           <DateRangePicker />
           <Button variant="outline" onClick={() => setCustomizeOpen(true)}>
             <Settings className="mr-2 h-4 w-4" />

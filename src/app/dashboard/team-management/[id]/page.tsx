@@ -150,7 +150,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                 </CardHeader>
                 <CardContent>
                      <Table>
-                        <TableHeader><TableRow><TableHead>Item</TableHead><TableHead className="text-right">Sale Amount</TableHead><TableHead className="text-right">Commission Earned</TableHead></TableRow></TableHeader>
+                        <TableHeader><TableRow className="sticky top-0 bg-card z-10"><TableHead>Item</TableHead><TableHead className="text-right">Sale Amount</TableHead><TableHead className="text-right">Commission Earned</TableHead></TableRow></TableHeader>
                         <TableBody>
                             {employee.kpis.recentSales.length > 0 ? employee.kpis.recentSales.map(sale => (
                                 <TableRow key={sale.id}>

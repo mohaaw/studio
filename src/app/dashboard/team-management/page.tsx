@@ -1,4 +1,6 @@
 
+'use client'
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -20,6 +22,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const initialTeamMembers = [
   { id: '1', name: 'John Doe', email: 'john.doe@techshop.com', role: 'Admin', lastActive: 'Online', avatar: 'https://placehold.co/40x40' },
@@ -29,9 +33,30 @@ const initialTeamMembers = [
 ];
 
 type Role = "Admin" | "Manager" | "Technician" | "Sales";
+type TeamMember = {
+    id: string;
+    name: string;
+    email: string;
+    role: Role;
+    lastActive: string;
+    avatar: string;
+}
 
 export default function TeamManagementPage() {
-    const members = initialTeamMembers;
+    const { toast } = useToast();
+    const [members, setMembers] = useState<TeamMember[]>(initialTeamMembers);
+
+    const handleRoleChange = (memberId: string, newRole: Role) => {
+        setMembers(prevMembers => 
+            prevMembers.map(member => 
+                member.id === memberId ? { ...member, role: newRole } : member
+            )
+        );
+        toast({
+            title: "Role Updated",
+            description: `${members.find(m => m.id === memberId)?.name}'s role has been changed to ${newRole}.`
+        })
+    };
 
     const getRoleVariant = (role: Role) => {
         switch(role) {
@@ -105,7 +130,7 @@ export default function TeamManagementPage() {
                                     <DropdownMenuSubTrigger>Change Role</DropdownMenuSubTrigger>
                                     <DropdownMenuPortal>
                                         <DropdownMenuSubContent>
-                                            <DropdownMenuRadioGroup value={member.role} onValueChange={(value) => alert(`Role changed to ${value}`)}>
+                                            <DropdownMenuRadioGroup value={member.role} onValueChange={(value) => handleRoleChange(member.id, value as Role)}>
                                                 <DropdownMenuRadioItem value="Manager">Manager</DropdownMenuRadioItem>
                                                 <DropdownMenuRadioItem value="Technician">Technician</DropdownMenuRadioItem>
                                                 <DropdownMenuRadioItem value="Sales">Sales</DropdownMenuRadioItem>

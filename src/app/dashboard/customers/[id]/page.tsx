@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useTransition, useState, useEffect } from "react";
-import { suggestPersonalized } from "@/ai/flows/suggest-personalized-flow";
+import { suggestPersonalized, SuggestPersonalizedOutput } from "@/ai/flows/suggest-personalized-flow";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -41,34 +41,34 @@ const customer = {
   ]
 };
 
-// Define the type here instead of importing from the server file
-type SuggestPersonalizedOutput = {
-    suggestions: {
-        name: string;
-        reasoning: string;
-    }[];
-};
-
 export default function CustomerProfilePage({ params }: { params: { id: string } }) {
   // In a real app, you would fetch customer data based on params.id
   const { toast } = useToast();
   const [isGenerating, startGenerationTransition] = useTransition();
   const [suggestions, setSuggestions] = useState<SuggestPersonalizedOutput | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGetSuggestions = () => {
+      setError(null);
       startGenerationTransition(async () => {
-          const result = await suggestPersonalized({
-              customerName: customer.name,
-              purchaseHistory: customer.purchaseHistory.map(p => p.item)
-          });
-          if (result) {
-              setSuggestions(result);
-          } else {
+          try {
+              const result = await suggestPersonalized({
+                  customerName: customer.name,
+                  purchaseHistory: customer.purchaseHistory.map(p => p.item)
+              });
+              if (result) {
+                  setSuggestions(result);
+              } else {
+                  throw new Error("The AI flow returned an empty result.");
+              }
+          } catch (e: any) {
+              const errorMessage = e.message || "Could not generate personalized suggestions at this time.";
+              setError(errorMessage);
               toast({
                   variant: "destructive",
                   title: "Suggestion Failed",
-                  description: "Could not generate personalized suggestions at this time."
-              })
+                  description: errorMessage,
+              });
           }
       })
   }
@@ -132,6 +132,7 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                 </CardHeader>
                 <CardContent>
                     {isGenerating && <p className="text-sm text-muted-foreground">Analyzing purchase history...</p>}
+                    {error && <p className="text-sm text-destructive">{error}</p>}
                     {suggestions && suggestions.suggestions.length > 0 ? (
                         <div className="space-y-3">
                             {suggestions.suggestions.map((suggestion, index) => (
@@ -141,7 +142,7 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                                 </div>
                             ))}
                         </div>
-                    ) : !isGenerating && (
+                    ) : !isGenerating && !error && (
                         <p className="text-sm text-muted-foreground">No suggestions available.</p>
                     )}
                 </CardContent>

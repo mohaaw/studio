@@ -16,6 +16,16 @@ import {
 
 export function DatePicker({ name }: { name?: string }) {
   const [date, setDate] = React.useState<Date>()
+  const [formValue, setFormValue] = React.useState('');
+
+  const handleSelectDate = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    if (selectedDate) {
+      setFormValue(selectedDate.toISOString().split('T')[0]);
+    } else {
+      setFormValue('');
+    }
+  }
 
   return (
     <Popover>
@@ -35,10 +45,10 @@ export function DatePicker({ name }: { name?: string }) {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleSelectDate}
           initialFocus
         />
-        {name && <input type="hidden" name={name} value={date ? date.toISOString().split('T')[0] : ''} />}
+        {name && <input type="hidden" name={name} value={formValue} />}
       </PopoverContent>
     </Popover>
   )
