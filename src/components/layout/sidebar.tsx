@@ -33,10 +33,10 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Link } from '@/navigation';
-import { usePathname } from 'next/navigation';
 import { Separator } from '../ui/separator';
 import { UserNav } from './user-nav';
 import { useSettings } from '@/context/settings-context';
+import { useActivePath } from '@/hooks/use-active-path';
 
 
 const menuItems = [
@@ -66,9 +66,9 @@ const menuItems = [
 
 
 export default function AppSidebar() {
-  const pathname = usePathname();
   const { state } = useSidebar();
   const { settings } = useSettings();
+  const checkActivePath = useActivePath();
 
   return (
     <Sidebar>
@@ -90,7 +90,7 @@ export default function AppSidebar() {
                      <SidebarMenuItem key={subItem.href}>
                         <SidebarMenuButton
                           asChild
-                          isActive={pathname.startsWith(subItem.href)}
+                          isActive={checkActivePath(subItem.href)}
                           className="justify-start"
                           tooltip={state === 'collapsed' ? subItem.label : undefined}
                         >
@@ -106,7 +106,7 @@ export default function AppSidebar() {
                 <SidebarMenuItem key={item.href}>
                     <SidebarMenuButton
                       asChild
-                      isActive={pathname.startsWith(item.href) && (item.href !== '/dashboard' || pathname === '/dashboard')}
+                      isActive={checkActivePath(item.href)}
                       className="justify-start"
                       tooltip={state === 'collapsed' ? item.label : undefined}
                     >
