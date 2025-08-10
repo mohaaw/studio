@@ -4,5 +4,25 @@
         "title": "My Account",
         "name": "John Doe",
         "role": "Store Manager"
+    },
+    "Actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "view": "View",
+        "viewProfile": "View Profile",
+        "viewHistory": "View Purchase History",
+        "sendEmail": "Send Email",
+        "sendSMS": "Send SMS",
+        "moreActions": "More actions",
+        "save": "Save",
+        "cancel": "Cancel",
+        "close": "Close",
+        "submit": "Submit",
+        "add": "Add",
+        "remove": "Remove",
+        "apply": "Apply",
+        "done": "Done",
+        "print": "Print",
+        "refresh": "Refresh"
     }
 }

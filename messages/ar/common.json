@@ -1,8 +1,28 @@
 
 {
-    "UserNav": {
-        "title": "My Account",
-        "name": "John Doe",
-        "role": "Store Manager"
-    }
+  "UserNav": {
+    "title": "حسابي",
+    "name": "جون دو",
+    "role": "مدير المتجر"
+  },
+  "Actions": {
+    "edit": "تعديل",
+    "delete": "حذف",
+    "view": "عرض",
+    "viewProfile": "عرض الملف الشخصي",
+    "viewHistory": "عرض السجل",
+    "sendEmail": "إرسال بريد إلكتروني",
+    "sendSMS": "إرسال رسالة نصية",
+    "moreActions": "المزيد من الإجراءات",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "submit": "إرسال",
+    "add": "إضافة",
+    "remove": "إزالة",
+    "apply": "تطبيق",
+    "done": "تم",
+    "print": "طباعة",
+    "refresh": "تحديث"
+  }
 }

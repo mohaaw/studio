@@ -10,7 +10,7 @@ export default getRequestConfig(async ({locale}) => {
     messages: {
       ...messages,
       Sidebar: (await import(`../messages/${locale}/sidebar.json`)).default,
-      Modules: (await import(`../messages/${locale}/modules.json`)).default,
+      // Modules: (await import(`../messages/${locale}/modules.json`)).default,
     }
   }
 });
