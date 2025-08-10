@@ -6,6 +6,7 @@ export default getRequestConfig(async ({locale}) => {
   const messages = (await import(`../messages/${locale}/common.json`)).default;
   
   return {
+    locale,
     messages: {
       ...messages,
       Sidebar: (await import(`../messages/${locale}/sidebar.json`)).default,
