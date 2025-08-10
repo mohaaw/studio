@@ -53,7 +53,7 @@ export default function RootLayout({
             <SettingsProvider>
               <SidebarProvider>
                 <div className="flex" dir={dir}>
-                  <AppSidebar />
+                  <AppSidebar dir={dir} />
                   <SidebarInset>
                     <main className="min-h-screen p-6 sm:p-8">
                         {children}

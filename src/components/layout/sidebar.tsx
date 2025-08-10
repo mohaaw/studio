@@ -40,7 +40,7 @@ import { useActivePath } from '@/hooks/use-active-path';
 import { useTranslations } from 'next-intl';
 
 
-export default function AppSidebar() {
+export default function AppSidebar({ dir }: { dir: 'ltr' | 'rtl' }) {
   const { state } = useSidebar();
   const { settings } = useSettings();
   const checkActivePath = useActivePath();
@@ -73,7 +73,7 @@ export default function AppSidebar() {
 
 
   return (
-    <Sidebar>
+    <Sidebar dir={dir}>
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-2">
           <CircuitBoard className="h-8 w-8 text-primary" />

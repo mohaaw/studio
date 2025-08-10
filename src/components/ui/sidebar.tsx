@@ -163,6 +163,7 @@ const Sidebar = React.forwardRef<
     side?: "left" | "right"
     variant?: "sidebar" | "floating" | "inset"
     collapsible?: "offcanvas" | "icon" | "none"
+    dir?: 'ltr' | 'rtl'
   }
 >(
   (
@@ -172,12 +173,12 @@ const Sidebar = React.forwardRef<
       collapsible = "offcanvas",
       className,
       children,
+      dir,
       ...props
     },
     ref
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
-    const { dir } = props as { dir?: 'ltr' | 'rtl' };
     const effectiveSide = dir === 'rtl' ? 'right' : 'left';
 
     if (collapsible === "none") {
@@ -321,6 +322,7 @@ const SidebarInset = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"main">
 >(({ className, ...props }, ref) => {
+  const { dir } = props as { dir?: 'ltr' | 'rtl' };
   return (
     <main
       ref={ref}
