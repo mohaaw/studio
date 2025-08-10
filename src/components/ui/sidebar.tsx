@@ -176,6 +176,8 @@ const Sidebar = React.forwardRef<
     ref
   ) => {
     const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const { dir } = props as { dir?: 'ltr' | 'rtl' };
+    const effectiveSide = dir === 'rtl' ? 'right' : 'left';
 
     if (collapsible === "none") {
       return (
@@ -204,7 +206,7 @@ const Sidebar = React.forwardRef<
                 "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
               } as React.CSSProperties
             }
-            side={side}
+            side={effectiveSide}
           >
             <div className="flex h-full w-full flex-col">{children}</div>
           </SheetContent>
@@ -219,7 +221,7 @@ const Sidebar = React.forwardRef<
         data-state={state}
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
-        data-side={side}
+        data-side={effectiveSide}
       >
         {/* This is what handles the sidebar gap on desktop */}
         <div
@@ -235,7 +237,7 @@ const Sidebar = React.forwardRef<
         <div
           className={cn(
             "duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
-            side === "left"
+            effectiveSide === "left"
               ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
               : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
             // Adjust the padding for floating and inset variants.
@@ -324,6 +326,10 @@ const SidebarInset = React.forwardRef<
       className={cn(
         "relative flex min-h-svh flex-1 flex-col bg-background",
         "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+        "md:peer-data-[side=left]:peer-data-[state=expanded]:peer-data-[collapsible=icon]:ml-[--sidebar-width]",
+        "md:peer-data-[side=right]:peer-data-[state=expanded]:peer-data-[collapsible=icon]:mr-[--sidebar-width]",
+        "md:peer-data-[side=left]:peer-data-[state=collapsed]:peer-data-[collapsible=icon]:ml-[--sidebar-width-icon]",
+        "md:peer-data-[side=right]:peer-data-[state=collapsed]:peer-data-[collapsible=icon]:mr-[--sidebar-width-icon]",
         className
       )}
       {...props}

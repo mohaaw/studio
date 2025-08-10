@@ -7,6 +7,8 @@ import { NextIntlClientProvider, useMessages } from 'next-intl';
 import AppSidebar from "@/components/layout/sidebar";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { SettingsProvider } from "@/context/settings-context";
+import {unstable_setRequestLocale} from 'next-intl/server';
+
 
 const inter = Inter({
   subsets: ['latin'],
@@ -33,10 +35,12 @@ export default function RootLayout({
   children: React.ReactNode;
   params: {locale: string};
 }>) {
+  unstable_setRequestLocale(locale);
   const messages = useMessages();
+  const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
+    <html lang={locale} dir={dir} suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-body antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider
@@ -47,7 +51,7 @@ export default function RootLayout({
           >
             <SettingsProvider>
               <SidebarProvider>
-                <div className="flex">
+                <div className="flex" dir={dir}>
                   <AppSidebar />
                   <SidebarInset>
                     <main className="min-h-screen p-6 sm:p-8">
