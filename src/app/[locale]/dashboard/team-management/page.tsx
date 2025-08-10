@@ -1,29 +1,11 @@
 
-'use client'
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { PlusCircle, MoreHorizontal, ShieldCheck, UserCog } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuPortal,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { Link } from '@/navigation';
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import TeamManagementClientPage from "@/components/team-management/team-management-client-page";
 
 const initialTeamMembers = [
   { id: '1', name: 'John Doe', email: 'john.doe@techshop.com', role: 'Admin', lastActive: 'Online', avatar: 'https://placehold.co/40x40' },
@@ -32,139 +14,59 @@ const initialTeamMembers = [
   { id: '4', name: 'Mary Johnson', email: 'mary.j@techshop.com', role: 'Sales', lastActive: 'Yesterday', avatar: 'https://placehold.co/40x40' },
 ];
 
-type Role = "Admin" | "Manager" | "Technician" | "Sales";
-type TeamMember = {
-    id: string;
-    name: string;
-    email: string;
-    role: Role;
-    lastActive: string;
-    avatar: string;
+function TeamManagementPageSkeleton() {
+    return (
+        <div className="space-y-6">
+            <div className="flex items-center justify-between">
+                 <div>
+                    <Skeleton className="h-8 w-64" />
+                    <Skeleton className="h-4 w-96 mt-2" />
+                </div>
+                <Skeleton className="h-10 w-40" />
+            </div>
+            <Card>
+                <CardHeader>
+                    <Skeleton className="h-6 w-48" />
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                         <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[350px]"><Skeleton className="h-5 w-24" /></TableHead>
+                                <TableHead><Skeleton className="h-5 w-20" /></TableHead>
+                                <TableHead><Skeleton className="h-5 w-28" /></TableHead>
+                                <TableHead><span className="sr-only">Actions</span></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {Array.from({ length: 4 }).map((_, i) => (
+                                 <TableRow key={i}>
+                                    <TableCell>
+                                        <div className="flex items-center gap-4">
+                                            <Skeleton className="h-10 w-10 rounded-full" />
+                                            <div>
+                                                <Skeleton className="h-4 w-24 mb-1" />
+                                                <Skeleton className="h-3 w-40" />
+                                            </div>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell><Skeleton className="h-6 w-24 rounded-full" /></TableCell>
+                                    <TableCell><Skeleton className="h-4 w-28" /></TableCell>
+                                    <TableCell><Skeleton className="h-8 w-8 ml-auto rounded-md" /></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
+    )
 }
 
 export default function TeamManagementPage() {
-    const { toast } = useToast();
-    const [members, setMembers] = useState<TeamMember[]>(initialTeamMembers);
-
-    const handleRoleChange = (memberId: string, newRole: Role) => {
-        const member = members.find(m => m.id === memberId);
-        if (member?.role === 'Admin') {
-            toast({
-                variant: 'destructive',
-                title: "Permission Denied",
-                description: "The Admin role cannot be changed."
-            });
-            return;
-        }
-
-        setMembers(prevMembers => 
-            prevMembers.map(m => 
-                m.id === memberId ? { ...m, role: newRole } : m
-            )
-        );
-        toast({
-            title: "Role Updated",
-            description: `${members.find(m => m.id === memberId)?.name}'s role has been changed to ${newRole}.`
-        });
-    };
-
-    const getRoleVariant = (role: Role) => {
-        switch(role) {
-            case 'Admin': return 'destructive';
-            case 'Manager': return 'default';
-            case 'Technician': return 'secondary';
-            case 'Sales': return 'outline';
-            default: return 'outline';
-        }
-    }
-
-  return (
-    <div className="space-y-6">
-        <div className="flex items-center justify-between">
-            <div>
-                <h1 className="font-headline text-3xl font-bold">Team Management</h1>
-                <p className="text-muted-foreground">Invite and manage team members and their roles.</p>
-            </div>
-            <Button>
-                <PlusCircle className="mr-2 h-4 w-4" /> Invite Member
-            </Button>
-        </div>
-      <Card>
-        <CardHeader>
-            <CardTitle>Team Members</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[350px]">User</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Last Active</TableHead>
-                  <TableHead><span className="sr-only">Actions</span></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {members.map((member) => (
-                  <TableRow key={member.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-4">
-                        <Avatar>
-                            <AvatarImage src={member.avatar} alt={member.name} data-ai-hint="person portrait"/>
-                            <AvatarFallback>{member.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                            <Link href={`/dashboard/team-management/${member.id}`} className="font-semibold hover:underline">{member.name}</Link>
-                            <p className="text-sm text-muted-foreground">{member.email}</p>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                        <Badge variant={getRoleVariant(member.role as Role)}>
-                            {member.role === 'Admin' ? <ShieldCheck className="mr-1.5 h-3.5 w-3.5" /> : <UserCog className="mr-1.5 h-3.5 w-3.5" />}
-                            {member.role}
-                        </Badge>
-                    </TableCell>
-                    <TableCell>{member.lastActive}</TableCell>
-                    <TableCell className="text-right">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button size="icon" variant="ghost" disabled={member.role === 'Admin'}>
-                                    <MoreHorizontal className="h-4 w-4"/>
-                                    <span className="sr-only">More actions</span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuSub>
-                                    <DropdownMenuSubTrigger>Change Role</DropdownMenuSubTrigger>
-                                    <DropdownMenuPortal>
-                                        <DropdownMenuSubContent>
-                                            <DropdownMenuRadioGroup value={member.role} onValueChange={(value) => handleRoleChange(member.id, value as Role)}>
-                                                <DropdownMenuRadioItem value="Manager">Manager</DropdownMenuRadioItem>
-                                                <DropdownMenuRadioItem value="Technician">Technician</DropdownMenuRadioItem>
-                                                <DropdownMenuRadioItem value="Sales">Sales</DropdownMenuRadioItem>
-                                            </DropdownMenuRadioGroup>
-                                        </DropdownMenuSubContent>
-                                    </DropdownMenuPortal>
-                                </DropdownMenuSub>
-                                <DropdownMenuSeparator />
-                                 <DropdownMenuItem asChild>
-                                    <Link href={`/dashboard/team-management/${member.id}`}>View Performance</Link>
-                                 </DropdownMenuItem>
-                                <DropdownMenuItem>Edit Profile</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-destructive">Remove User</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+    return (
+        <Suspense fallback={<TeamManagementPageSkeleton />}>
+            <TeamManagementClientPage initialTeamMembers={initialTeamMembers} />
+        </Suspense>
+    )
 }

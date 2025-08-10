@@ -1,16 +1,15 @@
 
+
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, GripVertical, Plus, Trash2, TextCursorInput, List, Calendar, CheckSquare, FileUp } from "lucide-react";
 import { Link } from '@/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DatePicker } from "@/components/ui/date-picker";
 
 const fieldTypes = [
     { id: 'text', name: 'Text Input', icon: TextCursorInput },

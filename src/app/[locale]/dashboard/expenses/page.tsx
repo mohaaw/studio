@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import { useState } from "react";
@@ -131,7 +132,7 @@ export default function ExpensesPage() {
                         <div className="overflow-x-auto">
                             <Table>
                                 <TableHeader>
-                                    <TableRow className="sticky top-0 bg-background z-10">
+                                    <TableRow>
                                         <TableHead>Date</TableHead>
                                         <TableHead>Category</TableHead>
                                         <TableHead>Description</TableHead>

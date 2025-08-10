@@ -1,8 +1,9 @@
 
+
 'use client'
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -165,7 +166,7 @@ export default function IntakePage() {
                         <CardTitle className="font-headline text-xl">Register New Item</CardTitle>
                         <CardDescription>Fill out the details below to add a new item to the inventory.</CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-8">
+                    <CardContent className="space-y-8 p-6">
                         <div className="space-y-4">
                              <h3 className="font-headline text-lg font-semibold border-b pb-2">Media</h3>
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
