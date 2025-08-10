@@ -14,11 +14,12 @@ import {
   PanelTopOpen,
   PanelBottomOpen
 } from 'lucide-react';
-import { Link } from '@/navigation';
+import { Link, usePathname, useRouter } from '@/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
@@ -28,13 +29,12 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem
 } from '@/components/ui/dropdown-menu';
 import { useSidebar } from '../ui/sidebar';
 import { useTheme } from 'next-themes';
-import { useState, lazy, Suspense } from 'react';
+import { useState, lazy, Suspense, useTransition } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
@@ -50,9 +50,19 @@ export function UserNav() {
   const [isSecurityOpen, setSecurityOpen] = useState(false);
   const [displayDensity, setDisplayDensity] = useState('comfortable');
 
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
+
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
   };
+
+  const handleLanguageChange = (locale: 'en' | 'ar') => {
+    startTransition(() => {
+        router.replace(pathname, { locale });
+    });
+  }
   
   return (
     <>
@@ -128,14 +138,11 @@ export function UserNav() {
             </DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleLanguageChange('en')} disabled={isPending}>
                     English
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => handleLanguageChange('ar')} disabled={isPending}>
                     العربية (Arabic)
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                    Русский (Russian)
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
