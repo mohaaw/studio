@@ -1,4 +1,5 @@
 
+
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -6,9 +7,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 
-const PurchaseOrdersClientPage = dynamic(() => import('@/components/purchase-orders/purchase-orders-client-page'), {
-    loading: () => <PurchaseOrdersSkeleton />
-});
+const PurchaseOrdersClientPage = dynamic(() => import('@/components/purchase-orders/purchase-orders-client-page'));
 
 function PurchaseOrdersSkeleton() {
     return (

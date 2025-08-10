@@ -4,9 +4,7 @@ import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const DashboardClientPage = dynamic(() => import('@/components/dashboard/dashboard-client-page'), {
-    loading: () => <DashboardSkeleton />
-});
+const DashboardClientPage = dynamic(() => import('@/components/dashboard/dashboard-client-page'));
 
 // Note: This data would typically be fetched from a database based on the logged-in user.
 const myTasks = [

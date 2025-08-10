@@ -1,12 +1,11 @@
 
+
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { Card, CardHeader, CardContent, Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const ReturnsClientPage = dynamic(() => import('@/components/returns/returns-client-page'), {
-    loading: () => <ReturnsPageSkeleton />
-});
+const ReturnsClientPage = dynamic(() => import('@/components/returns/returns-client-page'));
 
 const initialRmaItems = [
   { id: '1', rmaNumber: 'RMA-2023-001', orderId: 'ORD-1234', customer: 'John Doe', item: 'iPhone 13 Pro', returnDate: '2023-11-20', status: 'Pending Inspection' },
