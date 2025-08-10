@@ -4,6 +4,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
+import AppSidebar from "@/components/layout/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { SettingsProvider } from "@/context/settings-context";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -33,7 +36,7 @@ export default function RootLayout({
   const messages = useMessages();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-body antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider
@@ -42,8 +45,19 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
           >
-              {children}
-              <Toaster />
+            <SettingsProvider>
+              <SidebarProvider>
+                <div className="flex">
+                  <AppSidebar />
+                  <SidebarInset>
+                    <main className="min-h-screen p-4 sm:p-6 lg:p-8">
+                        {children}
+                    </main>
+                  </SidebarInset>
+                </div>
+              </SidebarProvider>
+            </SettingsProvider>
+            <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
