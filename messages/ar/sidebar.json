@@ -1,0 +1,21 @@
+
+{
+  "dashboard": "لوحة المراقبة",
+  "inventory": "المخزون",
+  "pos": "نقطة البيع",
+  "repairs": "الإصلاحات",
+  "returns": "المرتجعات",
+  "customers": "العملاء",
+  "intake": "إدخال المستودع",
+  "tradeIns": "المبادلات",
+  "suppliers": "الموردون",
+  "purchaseOrders": "طلبات الشراء",
+  "expenses": "المصاريف",
+  "reporting": "التقارير",
+  "hr": "الموارد البشرية",
+  "teamManagement": "إدارة الفريق",
+  "payroll": "كشف الرواتب",
+  "teamHub": "مركز الفريق",
+  "settings": "الإعدادات",
+  "kiosk": "وضع الكشك"
+}

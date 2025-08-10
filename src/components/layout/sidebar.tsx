@@ -37,38 +37,40 @@ import { Separator } from '../ui/separator';
 import { UserNav } from './user-nav';
 import { useSettings } from '@/context/settings-context';
 import { useActivePath } from '@/hooks/use-active-path';
-
-
-const menuItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/dashboard/inventory', label: 'Inventory', icon: Boxes },
-  { href: '/dashboard/pos', label: 'Point of Sale', icon: ScanLine },
-  { href: '/dashboard/repairs', label: 'Repairs', icon: Wrench },
-  { href: '/dashboard/returns', label: 'Returns (RMA)', icon: Undo2 },
-  { href: '/dashboard/customers', label: 'Customers', icon: Users },
-  { href: '/dashboard/intake', label: 'Storehouse Intake', icon: Warehouse },
-  { href: '/dashboard/trade-ins', label: 'Trade-ins', icon: ArrowRightLeft },
-  { href: '/dashboard/suppliers', label: 'Suppliers', icon: Truck },
-  { href: '/dashboard/purchase-orders', label: 'Purchase Orders', icon: ClipboardList },
-  { href: '/dashboard/expenses', label: 'Expenses', icon: DollarSign },
-  { href: '/dashboard/reporting', label: 'Reporting', icon: BarChart2 },
-  {
-    label: 'HR',
-    items: [
-      { href: '/dashboard/team-management', label: 'Team Management', icon: UserCog },
-      { href: '/dashboard/payroll', label: 'Payroll', icon: Banknote },
-    ]
-  },
-  { href: '/dashboard/team-hub', label: 'Team Hub', icon: Megaphone },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
-  { href: '/kiosk', label: 'Kiosk Mode', icon: Laptop },
-];
+import { useTranslations } from 'next-intl';
 
 
 export default function AppSidebar() {
   const { state } = useSidebar();
   const { settings } = useSettings();
   const checkActivePath = useActivePath();
+  const t = useTranslations('Sidebar');
+
+  const menuItems = [
+    { href: '/dashboard', label: t('dashboard'), icon: LayoutDashboard },
+    { href: '/dashboard/inventory', label: t('inventory'), icon: Boxes },
+    { href: '/dashboard/pos', label: t('pos'), icon: ScanLine },
+    { href: '/dashboard/repairs', label: t('repairs'), icon: Wrench },
+    { href: '/dashboard/returns', label: t('returns'), icon: Undo2 },
+    { href: '/dashboard/customers', label: t('customers'), icon: Users },
+    { href: '/dashboard/intake', label: t('intake'), icon: Warehouse },
+    { href: '/dashboard/trade-ins', label: t('tradeIns'), icon: ArrowRightLeft },
+    { href: '/dashboard/suppliers', label: t('suppliers'), icon: Truck },
+    { href: '/dashboard/purchase-orders', label: t('purchaseOrders'), icon: ClipboardList },
+    { href: '/dashboard/expenses', label: t('expenses'), icon: DollarSign },
+    { href: '/dashboard/reporting', label: t('reporting'), icon: BarChart2 },
+    {
+      label: t('hr'),
+      items: [
+        { href: '/dashboard/team-management', label: t('teamManagement'), icon: UserCog },
+        { href: '/dashboard/payroll', label: t('payroll'), icon: Banknote },
+      ]
+    },
+    { href: '/dashboard/team-hub', label: t('teamHub'), icon: Megaphone },
+    { href: '/dashboard/settings', label: t('settings'), icon: Settings },
+    { href: '/kiosk', label: t('kiosk'), icon: Laptop },
+  ];
+
 
   return (
     <Sidebar>

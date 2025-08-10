@@ -1,0 +1,21 @@
+
+{
+  "dashboard": "Dashboard",
+  "inventory": "Inventory",
+  "pos": "Point of Sale",
+  "repairs": "Repairs",
+  "returns": "Returns (RMA)",
+  "customers": "Customers",
+  "intake": "Storehouse Intake",
+  "tradeIns": "Trade-ins",
+  "suppliers": "Suppliers",
+  "purchaseOrders": "Purchase Orders",
+  "expenses": "Expenses",
+  "reporting": "Reporting",
+  "hr": "HR",
+  "teamManagement": "Team Management",
+  "payroll": "Payroll",
+  "teamHub": "Team Hub",
+  "settings": "Settings",
+  "kiosk": "Kiosk Mode"
+}
