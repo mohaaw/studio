@@ -41,7 +41,7 @@ const performanceProfiles = {
   'standard': {
     cacheMaxMemorySize: 50 * 1024 * 1024, // 50MB memory cache
     experimental: {
-      useLightningcss: true,
+      useLightningcss: false,
     },
     images: {
       unoptimized: false,
@@ -58,7 +58,7 @@ const performanceProfiles = {
     experimental: {
       // Enables parallel builds for routes, speeding up build times.
       parallelism: true, 
-      useLightningcss: true,
+      useLightningcss: false,
     },
     images: {
       unoptimized: false,
