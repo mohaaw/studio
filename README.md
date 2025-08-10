@@ -10,6 +10,12 @@ This application is packed with features designed to cover all aspects of runnin
 *   **Complete Inventory Management**: Track every item in your store, from intake to sale or repair. View detailed item profiles and history. #inventory #stock-management
 *   **Point of Sale (POS) System**: A fully-featured POS interface with cart management, product search, and barcode scanning capabilities. #pos #pointofsale #cash-register
 *   **Repair Tracking Module**: Manage the entire repair lifecycle, from customer check-in and AI-powered diagnostics to completion and pickup. #repairs #repair-shop-software
+*   **Expenses Tracking**: Record and categorize business expenses for better financial management. #expenses #financial-management
+*   **Intake Module**: Streamline the process of receiving new items, including initial inspection and data entry. #intake #receiving
+*   **Barcode Scanning**: Implement barcode scanning for faster and more accurate item lookup and processing in Inventory and POS. #barcode #scanning #efficiency
+*   **Reporting & Analytics Improvements**: Enhance reporting with more customizable filters, export options, and visual representations of key metrics. #reporting #analytics #business-intelligence
+*   **Arabic Language Support**: The application is now available in both English and Arabic, providing a localized experience for users. #arabic #localization #i18n
+
 *   **Customer Management (CRM)**: Keep a record of your customers, view their purchase history, and manage a loyalty program. #crm #customer-relationship-management
 *   **AI-Powered Features (via Google's Genkit)**:
     *   **Repair Diagnostics**: Automatically get a preliminary diagnosis and parts suggestions based on the customer's issue description.
