@@ -1,8 +1,12 @@
 
 const createNextIntlPlugin = require('next-intl/plugin');
 const performanceConfig = require('./performance.config.js');
- 
+
 const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
+
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
  
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -27,4 +31,4 @@ const nextConfig = {
   },
 };
  
-module.exports = withNextIntl(nextConfig);
+module.exports = withBundleAnalyzer(withNextIntl(nextConfig));
