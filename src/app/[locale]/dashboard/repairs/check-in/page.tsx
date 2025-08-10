@@ -9,16 +9,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Save, Sparkles, Lightbulb, Package, Beaker, Upload } from "lucide-react";
 import { Link, useRouter } from "@/navigation";
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { diagnoseRepair, DiagnoseRepairOutput } from "@/ai/flows/diagnose-repair-flow";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { useOptimizedAI } from "@/hooks/use-optimized-ai";
 
 export default function RepairCheckInPage() {
     const router = useRouter();
     const { toast } = useToast();
-    const [isDiagnosing, startDiagnosisTransition] = useTransition();
+    const { loading: isDiagnosing, callAI } = useOptimizedAI<any, DiagnoseRepairOutput>();
 
     const [reportedIssue, setReportedIssue] = useState('');
     const [diagnosisResult, setDiagnosisResult] = useState<DiagnoseRepairOutput | null>(null);
@@ -34,7 +35,7 @@ export default function RepairCheckInPage() {
         router.push('/dashboard/repairs');
     };
 
-    const handleDiagnose = () => {
+    const handleDiagnose = async () => {
         if (!reportedIssue) {
             toast({
                 variant: 'destructive',
@@ -43,18 +44,16 @@ export default function RepairCheckInPage() {
             });
             return;
         }
-        startDiagnosisTransition(async () => {
-            const result = await diagnoseRepair({ reportedIssue });
-            if (result) {
-                setDiagnosisResult(result);
-            } else {
-                 toast({
-                    variant: 'destructive',
-                    title: "Diagnosis Failed",
-                    description: "Could not generate a diagnosis. Please try again.",
-                });
-            }
-        });
+
+        const result = await callAI(
+            diagnoseRepair,
+            { reportedIssue },
+            `diagnose-${reportedIssue}`
+        );
+
+        if (result) {
+            setDiagnosisResult(result);
+        }
     }
 
     const handlePhotoUpload = () => {
