@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { suggestPersonalized } from "@/ai/flows/suggest-personalized-flow";
 import dynamic from "next/dynamic";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Link } from "@/navigation";
 
 const PaymentDialog = dynamic(() => import('@/components/pos/payment-dialog'));
 const HandoverDialog = dynamic(() => import('@/components/pos/handover-dialog'));
@@ -492,7 +493,7 @@ export default function POSPage() {
                 <iframe src="/dashboard/pos/returns" className="w-full h-full border-0" />
             </TabsContent>
             <TabsContent value="customers" className="flex-1 mt-4">
-                <iframe src="/dashboard/pos/customers" className="w-full h-full border-0" />
+                 <iframe src="/dashboard/pos/customers" className="w-full h-full border-0" />
             </TabsContent>
             <TabsContent value="session" className="flex-1 mt-4">
                 <iframe src="/dashboard/pos/session" className="w-full h-full border-0" />

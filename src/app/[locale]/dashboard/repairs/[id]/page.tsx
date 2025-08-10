@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, User, HardDrive, Phone, Mail, Wrench, Package, ClipboardCheck, History, MessageSquare, Smartphone } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";

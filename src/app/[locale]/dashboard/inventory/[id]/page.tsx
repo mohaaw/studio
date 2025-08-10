@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, PackageCheck, DollarSign, Warehouse, Package, Truck, Wrench, FilePen, Info, Box, TrendingDown, Ship, Hammer, Plus, Minus, ScanEye, ShieldCheck } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
