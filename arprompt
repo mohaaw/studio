@@ -1,0 +1,424 @@
+SYSTEM: You are implementing complete Arabic language support for the TechShop Manager Next.js project. The current Arabic implementation is broken or missing. Fix it completely while preserving ALL existing English routes and functionality. The project uses Next.js, TypeScript, Tailwind CSS, and ShadCN/UI.
+CRITICAL REQUIREMENTS:
+NEVER break existing /en/ routes - they must continue working exactly as before
+Add proper RTL support without affecting LTR layouts
+Implement sidebar highlighting that works in both languages
+Preserve all existing functionality and performance
+Use safe, incremental approach - no major structural changes
+IMPLEMENTATION PLAN:
+PHASE 1: Foundation (Safe Setup)
+Step 1: Update next.config.js (Preserve existing config)
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Keep ALL existing configuration
+  reactStrictMode: true,
+  swcMinify: true,
+  
+  // Add i18n support safely
+  i18n: {
+    locales: ['en', 'ar'],
+    defaultLocale: 'en',
+    localeDetection: false, // Prevents breaking existing paths
+  },
+  
+  // Preserve any existing webpack, experimental, or other configs
+}
+
+module.exports = nextConfig
+
+Step 2: Create middleware.ts (Route Protection)
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/request'
+
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+  
+  // PRESERVE existing /en/ routes - NO changes
+  if (pathname.startsWith('/en/')) {
+    return NextResponse.next()
+  }
+  
+  // Handle new /ar/ routes  
+  if (pathname.startsWith('/ar/')) {
+    return NextResponse.next()
+  }
+  
+  // Skip API and Next.js internals
+  if (
+    pathname.startsWith('/api/') || 
+    pathname.startsWith('/_next/') || 
+    pathname.includes('.') ||
+    pathname.startsWith('/favicon')
+  ) {
+    return NextResponse.next()
+  }
+  
+  // Only redirect unlocalized paths to English
+  if (!pathname.includes('/en') && !pathname.includes('/ar')) {
+    const redirectPath = pathname === '/' ? '/en' : `/en${pathname}`
+    return NextResponse.redirect(new URL(redirectPath, request.url))
+  }
+  
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+}
+
+PHASE 2: Translation System
+Step 3: Create translation hook (hooks/useTranslation.ts)
+import { useRouter } from 'next/router'
+import { useMemo } from 'react'
+
+// Complete translations for TechShop Manager
+const translations = {
+  en: {
+    // Navigation
+    dashboard: "Dashboard",
+    inventory: "Inventory Management",
+    pos: "Point of Sale", 
+    repairs: "Repair Tracking",
+    customers: "Customer Management",
+    analytics: "Analytics & Reports",
+    teamHub: "Team Hub",
+    suppliers: "Suppliers",
+    settings: "Settings",
+    logout: "Logout",
+    
+    // Common UI
+    search: "Search",
+    add: "Add",
+    edit: "Edit", 
+    delete: "Delete",
+    save: "Save",
+    cancel: "Cancel",
+    loading: "Loading...",
+    error: "Error",
+    success: "Success",
+  },
+  ar: {
+    // Navigation
+    dashboard: "لوحة التحكم",
+    inventory: "إدارة المخزون",
+    pos: "نقطة البيع",
+    repairs: "تتبع الإصلاحات", 
+    customers: "إدارة العملاء",
+    analytics: "التحليلات والتقارير",
+    teamHub: "مركز الفريق",
+    suppliers: "الموردون",
+    settings: "الإعدادات", 
+    logout: "تسجيل الخروج",
+    
+    // Common UI
+    search: "بحث",
+    add: "إضافة",
+    edit: "تعديل",
+    delete: "حذف", 
+    save: "حفظ",
+    cancel: "إلغاء",
+    loading: "جارٍ التحميل...",
+    error: "خطأ",
+    success: "نجح",
+  }
+}
+
+export const useTranslation = () => {
+  const router = useRouter()
+  const locale = (router.locale || 'en') as 'en' | 'ar'
+  
+  const t = useMemo(() => {
+    return (key: string): string => {
+      const keys = key.split('.')
+      let value: any = translations[locale]
+      
+      for (const k of keys) {
+        value = value?.[k]
+      }
+      
+      return value || key
+    }
+  }, [locale])
+  
+  return { 
+    t, 
+    locale, 
+    isRTL: locale === 'ar',
+    isArabic: locale === 'ar'
+  }
+}
+
+PHASE 3: Layout & RTL Support
+Step 4: Update globals.css (Add Arabic font support)
+/* Add to existing globals.css - don't remove existing styles */
+
+/* Arabic Font Support */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+/* RTL Support Class */
+.font-arabic {
+  font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* RTL Layout Fixes */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Tailwind RTL Overrides */
+[dir="rtl"] .mr-2 { margin-left: 0.5rem; margin-right: 0; }
+[dir="rtl"] .mr-3 { margin-left: 0.75rem; margin-right: 0; }
+[dir="rtl"] .mr-4 { margin-left: 1rem; margin-right: 0; }
+[dir="rtl"] .ml-2 { margin-right: 0.5rem; margin-left: 0; }
+[dir="rtl"] .ml-3 { margin-right: 0.75rem; margin-left: 0; }
+[dir="rtl"] .ml-4 { margin-right: 1rem; margin-left: 0; }
+
+[dir="rtl"] .pl-2 { padding-right: 0.5rem; padding-left: 0; }
+[dir="rtl"] .pl-3 { padding-right: 0.75rem; padding-left: 0; }
+[dir="rtl"] .pl-4 { padding-right: 1rem; padding-left: 0; }
+[dir="rtl"] .pr-2 { padding-left: 0.5rem; padding-right: 0; }
+[dir="rtl"] .pr-3 { padding-left: 0.75rem; padding-right: 0; }
+[dir="rtl"] .pr-4 { padding-left: 1rem; padding-right: 0; }
+
+/* Sidebar RTL */
+[dir="rtl"] .sidebar {
+  border-left: 1px solid #e5e7eb;
+  border-right: none;
+}
+
+[dir="rtl"] .border-r-4 {
+  border-left-width: 4px;
+  border-right-width: 0;
+}
+
+/* Keep numbers LTR in Arabic */
+.number-ltr {
+  direction: ltr;
+  unicode-bidi: embed;
+  display: inline-block;
+}
+
+Step 5: Create Layout wrapper component (components/LanguageLayout.tsx)
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { useTranslation } from '@/hooks/useTranslation'
+
+interface LanguageLayoutProps {
+  children: React.ReactNode
+}
+
+export const LanguageLayout: React.FC<LanguageLayoutProps> = ({ children }) => {
+  const { isRTL, locale } = useTranslation()
+  
+  useEffect(() => {
+    // Set document direction and language
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
+    document.documentElement.lang = locale
+    
+    // Add Arabic font class to body
+    if (isRTL) {
+      document.body.classList.add('font-arabic')
+    } else {
+      document.body.classList.remove('font-arabic')
+    }
+  }, [isRTL, locale])
+  
+  return <>{children}</>
+}
+
+PHASE 4: Sidebar with Highlighting
+Step 6: Create enhanced sidebar hook (hooks/useActiveRoute.ts)
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+
+export const useActiveRoute = () => {
+  const router = useRouter()
+  const [activeRoute, setActiveRoute] = useState('')
+  
+  useEffect(() => {
+    // Remove locale prefix to get clean path
+    const cleanPath = router.asPath.replace(/^\/(en|ar)/, '') || '/'
+    setActiveRoute(cleanPath)
+  }, [router.asPath])
+  
+  const isActive = (href: string) => {
+    if (href === '/' || href === '') {
+      return activeRoute === '/' || activeRoute === ''
+    }
+    return activeRoute === href || activeRoute.startsWith(href + '/')
+  }
+  
+  const navigateTo = (href: string) => {
+    const currentLocale = router.locale || 'en'
+    router.push(href, href, { locale: currentLocale })
+  }
+  
+  return { activeRoute, isActive, navigateTo }
+}
+
+Step 7: Update Sidebar component
+import { useTranslation } from '@/hooks/useTranslation'
+import { useActiveRoute } from '@/hooks/useActiveRoute'
+import { cn } from '@/lib/utils'
+import { 
+  LayoutDashboard, 
+  Package, 
+  ShoppingCart, 
+  Wrench, 
+  Users, 
+  BarChart3,
+  Settings,
+  LogOut
+} from 'lucide-react'
+
+const Sidebar = () => {
+  const { t, isRTL } = useTranslation()
+  const { isActive, navigateTo } = useActiveRoute()
+  
+  const menuItems = [
+    { key: 'dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { key: 'inventory', href: '/inventory', icon: Package },
+    { key: 'pos', href: '/pos', icon: ShoppingCart },
+    { key: 'repairs', href: '/repairs', icon: Wrench },
+    { key: 'customers', href: '/customers', icon: Users },
+    { key: 'analytics', href: '/analytics', icon: BarChart3 },
+    { key: 'settings', href: '/settings', icon: Settings },
+  ]
+  
+  return (
+    <aside className={cn(
+      "w-64 h-screen bg-white dark:bg-gray-900 shadow-lg",
+      "border-r border-gray-200 dark:border-gray-700",
+      isRTL && "border-l border-r-0"
+    )}>
+      <nav className="p-4 space-y-1">
+        {menuItems.map(({ key, href, icon: Icon }) => {
+          const active = isActive(href)
+          
+          return (
+            <button
+              key={key}
+              onClick={() => navigateTo(href)}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
+                "transition-all duration-200 text-left",
+                "hover:bg-gray-100 dark:hover:bg-gray-800",
+                isRTL && "text-right flex-row-reverse",
+                active ? [
+                  "bg-blue-50 dark:bg-blue-900/20",
+                  "text-blue-700 dark:text-blue-300",
+                  "border-r-4 border-blue-500",
+                  isRTL && "border-l-4 border-r-0"
+                ] : [
+                  "text-gray-700 dark:text-gray-300"
+                ]
+              )}
+            >
+              <Icon className={cn(
+                "w-5 h-5 flex-shrink-0",
+                active ? "text-blue-600 dark:text-blue-400" : "text-gray-500"
+              )} />
+              <span className="font-medium">
+                {t(key)}
+              </span>
+            </button>
+          )
+        })}
+      </nav>
+    </aside>
+  )
+}
+
+export default Sidebar
+
+PHASE 5: Language Switcher
+Step 8: Create Language Switcher component
+import { useRouter } from 'next/router'
+import { useTranslation } from '@/hooks/useTranslation'
+import { cn } from '@/lib/utils'
+import { Languages } from 'lucide-react'
+
+const LanguageSwitcher = () => {
+  const router = useRouter()
+  const { locale, isRTL } = useTranslation()
+  
+  const switchLanguage = (newLocale: 'en' | 'ar') => {
+    if (newLocale === locale) return
+    
+    // Get current path without locale prefix
+    const currentPath = router.asPath.replace(/^\/(en|ar)/, '') || '/'
+    
+    // Navigate to same path with new locale
+    router.push(currentPath, currentPath, { locale: newLocale })
+  }
+  
+  return (
+    <div className={cn(
+      "flex items-center gap-2",
+      isRTL && "flex-row-reverse"
+    )}>
+      <Languages className="w-4 h-4 text-gray-500" />
+      <div className="flex rounded-lg border border-gray-300 dark:border-gray-600 overflow-hidden">
+        <button
+          onClick={() => switchLanguage('en')}
+          className={cn(
+            "px-3 py-1 text-sm font-medium transition-colors",
+            locale === 'en' 
+              ? "bg-blue-500 text-white" 
+              : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+          )}
+        >
+          English
+        </button>
+        <button
+          onClick={() => switchLanguage('ar')}
+          className={cn(
+            "px-3 py-1 text-sm font-medium transition-colors",
+            locale === 'ar' 
+              ? "bg-blue-500 text-white" 
+              : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
+          )}
+        >
+          العربية
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default LanguageSwitcher
+
+PHASE 6: Update _app.tsx
+Step 9: Wrap your app with LanguageLayout
+// Update your existing _app.tsx
+import type { AppProps } from 'next/app'
+import { LanguageLayout } from '@/components/LanguageLayout'
+// ... other imports
+
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <LanguageLayout>
+      {/* Your existing app structure */}
+      <Component {...pageProps} />
+    </LanguageLayout>
+  )
+}
+
+export default MyApp
+
+TESTING CHECKLIST: After implementing, verify:
+✅ /en/dashboard still works exactly as before
+✅ /ar/dashboard shows Arabic text with RTL layout
+✅ Sidebar highlights active page in both languages
+✅ Language switcher preserves current page
+✅ All existing functionality works unchanged
+✅ Performance remains good
+✅ No console errors
+SAFETY NOTES:
+Test each phase before moving to the next
+Keep backups of modified files
+If anything breaks, revert and try smaller changes
+Focus on incremental improvements
+This approach ensures your existing English routes remain completely safe while adding proper Arabic support with RTL layout and sidebar highlighting.
