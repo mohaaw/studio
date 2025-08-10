@@ -1,5 +1,3 @@
-'use server';
-
 import createMiddleware from 'next-intl/middleware';
  
 export default createMiddleware({
@@ -9,8 +7,10 @@ export default createMiddleware({
   // Used when no locale matches
   defaultLocale: 'en',
 
-  // Don't prefix the default locale
-  localePrefix: 'as-needed'
+  // Redirect / to /en/dashboard
+  pathnames: {
+    '/': '/'
+  }
 });
  
 export const config = {
