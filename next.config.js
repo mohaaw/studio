@@ -2,7 +2,7 @@
 const createNextIntlPlugin = require('next-intl/plugin');
 const performanceConfig = require('./performance.config.js');
  
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
  
 /** @type {import('next').NextConfig} */
 const nextConfig = {
