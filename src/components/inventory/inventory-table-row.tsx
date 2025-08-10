@@ -1,7 +1,7 @@
 
 'use client';
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import Image from "next/image";
 import { useState, Suspense } from "react";
 import dynamic from "next/dynamic";
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 const TransferItemDialog = dynamic(() => import('./transfer-item-dialog'), {
     loading: () => <p>Loading...</p>,
@@ -43,14 +44,16 @@ const getStatusVariant = (status: string) => {
 }
 
 export default function InventoryTableRow({ item }: { item: InventoryItem }) {
+    const t = useTranslations('Inventory.itemActions');
+    const t_toast = useTranslations('Inventory.toasts');
     const { toast } = useToast();
     const [isTransferDialogOpen, setTransferDialogOpen] = useState(false);
 
     const handleTransferItem = (newLocation: string) => {
         if (!newLocation) return;
         toast({
-            title: "Item Transfer Initiated",
-            description: `${item.name} is being transferred to ${newLocation}.`,
+            title: t_toast('transferTitle'),
+            description: t_toast('transferDesc', { itemName: item.name, newLocation: newLocation }),
         });
         // Here you would typically update the state or call an API
         setTransferDialogOpen(false);
@@ -91,16 +94,16 @@ export default function InventoryTableRow({ item }: { item: InventoryItem }) {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem onSelect={() => setTransferDialogOpen(true)}>Transfer Location</DropdownMenuItem>
+                            <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
+                            <DropdownMenuItem onSelect={() => setTransferDialogOpen(true)}>{t('transfer')}</DropdownMenuItem>
                             <DropdownMenuItem asChild>
-                                <Link href={`/dashboard/inventory/${item.id}`}>Edit Item</Link>
+                                <Link href={`/dashboard/inventory/${item.id}`}>{t('edit')}</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>View Item History</DropdownMenuItem>
-                            <DropdownMenuItem>Print Label</DropdownMenuItem>
+                            <DropdownMenuItem>{t('history')}</DropdownMenuItem>
+                            <DropdownMenuItem>{t('print')}</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className="text-destructive">Delete Item</DropdownMenuItem>
+                            <DropdownMenuItem className="text-destructive">{t('delete')}</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </TableCell>

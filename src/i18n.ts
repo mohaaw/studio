@@ -10,7 +10,8 @@ export default getRequestConfig(async ({locale}) => {
     messages: {
       ...messages,
       Sidebar: (await import(`../messages/${locale}/sidebar.json`)).default,
-      // Modules: (await import(`../messages/${locale}/modules.json`)).default,
+      Dashboard: (await import(`../messages/${locale}/dashboard.json`)).default,
+      Inventory: (await import(`../messages/${locale}/inventory.json`)).default,
     }
   }
 });

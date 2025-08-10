@@ -1,6 +1,6 @@
 
 'use client';
-import Link from "next/link";
+import { Link } from '@/navigation';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useState, Suspense, useMemo } from "react";
 import dynamic from "next/dynamic";
 import InventoryTableRow from "./inventory-table-row";
+import { useTranslations } from "next-intl";
 
 const CreateBundleDialog = dynamic(() => import('./create-bundle-dialog'), {
     loading: () => <p>Loading...</p>
@@ -37,6 +38,7 @@ type InventoryItem = {
 type SortKey = 'name' | 'location' | 'status' | 'salePrice' | 'stock';
 
 export default function InventoryClientPage({ initialItems }: { initialItems: InventoryItem[] }) {
+  const t = useTranslations('Inventory');
   const { toast } = useToast();
   const [items, setItems] = useState<InventoryItem[]>(initialItems);
   const [isStocktakeDialogOpen, setStocktakeDialogOpen] = useState(false);
@@ -69,15 +71,15 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
 
   const handleExport = () => {
     toast({
-      title: "Exporting Data",
-      description: "Generating inventory CSV file for download...",
+      title: t('toasts.exportTitle'),
+      description: t('toasts.exportDesc'),
     });
   }
 
   const handleImport = () => {
     toast({
-      title: "Importing Data",
-      description: "Please select a CSV file to import. (This is a placeholder)",
+      title: t('toasts.importTitle'),
+      description: t('toasts.importDesc'),
     });
   }
 
@@ -85,14 +87,14 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
     const lowStockItems = items.filter(item => item.stock <= item.reorderPoint && item.stock > 0);
     if (lowStockItems.length > 0) {
         toast({
-            title: "Generating Purchase Orders",
-            description: `Draft POs created for ${lowStockItems.length} low-stock items. Please review in the Purchase Orders module.`,
+            title: t('toasts.poGenTitle'),
+            description: t('toasts.poGenDesc', { count: lowStockItems.length }),
         });
     } else {
          toast({
             variant: "default",
-            title: "No Action Needed",
-            description: `All items are above their reorder points.`,
+            title: t('toasts.poGenNoneTitle'),
+            description: t('toasts.poGenNoneDesc'),
         });
     }
   }
@@ -100,16 +102,16 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
   return (
     <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
-            <h1 className="font-headline text-3xl font-bold">Inventory</h1>
+            <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
              <div className="flex items-center gap-2 flex-wrap">
-                <Button variant="outline" onClick={handleGeneratePOs}><FileCog className="mr-2"/> Generate POs for Low Stock</Button>
-                <Button variant="outline" onClick={() => setBundleDialogOpen(true)}><PackagePlus className="mr-2"/> Create Bundle</Button>
-                <Button variant="outline" onClick={() => setStocktakeDialogOpen(true)}><CheckSquare className="mr-2"/> Start Stocktake</Button>
-                <Button variant="outline" onClick={handleImport}><ArrowUpFromLine className="mr-2"/> Import CSV</Button>
-                <Button variant="outline" onClick={handleExport}><ArrowDownToLine className="mr-2"/> Export CSV</Button>
+                <Button variant="outline" onClick={handleGeneratePOs}><FileCog className="mr-2"/> {t('actions.generatePOs')}</Button>
+                <Button variant="outline" onClick={() => setBundleDialogOpen(true)}><PackagePlus className="mr-2"/> {t('actions.createBundle')}</Button>
+                <Button variant="outline" onClick={() => setStocktakeDialogOpen(true)}><CheckSquare className="mr-2"/> {t('actions.startStocktake')}</Button>
+                <Button variant="outline" onClick={handleImport}><ArrowUpFromLine className="mr-2"/> {t('actions.import')}</Button>
+                <Button variant="outline" onClick={handleExport}><ArrowDownToLine className="mr-2"/> {t('actions.export')}</Button>
                 <Link href="/dashboard/intake">
                     <Button>
-                        <PlusCircle className="mr-2 h-4 w-4" /> Add New Item
+                        <PlusCircle className="mr-2 h-4 w-4" /> {t('actions.addItem')}
                     </Button>
                 </Link>
             </div>
@@ -119,31 +121,31 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search by name, SKU, or serial..." className="pl-10" />
+                    <Input placeholder={t('actions.searchPlaceholder')} className="pl-10" />
                 </div>
                 <div className="flex items-center gap-2">
                     <Filter className="h-5 w-5 text-muted-foreground" />
                     <Select>
                         <SelectTrigger className="w-full md:w-[180px]">
-                            <SelectValue placeholder="Filter by Location" />
+                            <SelectValue placeholder={t('actions.filterLocation')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Locations</SelectItem>
-                            <SelectItem value="shop1">Shop 1</SelectItem>
-                            <SelectItem value="shop2">Shop 2</SelectItem>
-                            <SelectItem value="storehouse">Storehouse</SelectItem>
+                            <SelectItem value="all">{t('locations.all')}</SelectItem>
+                            <SelectItem value="shop1">{t('locations.shop1')}</SelectItem>
+                            <SelectItem value="shop2">{t('locations.shop2')}</SelectItem>
+                            <SelectItem value="storehouse">{t('locations.storehouse')}</SelectItem>
                         </SelectContent>
                     </Select>
                      <Select>
                         <SelectTrigger className="w-full md:w-[180px]">
-                            <SelectValue placeholder="Filter by Status" />
+                            <SelectValue placeholder={t('actions.filterStatus')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Statuses</SelectItem>
-                            <SelectItem value="forsale">For Sale</SelectItem>
-                            <SelectItem value="intake">Intake</SelectItem>
-                            <SelectItem value="sold">Sold</SelectItem>
-                            <SelectItem value="repair">Under Repair</SelectItem>
+                            <SelectItem value="all">{t('statuses.all')}</SelectItem>
+                            <SelectItem value="forsale">{t('statuses.forSale')}</SelectItem>
+                            <SelectItem value="intake">{t('statuses.intake')}</SelectItem>
+                            <SelectItem value="sold">{t('statuses.sold')}</SelectItem>
+                            <SelectItem value="repair">{t('statuses.underRepair')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -155,22 +157,22 @@ export default function InventoryClientPage({ initialItems }: { initialItems: In
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[300px] p-0">
-                      <Button variant="ghost" onClick={() => handleSort('name')} className="w-full justify-start">Item <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                      <Button variant="ghost" onClick={() => handleSort('name')} className="w-full justify-start">{t('table.item')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
-                  <TableHead>Serial Number</TableHead>
+                  <TableHead>{t('table.serial')}</TableHead>
                   <TableHead className="p-0">
-                       <Button variant="ghost" onClick={() => handleSort('location')} className="w-full justify-start">Location <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
-                  </TableHead>
-                  <TableHead className="p-0">
-                       <Button variant="ghost" onClick={() => handleSort('status')} className="w-full justify-start">Status <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                       <Button variant="ghost" onClick={() => handleSort('location')} className="w-full justify-start">{t('table.location')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
                   <TableHead className="p-0">
-                       <Button variant="ghost" onClick={() => handleSort('stock')} className="w-full justify-end text-right">Stock <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                       <Button variant="ghost" onClick={() => handleSort('status')} className="w-full justify-start">{t('table.status')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                  </TableHead>
+                  <TableHead className="p-0">
+                       <Button variant="ghost" onClick={() => handleSort('stock')} className="w-full justify-end text-right">{t('table.stock')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
                   <TableHead className="p-0 text-right">
-                       <Button variant="ghost" onClick={() => handleSort('salePrice')} className="w-full justify-end text-right">Sale Price <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
+                       <Button variant="ghost" onClick={() => handleSort('salePrice')} className="w-full justify-end text-right">{t('table.price')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button>
                   </TableHead>
-                  <TableHead><span className="sr-only">Actions</span></TableHead>
+                  <TableHead><span className="sr-only">{t('table.actions')}</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

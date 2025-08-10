@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 
 const itemData = {
   id: '1',
@@ -52,6 +53,8 @@ const itemData = {
 
 export default function ItemProfilePage({ params }: { params: { id: string } }) {
   // In a real app, you would fetch item data based on params.id
+  const t = useTranslations('Inventory.itemProfile');
+  const t_toast = useTranslations('Dashboard.kpi');
   const { toast } = useToast();
   const [item, setItem] = useState(itemData);
   const [stockAdjustment, setStockAdjustment] = useState(0);
@@ -78,11 +81,11 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
        <div className="flex items-center justify-between">
             <Link href="/dashboard/inventory" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="h-4 w-4" />
-                Back to Inventory
+                {t('back')}
             </Link>
             <div className="flex items-center gap-2">
-                <Button variant="outline">Print Label</Button>
-                <Button>Edit Item</Button>
+                <Button variant="outline">{t('printLabel')}</Button>
+                <Button>{t('editItem')}</Button>
             </div>
        </div>
 
@@ -103,12 +106,12 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
                 </CardHeader>
                 <CardContent>
                      <Image src={item.image} alt={item.name} width={600} height={400} className="w-full rounded-lg object-cover mb-6 aspect-video" data-ai-hint="phone" />
-                     <h2 className="font-headline text-xl font-semibold mb-2">Description</h2>
+                     <h2 className="font-headline text-xl font-semibold mb-2">{t('description')}</h2>
                      <p className="text-muted-foreground mb-6">{item.description}</p>
                      
                      <Separator className="my-6" />
 
-                     <h2 className="font-headline text-xl font-semibold mb-4">Specifications</h2>
+                     <h2 className="font-headline text-xl font-semibold mb-4">{t('specifications')}</h2>
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                         {item.specs.map(spec => (
                             <div key={spec.label} className="flex justify-between border-b border-border/50 py-2">
@@ -120,7 +123,7 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
 
                      <Separator className="my-6" />
 
-                     <h2 className="font-headline text-xl font-semibold mb-4">Custom Details</h2>
+                     <h2 className="font-headline text-xl font-semibold mb-4">{t('customDetails')}</h2>
                      <div className="space-y-3 text-sm">
                         {item.customFields.map(field => (
                              <div key={field.label} className="flex flex-col gap-1 rounded-md border p-3">
@@ -133,50 +136,50 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-xl font-semibold flex items-center gap-2"><ScanEye className="h-5 w-5 text-primary"/> 3D Model Viewer</CardTitle>
+                    <CardTitle className="font-headline text-xl font-semibold flex items-center gap-2"><ScanEye className="h-5 w-5 text-primary"/> {t('viewerTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col items-center justify-center bg-muted/50 rounded-lg p-8 aspect-video">
                     <Image src="https://placehold.co/400x300.png" width={400} height={300} alt="3D Model Placeholder" data-ai-hint="3d model" />
-                    <Button variant="outline" className="mt-4">View Interactive 3D Model</Button>
+                    <Button variant="outline" className="mt-4">{t('viewerButton')}</Button>
                 </CardContent>
             </Card>
         </div>
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg">Pricing & Profitability</CardTitle>
+                    <CardTitle className="font-headline text-lg">{t('pricingTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div>
-                        <p className="text-sm text-muted-foreground">Sale Price</p>
+                        <p className="text-sm text-muted-foreground">{t('salePrice')}</p>
                         <p className="font-bold text-2xl text-primary font-mono">${item.salePrice.toFixed(2)}</p>
                     </div>
                      <div className="space-y-3 rounded-lg border bg-muted/30 p-3">
-                        <p className="font-semibold text-sm">Landed Cost Breakdown</p>
+                        <p className="font-semibold text-sm">{t('costBreakdown')}</p>
                         <div className="flex items-center justify-between text-xs">
-                            <p className="text-muted-foreground flex items-center gap-2"><Package className="h-4 w-4" /> Base Purchase Price</p>
+                            <p className="text-muted-foreground flex items-center gap-2"><Package className="h-4 w-4" /> {t('basePurchase')}</p>
                             <p className="font-mono">${item.costs.purchasePrice.toFixed(2)}</p>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                            <p className="text-muted-foreground flex items-center gap-2"><Ship className="h-4 w-4" /> Shipping & Intake</p>
+                            <p className="text-muted-foreground flex items-center gap-2"><Ship className="h-4 w-4" /> {t('shipping')}</p>
                             <p className="font-mono">${item.costs.shippingCost.toFixed(2)}</p>
                         </div>
                          <div className="flex items-center justify-between text-xs">
-                            <p className="text-muted-foreground flex items-center gap-2"><Hammer className="h-4 w-4" /> Refurbishment</p>
+                            <p className="text-muted-foreground flex items-center gap-2"><Hammer className="h-4 w-4" /> {t('refurbishment')}</p>
                             <p className="font-mono">${item.costs.refurbishmentCost.toFixed(2)}</p>
                         </div>
                         <div className="flex items-center justify-between text-xs">
-                            <p className="text-muted-foreground flex items-center gap-2"><Plus className="h-4 w-4" /> Other Costs</p>
+                            <p className="text-muted-foreground flex items-center gap-2"><Plus className="h-4 w-4" /> {t('otherCosts')}</p>
                             <p className="font-mono">${item.costs.otherCosts.toFixed(2)}</p>
                         </div>
                         <Separator/>
                         <div className="flex items-center justify-between font-bold">
-                            <p>Total Landed Cost</p>
+                            <p>{t('totalLanded')}</p>
                             <p className="font-mono">${totalLandedCost.toFixed(2)}</p>
                         </div>
                     </div>
                     <div>
-                        <p className="text-sm text-muted-foreground">Est. Profit Margin</p>
+                        <p className="text-sm text-muted-foreground">{t('profitMargin')}</p>
                         <p className={`font-semibold text-lg font-mono ${profitMargin > 20 ? 'text-green-500' : 'text-amber-500'}`}>
                             {profitMargin.toFixed(1)}%
                         </p>
@@ -185,20 +188,20 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg">Stock Control</CardTitle>
+                    <CardTitle className="font-headline text-lg">{t('stockControlTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4 text-sm">
                      <div className="flex justify-between items-center">
-                        <p className="text-muted-foreground">Current Stock</p>
-                        <p className="font-semibold text-2xl font-mono">{item.stock} <span className="text-sm text-muted-foreground">units</span></p>
+                        <p className="text-muted-foreground">{t('currentStock')}</p>
+                        <p className="font-semibold text-2xl font-mono">{item.stock} <span className="text-sm text-muted-foreground">{t('units')}</span></p>
                     </div>
                     <div className="flex justify-between items-center">
-                        <p className="text-muted-foreground">Reorder Point</p>
-                        <p className="font-semibold text-lg font-mono flex items-center gap-2">{item.stock <= item.reorderPoint && <TrendingDown className="h-5 w-5 text-destructive" />} {item.reorderPoint} units</p>
+                        <p className="text-muted-foreground">{t('reorderPoint')}</p>
+                        <p className="font-semibold text-lg font-mono flex items-center gap-2">{item.stock <= item.reorderPoint && <TrendingDown className="h-5 w-5 text-destructive" />} {item.reorderPoint} {t('units')}</p>
                     </div>
                      <Separator />
                      <div className="space-y-2">
-                        <p className="font-medium">Quick Stock Adjustment</p>
+                        <p className="font-medium">{t('adjustment')}</p>
                         <div className="flex items-center gap-2">
                              <Button size="icon" variant="outline" onClick={() => setStockAdjustment(stockAdjustment - 1)}><Minus/></Button>
                             <Input
@@ -208,16 +211,16 @@ export default function ItemProfilePage({ params }: { params: { id: string } }) 
                                 onChange={(e) => setStockAdjustment(parseInt(e.target.value) || 0)}
                             />
                             <Button size="icon" variant="outline" onClick={() => setStockAdjustment(stockAdjustment + 1)}><Plus/></Button>
-                            <Button onClick={handleAdjustStock}>Apply</Button>
+                            <Button onClick={handleAdjustStock}>{t('apply')}</Button>
                         </div>
-                        <p className="text-xs text-muted-foreground">Enter a positive or negative value to adjust the stock level.</p>
+                        <p className="text-xs text-muted-foreground">{t('adjustmentPlaceholder')}</p>
                      </div>
                 </CardContent>
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg">Immutable History Ledger</CardTitle>
-                    <p className="text-sm text-muted-foreground">A cryptographically-chained, tamper-evident record of this item's lifecycle.</p>
+                    <CardTitle className="font-headline text-lg">{t('historyTitle')}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{t('historyDesc')}</p>
                 </CardHeader>
                 <CardContent>
                     <div className="relative space-y-6 before:absolute before:inset-y-0 before:left-3 before:w-0.5 before:bg-border">
