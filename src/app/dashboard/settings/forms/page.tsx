@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, GripVertical, Plus, Trash2, TextCursorInput, List, Calendar, CheckSquare, FileUp } from "lucide-react";
-import Link from "next/link";
+import { Link } from '@/navigation';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

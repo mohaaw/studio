@@ -12,7 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useTheme } from "next-themes";
 import { Rocket, Save, Shield, ServerCrash, Building2, Globe, FileText, Percent, Palette, Database, Clock, Workflow } from "lucide-react";
 import { useSettings } from "@/context/settings-context";
-import Link from "next/link";
+import { Link } from '@/navigation';
 import { useToast } from "@/hooks/use-toast";
 
 

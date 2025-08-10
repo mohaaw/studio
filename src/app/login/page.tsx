@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CircuitBoard, ShieldCheck } from "lucide-react";
-import Link from "next/link";
+import { Link } from '@/navigation';
 import { useState } from "react";
 
 export default function LoginPage() {

@@ -3,6 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 import { Inter, Space_Grotesk } from 'next/font/google';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages } from 'next-intl/server';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,23 +24,29 @@ export const metadata: Metadata = {
   description: 'Manage your used-electronics shop with ease.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params: {locale}
 }: Readonly<{
   children: React.ReactNode;
+  params: {locale: string};
 }>) {
+  const messages = await getMessages();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} ${spaceGrotesk.variable} font-body antialiased`}>
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-        >
-            {children}
-            <Toaster />
-        </ThemeProvider>
+        <NextIntlClientProvider messages={messages}>
+          <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+          >
+              {children}
+              <Toaster />
+          </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -32,7 +32,7 @@ import {
   SidebarFooter,
   useSidebar,
 } from '@/components/ui/sidebar';
-import Link from 'next/link';
+import { Link } from '@/navigation';
 import { usePathname } from 'next/navigation';
 import { Separator } from '../ui/separator';
 import { UserNav } from './user-nav';

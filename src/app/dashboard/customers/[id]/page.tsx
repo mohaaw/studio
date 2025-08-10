@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, User, Phone, Mail, Award, BarChart, Sparkles, MessageSquare, History, FileText, ShoppingBag, Wrench, Bot, ShieldCheck, AlertCircle } from "lucide-react";
-import Link from "next/link";
+import { Link } from '@/navigation';
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -76,10 +76,6 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
       })
   }
   
-  useEffect(() => {
-    handleGetSuggestions();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="space-y-6">
@@ -158,7 +154,7 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                             ))}
                         </div>
                     ) : !isGenerating && !error && (
-                        <p className="text-sm text-muted-foreground">No suggestions available.</p>
+                        <p className="text-sm text-muted-foreground">No suggestions available. Click refresh to generate.</p>
                     )}
                 </CardContent>
                 <CardFooter>
@@ -241,5 +237,3 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
     </div>
   );
 }
-
-    

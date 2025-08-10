@@ -21,7 +21,7 @@ import {
   DropdownMenuRadioItem
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { Link } from '@/navigation';
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -168,5 +168,3 @@ export default function TeamManagementPage() {
     </div>
   );
 }
-
-    
