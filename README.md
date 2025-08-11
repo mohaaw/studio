@@ -1,8 +1,8 @@
-# TechShop Manager 💻
+# TechShop Manager Pro 💻
 
 Welcome to **TechShop Manager**, a comprehensive, AI-enhanced application designed to streamline the operations of a second-hand electronics store. This application is built with Next.js, TypeScript, and Tailwind CSS, featuring a modern and responsive user interface.
 
-## Features
+## Key Features & Improvements
 
 This application is packed with features designed to cover all aspects of running a modern electronics resale and repair shop:
 
@@ -19,6 +19,11 @@ This application is packed with features designed to cover all aspects of runnin
     *   **Kiosk Chatbot**: An AI assistant to help customers with common questions in the self-service kiosk.
     #ai #genai #genkit #google-gemini
 *   **Trade-in & Buyback Management**: A dedicated workflow to process customer trade-ins, complete with AI-suggested valuation. #tradein #buyback
+*   **Multi-Language Support**: Seamlessly switch between **English** and **Arabic** to cater to a broader user base and improve accessibility.
+    *   **English**: The default language, providing a familiar interface for a wide audience.
+    *   **Arabic**: Newly added support, offering full translation of the user interface and content for Arabic-speaking users. This enhances usability and expands the application's potential reach. #multilanguage #i18n #localization #arabic
+*   **Improved User Interface and Experience**: Refined design and navigation for a more intuitive and efficient workflow across all modules.
+*   **Enhanced Performance**: Optimized backend processes and frontend rendering for faster load times and smoother interactions.
 *   **Supplier & Purchase Order Tracking**: Manage your list of suppliers and keep track of all your purchase orders. #purchasing #supply-chain
 *   **Self-Service Kiosk Mode**: A simplified, customer-facing interface for browsing products and checking repair statuses. #kiosk #self-service #customer-experience
 *   **Employee Management**: Track employee information and manage roles and permissions. #hrm #staff-management
@@ -28,6 +33,10 @@ This application is packed with features designed to cover all aspects of runnin
 *   **Integration with Shipping Carriers (Future)**: Future support for integrating with shipping services for online sales. #shipping #logistics
 
 ## Design Philosophy
+
+TechShop Manager Pro is built upon a robust and thoughtful design philosophy focused on providing a powerful, intuitive, and scalable solution for managing second-hand electronics businesses. Key principles include:
+
+*   **Efficiency and Streamlining**: Automating and simplifying complex workflows to reduce manual effort and increase operational efficiency.
 
 TechShop Manager is built with a focus on **simplicity, efficiency, and intelligence**. The design principles guiding this application include:
 
