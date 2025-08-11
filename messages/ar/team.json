@@ -1,0 +1,89 @@
+
+{
+    "title": "إدارة الفريق",
+    "description": "دعوة وإدارة أعضاء الفريق وأدوارهم.",
+    "inviteButton": "دعوة عضو",
+    "table": {
+        "title": "أعضاء الفريق",
+        "user": "المستخدم",
+        "role": "الدور",
+        "lastActive": "آخر نشاط",
+        "actions": "الإجراءات"
+    },
+    "roles": {
+        "admin": "مسؤول",
+        "manager": "مدير",
+        "technician": "فني",
+        "sales": "مبيعات"
+    },
+    "actions": {
+        "label": "الإجراءات",
+        "changeRole": "تغيير الدور",
+        "viewPerformance": "عرض الأداء",
+        "editProfile": "تعديل الملف الشخصي",
+        "removeUser": "إزالة المستخدم"
+    },
+    "toasts": {
+        "permissionDeniedTitle": "تم رفض الإذن",
+        "permissionDeniedDesc": "لا يمكن تغيير دور المسؤول.",
+        "roleUpdatedTitle": "تم تحديث الدور",
+        "roleUpdatedDesc": "تم تغيير دور {name} إلى {role}."
+    },
+    "profile": {
+        "back": "العودة إلى إدارة الفريق",
+        "memberSince": "عضو في الفريق منذ {date}",
+        "kpiTitle": "مؤشرات الأداء الرئيسية",
+        "totalSales": "إجمالي المبيعات (6 أشهر)",
+        "totalRepairs": "إجمالي الإصلاحات (6 أشهر)",
+        "salesPerfTitle": "أداء المبيعات (6 أشهر)",
+        "repairPerfTitle": "أداء الإصلاحات (6 أشهر)",
+        "commissionsTitle": "عمولات المبيعات الأخيرة",
+        "tableItem": "العنصر",
+        "tableSaleAmount": "مبلغ البيع",
+        "tableCommission": "العمولة المكتسبة",
+        "noCommissions": "لا توجد مبيعات بعمولات حديثة."
+    },
+    "payroll": {
+        "title": "كشوف المرتبات والعمولات",
+        "description": "إدارة تعويضات الموظفين وهياكل العمولات.",
+        "runPayrollButton": "تشغيل دورة الرواتب",
+        "compensation": {
+            "title": "تعويضات الموظفين",
+            "description": "تعيين وإدارة الأجور الأساسية لجميع أعضاء الفريق.",
+            "tableEmployee": "الموظف",
+            "tableBasePay": "الأجر الأساسي",
+            "tablePayType": "نوع الدفع",
+            "tableActions": "الإجراءات",
+            "salary": "راتب",
+            "hourly": "ساعي",
+            "salaryYear": "سنويًا",
+            "hourlyHour": "ساعة",
+            "actionEdit": "تعديل التعويض",
+            "actionViewStubs": "عرض قسائم الدفع"
+        },
+        "commissions": {
+            "title": "هياكل العمولات",
+            "description": "تحديد كيفية حساب عمولات المبيعات.",
+            "salesCommission": "عمولة المبيعات القياسية",
+            "ofSalePrice": "٪ من سعر البيع",
+            "repairCommission": "عمولة الإصلاح",
+            "ofRepairProfit": "٪ من ربح الإصلاح",
+            "saveButton": "حفظ الهياكل"
+        },
+        "history": {
+            "title": "سجل الرواتب",
+            "description": "تنزيل تقارير من دورات الدفع السابقة.",
+            "cycle": "دورة الدفع: {month} {year}"
+        },
+        "dialog": {
+            "title": "تأكيد دورة الرواتب",
+            "description": "أنت على وشك تشغيل الرواتب للفترة الحالية (على سبيل المثال، ديسمبر 2023). سيؤدي هذا إلى حساب الرواتب والأجور بالساعة والعمولات لجميع الموظفين. لا يمكن التراجع عن هذا الإجراء.",
+            "cancel": "إلغاء",
+            "confirm": "تأكيد وتشغيل الرواتب"
+        },
+        "toasts": {
+            "runningTitle": "جاري تشغيل دورة الرواتب...",
+            "runningDesc": "جاري حساب الرواتب والعمولات لجميع الموظفين."
+        }
+    }
+}

@@ -19,6 +19,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslations } from "next-intl";
 
 type PayType = 'Salary' | 'Hourly';
 interface TeamMember {
@@ -37,6 +38,7 @@ const teamMembersData: TeamMember[] = [
 ];
 
 export default function PayrollClientPage() {
+    const t = useTranslations('Team.payroll');
     const { toast } = useToast();
     const [teamMembers, setTeamMembers] = useState(teamMembersData);
     const [isRunPayrollOpen, setRunPayrollOpen] = useState(false);
@@ -44,32 +46,32 @@ export default function PayrollClientPage() {
     const handleRunPayroll = () => {
         setRunPayrollOpen(false);
         toast({
-            title: "Payroll Cycle Running...",
-            description: "Calculating salaries and commissions for all employees."
+            title: t('toasts.runningTitle'),
+            description: t('toasts.runningDesc')
         });
     }
 
   return (
     <div className="space-y-6">
         <div>
-            <h1 className="font-headline text-3xl font-bold">Payroll & Commissions</h1>
-            <p className="text-muted-foreground">Manage employee compensation and commission structures.</p>
+            <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
+            <p className="text-muted-foreground">{t('description')}</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Employee Compensation</CardTitle>
-                        <CardDescription>Set and manage base pay for all team members.</CardDescription>
+                        <CardTitle>{t('compensation.title')}</CardTitle>
+                        <CardDescription>{t('compensation.description')}</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Employee</TableHead>
-                                    <TableHead>Base Pay</TableHead>
-                                    <TableHead>Pay Type</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
+                                    <TableHead>{t('compensation.tableEmployee')}</TableHead>
+                                    <TableHead>{t('compensation.tableBasePay')}</TableHead>
+                                    <TableHead>{t('compensation.tablePayType')}</TableHead>
+                                    <TableHead className="text-right">{t('compensation.tableActions')}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -88,10 +90,10 @@ export default function PayrollClientPage() {
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            {member.payType === 'Salary' ? `$${member.basePay.toLocaleString()}/year` : `$${member.basePay.toFixed(2)}/hour`}
+                                            {member.payType === 'Salary' ? `$${member.basePay.toLocaleString()}/${t('compensation.salaryYear')}` : `$${member.basePay.toFixed(2)}/${t('compensation.hourlyHour')}`}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="outline">{member.payType}</Badge>
+                                            <Badge variant="outline">{member.payType === 'Salary' ? t('compensation.salary') : t('compensation.hourly')}</Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
                                              <DropdownMenu>
@@ -99,8 +101,8 @@ export default function PayrollClientPage() {
                                                      <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4"/></Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent>
-                                                    <DropdownMenuItem>Edit Compensation</DropdownMenuItem>
-                                                    <DropdownMenuItem>View Pay Stubs</DropdownMenuItem>
+                                                    <DropdownMenuItem>{t('compensation.actionEdit')}</DropdownMenuItem>
+                                                    <DropdownMenuItem>{t('compensation.actionViewStubs')}</DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
@@ -112,18 +114,18 @@ export default function PayrollClientPage() {
                     <CardFooter className="justify-end">
                         <Dialog open={isRunPayrollOpen} onOpenChange={setRunPayrollOpen}>
                             <DialogTrigger asChild>
-                                <Button><Calculator className="mr-2"/> Run Payroll Cycle</Button>
+                                <Button><Calculator className="mx-2"/> {t('runPayrollButton')}</Button>
                             </DialogTrigger>
                              <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Confirm Payroll Cycle</DialogTitle>
+                                    <DialogTitle>{t('dialog.title')}</DialogTitle>
                                     <DialogDescription>
-                                        You are about to run payroll for the current period (e.g., December 2023). This will calculate salaries, hourly wages, and commissions for all employees. This action cannot be undone.
+                                        {t('dialog.description')}
                                     </DialogDescription>
                                 </DialogHeader>
                                  <DialogFooter>
-                                    <DialogClose asChild><Button variant="ghost">Cancel</Button></DialogClose>
-                                    <Button onClick={handleRunPayroll}>Confirm & Run Payroll</Button>
+                                    <DialogClose asChild><Button variant="ghost">{t('dialog.cancel')}</Button></DialogClose>
+                                    <Button onClick={handleRunPayroll}>{t('dialog.confirm')}</Button>
                                  </DialogFooter>
                             </DialogContent>
                         </Dialog>
@@ -133,41 +135,41 @@ export default function PayrollClientPage() {
             <div className="space-y-6">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Commission Structures</CardTitle>
-                        <CardDescription>Define how sales commissions are calculated.</CardDescription>
+                        <CardTitle>{t('commissions.title')}</CardTitle>
+                        <CardDescription>{t('commissions.description')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="sales-commission">Standard Sales Commission</Label>
+                            <Label htmlFor="sales-commission">{t('commissions.salesCommission')}</Label>
                              <div className="flex items-center gap-2">
                                 <Input id="sales-commission" type="number" defaultValue="5" className="w-24"/>
-                                <span>% of sale price</span>
+                                <span>{t('commissions.ofSalePrice')}</span>
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="technician-commission">Repair Commission</Label>
+                            <Label htmlFor="technician-commission">{t('commissions.repairCommission')}</Label>
                              <div className="flex items-center gap-2">
                                 <Input id="technician-commission" type="number" defaultValue="10" className="w-24"/>
-                                <span>% of repair profit</span>
+                                <span>{t('commissions.ofRepairProfit')}</span>
                             </div>
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button variant="secondary" className="w-full">Save Structures</Button>
+                        <Button variant="secondary" className="w-full">{t('commissions.saveButton')}</Button>
                     </CardFooter>
                 </Card>
                  <Card>
                     <CardHeader>
-                        <CardTitle>Payroll History</CardTitle>
-                        <CardDescription>Download reports from previous pay cycles.</CardDescription>
+                        <CardTitle>{t('history.title')}</CardTitle>
+                        <CardDescription>{t('history.description')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-2">
                         <Button variant="outline" className="w-full justify-between">
-                            <span>Pay Cycle: Nov 2023</span>
+                            <span>{t('history.cycle', { month: 'Nov', year: 2023 })}</span>
                             <FileDown className="h-4 w-4"/>
                         </Button>
                          <Button variant="outline" className="w-full justify-between">
-                            <span>Pay Cycle: Oct 2023</span>
+                            <span>{t('history.cycle', { month: 'Oct', year: 2023 })}</span>
                             <FileDown className="h-4 w-4"/>
                         </Button>
                     </CardContent>

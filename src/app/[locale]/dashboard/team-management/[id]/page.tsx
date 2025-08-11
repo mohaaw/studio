@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Bar, BarChart as RechartsBarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { getTranslations } from "next-intl/server";
 
 const employeeData = {
   '1': {
@@ -47,8 +48,9 @@ const salesChartConfig = { value: { label: "Sales", color: "hsl(var(--chart-1))"
 const repairsChartConfig = { value: { label: "Repairs", color: "hsl(var(--chart-2))" }};
 
 
-export default function EmployeeProfilePage({ params }: { params: { id: string } }) {
+export default async function EmployeeProfilePage({ params }: { params: { id: string } }) {
   // In a real app, you would fetch employee data based on params.id
+  const t = await getTranslations('Team');
   // @ts-ignore
   const employee = employeeData[params.id] || employeeData['1'];
 
@@ -59,7 +61,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
     <div className="space-y-6">
        <Link href="/dashboard/team-management" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
-            Back to Team Management
+            {t('profile.back')}
         </Link>
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-1 space-y-6">
@@ -87,7 +89,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                     </div>
                      <div className="flex items-center gap-3 text-sm">
                         <User className="h-4 w-4 text-muted-foreground" />
-                        <span>Team member since {employee.hireDate}</span>
+                        <span>{t('profile.memberSince', {date: employee.hireDate})}</span>
                     </div>
                 </CardContent>
             </Card>
@@ -95,16 +97,16 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
-                        <BarChart className="h-5 w-5 text-primary"/> Key Performance Indicators
+                        <BarChart className="h-5 w-5 text-primary"/> {t('profile.kpiTitle')}
                     </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                      <div className="flex justify-between items-center text-sm p-3 bg-muted rounded-md">
-                        <p className="font-semibold text-muted-foreground flex items-center gap-2"><DollarSign className="h-4 w-4"/> Total Sales (6 mo)</p>
+                        <p className="font-semibold text-muted-foreground flex items-center gap-2"><DollarSign className="h-4 w-4"/> {t('profile.totalSales')}</p>
                         <p className="font-bold text-lg font-mono text-primary">${totalSales.toLocaleString()}</p>
                     </div>
                      <div className="flex justify-between items-center text-sm p-3 bg-muted rounded-md">
-                        <p className="font-semibold text-muted-foreground flex items-center gap-2"><Wrench className="h-4 w-4"/> Total Repairs (6 mo)</p>
+                        <p className="font-semibold text-muted-foreground flex items-center gap-2"><Wrench className="h-4 w-4"/> {t('profile.totalRepairs')}</p>
                         <p className="font-bold text-lg font-mono text-primary">{totalRepairs}</p>
                     </div>
                 </CardContent>
@@ -113,7 +115,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
         <div className="lg:col-span-2 space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-xl flex items-center gap-2"><TrendingUp className="h-5 w-5 text-primary"/> Sales Performance (6 Months)</CardTitle>
+                    <CardTitle className="font-headline text-xl flex items-center gap-2"><TrendingUp className="h-5 w-5 text-primary"/> {t('profile.salesPerfTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <ChartContainer config={salesChartConfig} className="h-[200px] w-full">
@@ -129,7 +131,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-xl flex items-center gap-2"><Wrench className="h-5 w-5 text-primary"/> Repair Performance (6 Months)</CardTitle>
+                    <CardTitle className="font-headline text-xl flex items-center gap-2"><Wrench className="h-5 w-5 text-primary"/> {t('profile.repairPerfTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                      <ChartContainer config={repairsChartConfig} className="h-[200px] w-full">
@@ -145,11 +147,11 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-xl flex items-center gap-2"><DollarSign className="h-5 w-5 text-primary"/> Recent Commissionable Sales</CardTitle>
+                    <CardTitle className="font-headline text-xl flex items-center gap-2"><DollarSign className="h-5 w-5 text-primary"/> {t('profile.commissionsTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                      <Table>
-                        <TableHeader><TableRow className="sticky top-0 bg-card z-10"><TableHead>Item</TableHead><TableHead className="text-right">Sale Amount</TableHead><TableHead className="text-right">Commission Earned</TableHead></TableRow></TableHeader>
+                        <TableHeader><TableRow className="sticky top-0 bg-card z-10"><TableHead>{t('profile.tableItem')}</TableHead><TableHead className="text-right">{t('profile.tableSaleAmount')}</TableHead><TableHead className="text-right">{t('profile.tableCommission')}</TableHead></TableRow></TableHeader>
                         <TableBody>
                             {employee.kpis.recentSales.length > 0 ? employee.kpis.recentSales.map(sale => (
                                 <TableRow key={sale.id}>
@@ -159,7 +161,7 @@ export default function EmployeeProfilePage({ params }: { params: { id: string }
                                 </TableRow>
                             )) : (
                                 <TableRow>
-                                    <TableCell colSpan={3} className="text-center text-muted-foreground">No recent commissionable sales.</TableCell>
+                                    <TableCell colSpan={3} className="text-center text-muted-foreground">{t('profile.noCommissions')}</TableCell>
                                 </TableRow>
                             )}
                         </TableBody>

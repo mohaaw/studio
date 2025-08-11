@@ -1,0 +1,89 @@
+
+{
+    "title": "Team Management",
+    "description": "Invite and manage team members and their roles.",
+    "inviteButton": "Invite Member",
+    "table": {
+        "title": "Team Members",
+        "user": "User",
+        "role": "Role",
+        "lastActive": "Last Active",
+        "actions": "Actions"
+    },
+    "roles": {
+        "admin": "Admin",
+        "manager": "Manager",
+        "technician": "Technician",
+        "sales": "Sales"
+    },
+    "actions": {
+        "label": "Actions",
+        "changeRole": "Change Role",
+        "viewPerformance": "View Performance",
+        "editProfile": "Edit Profile",
+        "removeUser": "Remove User"
+    },
+    "toasts": {
+        "permissionDeniedTitle": "Permission Denied",
+        "permissionDeniedDesc": "The Admin role cannot be changed.",
+        "roleUpdatedTitle": "Role Updated",
+        "roleUpdatedDesc": "{name}'s role has been changed to {role}."
+    },
+    "profile": {
+        "back": "Back to Team Management",
+        "memberSince": "Team member since {date}",
+        "kpiTitle": "Key Performance Indicators",
+        "totalSales": "Total Sales (6 mo)",
+        "totalRepairs": "Total Repairs (6 mo)",
+        "salesPerfTitle": "Sales Performance (6 Months)",
+        "repairPerfTitle": "Repair Performance (6 Months)",
+        "commissionsTitle": "Recent Commissionable Sales",
+        "tableItem": "Item",
+        "tableSaleAmount": "Sale Amount",
+        "tableCommission": "Commission Earned",
+        "noCommissions": "No recent commissionable sales."
+    },
+    "payroll": {
+        "title": "Payroll & Commissions",
+        "description": "Manage employee compensation and commission structures.",
+        "runPayrollButton": "Run Payroll Cycle",
+        "compensation": {
+            "title": "Employee Compensation",
+            "description": "Set and manage base pay for all team members.",
+            "tableEmployee": "Employee",
+            "tableBasePay": "Base Pay",
+            "tablePayType": "Pay Type",
+            "tableActions": "Actions",
+            "salary": "Salary",
+            "hourly": "Hourly",
+            "salaryYear": "/year",
+            "hourlyHour": "/hour",
+            "actionEdit": "Edit Compensation",
+            "actionViewStubs": "View Pay Stubs"
+        },
+        "commissions": {
+            "title": "Commission Structures",
+            "description": "Define how sales commissions are calculated.",
+            "salesCommission": "Standard Sales Commission",
+            "ofSalePrice": "% of sale price",
+            "repairCommission": "Repair Commission",
+            "ofRepairProfit": "% of repair profit",
+            "saveButton": "Save Structures"
+        },
+        "history": {
+            "title": "Payroll History",
+            "description": "Download reports from previous pay cycles.",
+            "cycle": "Pay Cycle: {month} {year}"
+        },
+        "dialog": {
+            "title": "Confirm Payroll Cycle",
+            "description": "You are about to run payroll for the current period (e.g., December 2023). This will calculate salaries, hourly wages, and commissions for all employees. This action cannot be undone.",
+            "cancel": "Cancel",
+            "confirm": "Confirm & Run Payroll"
+        },
+        "toasts": {
+            "runningTitle": "Payroll Cycle Running...",
+            "runningDesc": "Calculating salaries and commissions for all employees."
+        }
+    }
+}
