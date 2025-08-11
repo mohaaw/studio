@@ -3,7 +3,7 @@ import type {Metadata} from 'next';
 import '../globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Inter, Space_Grotesk, Cairo } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
 import AppSidebar from "@/components/layout/sidebar";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
@@ -21,6 +21,12 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-space-grotesk',
+});
+
+const cairo = Cairo({
+  subsets: ['arabic'],
+  display: 'swap',
+  variable: '--font-cairo',
 });
 
 
@@ -42,7 +48,7 @@ export default function RootLayout({
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-body antialiased`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${cairo.variable} font-body antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider
               attribute="class"

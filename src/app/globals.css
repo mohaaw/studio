@@ -143,6 +143,11 @@
       --input: hsl(var(--input));
       --ring: hsl(var(--ring));
    }
+
+  [dir="rtl"] {
+    --font-body: var(--font-cairo);
+    --font-headline: var(--font-cairo);
+  }
 }
 
 
