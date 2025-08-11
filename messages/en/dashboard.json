@@ -1,1 +1,99 @@
-{}
+
+{
+    "title": "Command Center",
+    "customize": "Customize",
+    "kpi": {
+        "revenue": "Total Revenue",
+        "revenueDesc": "+20.1% from last month",
+        "repairs": "Open Repairs",
+        "repairsDesc": "3 are awaiting parts",
+        "shipments": "Pending Shipments",
+        "shipmentsDesc": "Awaiting carrier pickup",
+        "customers": "New Customers",
+        "customersDesc": "+12.5% this month"
+    },
+    "salesChart": {
+        "title": "Sales vs. Profit Overview"
+    },
+    "tasks": {
+        "title": "My Tasks",
+        "description": "Your personal to-do list."
+    },
+    "quickActions": {
+        "title": "Quick Actions",
+        "newItem": "New Item",
+        "newCustomer": "New Customer",
+        "newRepair": "New Repair",
+        "newSale": "New Sale"
+    },
+    "salesGoal": {
+        "title": "Monthly Sales Goal",
+        "description": "You are 75% of the way to this month's goal!",
+        "target": "Target"
+    },
+    "teamOverview": {
+        "title": "Team Overview",
+        "description": "Who's currently active."
+    },
+    "salesLeaderboard": {
+        "title": "Sales Leaderboard"
+    },
+    "lowStock": {
+        "title": "Low Stock Items",
+        "item": "Item",
+        "stock": "Stock"
+    },
+    "upcomingDeliveries": {
+        "title": "Upcoming Deliveries",
+        "supplier": "Supplier",
+        "eta": "ETA"
+    },
+    "activityFeed": {
+        "title": "Activity Feed",
+        "description": "A live feed of recent system events.",
+        "user": "User",
+        "action": "Action",
+        "time": "Time"
+    },
+    "systemHealth": {
+        "title": "System Health",
+        "api": "API Response Time",
+        "db": "Database Connection",
+        "pos": "POS Service",
+        "healthy": "Healthy",
+        "online": "Online"
+    },
+    "dialogs": {
+        "notifications": {
+            "title": "Notifications",
+            "items": {
+                "1": {
+                    "title": "Shipment Delayed",
+                    "description": "PO-2023-002 from Samsung Components is delayed by 2 days.",
+                    "time": "10m ago"
+                },
+                "2": {
+                    "title": "Low Stock Warning",
+                    "description": "iPhone 14 Screens are below reorder point (2 remaining).",
+                    "time": "1h ago"
+                },
+                "3": {
+                    "title": "Large Sale Processed",
+                    "description": "Mary J. closed a $2,500 deal in the POS.",
+                    "time": "4h ago"
+                }
+            }
+        },
+        "customize": {
+            "title": "Customize Dashboard",
+            "description": "Select the widgets you want to see on your dashboard.",
+            "done": "Done"
+        },
+        "timeout": {
+            "title": "Are you still there?",
+            "description": "Your session is about to expire due to inactivity. You will be logged out in 1 minute.",
+            "stay": "Stay Logged In",
+            "logout": "Logout"
+        }
+    }
+}
