@@ -7,6 +7,7 @@ import { Link } from "@/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { getTranslations } from "next-intl/server";
 
 const repair = {
   id: '1',
@@ -47,13 +48,14 @@ const getStatusVariant = (status: string) => {
     }
 }
 
-export default function RepairDetailsPage({ params }: { params: { id: string } }) {
+export default async function RepairDetailsPage({ params }: { params: { id: string } }) {
   // In a real app, you would fetch repair data based on params.id
+  const t = await getTranslations('Repairs.details');
   return (
     <div className="space-y-6">
        <Link href="/dashboard/repairs" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
-            Back to All Repairs
+            {t('back')}
         </Link>
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
@@ -73,13 +75,13 @@ export default function RepairDetailsPage({ params }: { params: { id: string } }
                 </CardHeader>
                 <CardContent>
                      <Image src={repair.image} alt={repair.device} width={600} height={400} className="w-full rounded-lg object-cover mb-6 aspect-video" data-ai-hint="phone" />
-                     <h2 className="font-headline text-xl font-semibold mb-4">Reported Issue</h2>
+                     <h2 className="font-headline text-xl font-semibold mb-4">{t('reportedIssue')}</h2>
                      <p className="text-muted-foreground mb-6">{repair.reportedIssue}</p>
                      
                      <Separator className="my-6" />
 
                      <div className="space-y-4">
-                        <h2 className="font-headline text-xl font-semibold">Repair Notes & History</h2>
+                        <h2 className="font-headline text-xl font-semibold">{t('notesTitle')}</h2>
                         {repair.repairNotes.map((note, index) => (
                             <div key={index} className="flex gap-4">
                                 <div className="flex flex-col items-center">
@@ -100,16 +102,16 @@ export default function RepairDetailsPage({ params }: { params: { id: string } }
                      </div>
                 </CardContent>
                  <CardFooter className="flex-col items-start gap-4 border-t pt-6">
-                     <Label htmlFor="new-note" className="text-base font-semibold">Add New Note</Label>
-                    <Textarea id="new-note" placeholder="e.g., Replaced screen assembly. All tests passing." />
-                    <Button>Add Note</Button>
+                     <Label htmlFor="new-note" className="text-base font-semibold">{t('addNoteLabel')}</Label>
+                    <Textarea id="new-note" placeholder={t('addNotePlaceholder')} />
+                    <Button>{t('addNoteButton')}</Button>
                 </CardFooter>
             </Card>
         </div>
         <div className="space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg flex items-center gap-2"><User className="h-5 w-5 text-primary"/> Customer Details</CardTitle>
+                    <CardTitle className="font-headline text-lg flex items-center gap-2"><User className="h-5 w-5 text-primary"/> {t('customerTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                     <div className="font-semibold text-lg">{repair.customer.name}</div>
@@ -125,17 +127,17 @@ export default function RepairDetailsPage({ params }: { params: { id: string } }
                 <CardFooter className="flex gap-2">
                     <Button variant="outline" className="w-full" disabled>
                         <MessageSquare className="mr-2 h-4 w-4" />
-                        Send Email Update
+                        {t('sendEmail')}
                     </Button>
                     <Button variant="outline" className="w-full" disabled>
                          <Smartphone className="mr-2 h-4 w-4" />
-                        Send SMS Update
+                        {t('sendSMS')}
                     </Button>
                 </CardFooter>
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-lg flex items-center gap-2"><History className="h-5 w-5 text-primary"/> Repair Log</CardTitle>
+                    <CardTitle className="font-headline text-lg flex items-center gap-2"><History className="h-5 w-5 text-primary"/> {t('logTitle')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="relative space-y-6 before:absolute before:inset-y-0 before:left-3 before:w-0.5 before:bg-border">

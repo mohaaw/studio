@@ -1,0 +1,85 @@
+
+{
+    "title": "بطاقات الإصلاح",
+    "checkIn": "تسجيل إصلاح جديد",
+    "searchPlaceholder": "ابحث بالتذكرة، الجهاز، أو الرقم التسلسلي...",
+    "filterStatus": "تصفية حسب الحالة",
+    "statuses": {
+        "inProgress": "قيد التنفيذ",
+        "awaitingParts": "بانتظار قطع الغيار",
+        "completed": "مكتمل",
+        "readyForPickup": "جاهز للاستلام"
+    },
+    "table": {
+        "device": "الجهاز",
+        "ticket": "رقم التذكرة",
+        "serial": "الرقم التسلسلي",
+        "customer": "العميل",
+        "status": "الحالة",
+        "checkedIn": "تاريخ التسجيل",
+        "actions": "الإجراءات"
+    },
+    "actions": {
+        "label": "الإجراءات",
+        "updateStatus": "تحديث الحالة",
+        "addNote": "إضافة ملاحظة",
+        "printTicket": "طباعة التذكرة",
+        "cancelRepair": "إلغاء الإصلاح"
+    },
+    "details": {
+        "back": "العودة إلى جميع الإصلاحات",
+        "reportedIssue": "المشكلة المبلغ عنها",
+        "notesTitle": "ملاحظات وتاريخ الإصلاح",
+        "addNoteLabel": "إضافة ملاحظة جديدة",
+        "addNotePlaceholder": "مثال: تم استبدال مجموعة الشاشة. جميع الاختبارات ناجحة.",
+        "addNoteButton": "إضافة ملاحظة",
+        "customerTitle": "تفاصيل العميل",
+        "sendEmail": "إرسال تحديث بالبريد الإلكتروني",
+        "sendSMS": "إرسال تحديث برسالة نصية",
+        "logTitle": "سجل الإصلاح"
+    },
+    "checkInPage": {
+        "title": "تسجيل إصلاح",
+        "header": "بطاقة إصلاح جديدة",
+        "description": "املأ تفاصيل العميل والجهاز أدناه.",
+        "customerInfo": "معلومات العميل",
+        "customerName": "اسم العميل",
+        "customerNamePlaceholder": "جون دو",
+        "customerPhone": "رقم الهاتف",
+        "customerPhonePlaceholder": "(123) 456-7890",
+        "customerEmail": "عنوان البريد الإلكتروني",
+        "customerEmailPlaceholder": "john.doe@example.com",
+        "deviceInfo": "الجهاز والمشكلة",
+        "deviceName": "اسم الجهاز / الموديل",
+        "deviceNamePlaceholder": "مثال: MacBook Pro 16-inch",
+        "serialNumber": "الرقم التسلسلي",
+        "serialNumberPlaceholder": "مثال: C02G80F3Q05D",
+        "photosLabel": "تحميل الصور لتقييم الحالة بواسطة الذكاء الاصطناعي",
+        "analyzeButton": "تحليل",
+        "reportedIssueLabel": "المشكلة المبلغ عنها",
+        "diagnoseButton": "تشخيص بالذكاء الاصطناعي",
+        "diagnosingButton": "جاري التشخيص...",
+        "reportedIssuePlaceholder": "مثال: الشاشة مكسورة، البطارية تستنزف بسرعة...",
+        "technicianLabel": "فني معين",
+        "technicianPlaceholder": "حدد فنيًا",
+        "technician1": "جين دو",
+        "technician2": "مايك سميث",
+        "quoteLabel": "عرض سعر تقديري ($)",
+        "quotePlaceholder": "150.00",
+        "saveButton": "حفظ وإنشاء تذكرة",
+        "aiDiagnosis": {
+            "title": "تشخيص الذكاء الاصطناعي",
+            "preliminary": "التشخيص الأولي",
+            "parts": "قطع الغيار المقترحة",
+            "difficulty": "الصعوبة التقديرية"
+        },
+        "toasts": {
+            "ticketCreatedTitle": "تم إنشاء بطاقة الإصلاح",
+            "ticketCreatedDesc": "تمت إضافة الإصلاح الجديد إلى النظام.",
+            "missingInfoTitle": "معلومات ناقصة",
+            "missingInfoDesc": "يرجى إدخال المشكلة المبلغ عنها أولاً.",
+            "assessmentTitle": "تقييم الحالة بالذكاء الاصطناعي",
+            "assessmentDesc": "تم تحميل الصورة. يقوم الذكاء الاصطناعي بالتحليل بحثًا عن المشكلات التجميلية... (اكتملت المحاكاة، تم تعيين الحالة إلى 'B-Grade')"
+        }
+    }
+}

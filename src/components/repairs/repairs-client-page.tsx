@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useMemo, useState } from "react";
+import { useTranslations } from "next-intl";
 
 type RepairItem = {
     id: string;
@@ -49,6 +50,7 @@ const getStatusVariant = (status: string) => {
 }
 
 export default function RepairsClientPage({ initialItems }: { initialItems: RepairItem[] }) {
+    const t = useTranslations('Repairs');
     const [sortKey, setSortKey] = useState<SortKey | null>('checkedIn');
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
 
@@ -79,10 +81,10 @@ export default function RepairsClientPage({ initialItems }: { initialItems: Repa
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
-            <h1 className="font-headline text-3xl font-bold">Repair Tickets</h1>
+            <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
             <Link href="/dashboard/repairs/check-in">
                 <Button>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Check In New Repair
+                    <PlusCircle className="mr-2 h-4 w-4" /> {t('checkIn')}
                 </Button>
             </Link>
         </div>
@@ -91,19 +93,19 @@ export default function RepairsClientPage({ initialItems }: { initialItems: Repa
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search by ticket, device, or serial..." className="pl-10" />
+                    <Input placeholder={t('searchPlaceholder')} className="pl-10" />
                 </div>
                 <div className="flex items-center gap-2">
                     <Filter className="h-5 w-5 text-muted-foreground" />
                      <Select>
                         <SelectTrigger className="w-full md:w-[180px]">
-                            <SelectValue placeholder="Filter by Status" />
+                            <SelectValue placeholder={t('filterStatus')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="in-progress">In Progress</SelectItem>
-                            <SelectItem value="awaiting-parts">Awaiting Parts</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
-                            <SelectItem value="ready-for-pickup">Ready for Pickup</SelectItem>
+                            <SelectItem value="in-progress">{t('statuses.inProgress')}</SelectItem>
+                            <SelectItem value="awaiting-parts">{t('statuses.awaitingParts')}</SelectItem>
+                            <SelectItem value="completed">{t('statuses.completed')}</SelectItem>
+                            <SelectItem value="ready-for-pickup">{t('statuses.readyForPickup')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -114,13 +116,13 @@ export default function RepairsClientPage({ initialItems }: { initialItems: Repa
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[300px] p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('device')}>Device <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
-                  <TableHead>Ticket #</TableHead>
-                  <TableHead>Serial Number</TableHead>
-                  <TableHead className="p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('customer')}>Customer <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
-                  <TableHead className="p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('status')}>Status <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
-                  <TableHead className="text-right p-0"><Button variant="ghost" className="w-full justify-end" onClick={() => handleSort('checkedIn')}>Checked In <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
-                  <TableHead><span className="sr-only">Actions</span></TableHead>
+                  <TableHead className="w-[300px] p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('device')}>{t('table.device')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
+                  <TableHead>{t('table.ticket')}</TableHead>
+                  <TableHead>{t('table.serial')}</TableHead>
+                  <TableHead className="p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('customer')}>{t('table.customer')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
+                  <TableHead className="p-0"><Button variant="ghost" className="w-full justify-start" onClick={() => handleSort('status')}>{t('table.status')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
+                  <TableHead className="text-right p-0"><Button variant="ghost" className="w-full justify-end" onClick={() => handleSort('checkedIn')}>{t('table.checkedIn')} <ArrowUpDown className="ml-2 h-4 w-4" /></Button></TableHead>
+                  <TableHead><span className="sr-only">{t('table.actions')}</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -149,15 +151,15 @@ export default function RepairsClientPage({ initialItems }: { initialItems: Repa
                             <DropdownMenuTrigger asChild>
                                 <Button size="icon" variant="ghost">
                                     <MoreHorizontal className="h-4 w-4"/>
-                                    <span className="sr-only">More actions</span>
+                                    <span className="sr-only">{t('actions.label')}</span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>Update Status</DropdownMenuItem>
-                                <DropdownMenuItem>Add Note</DropdownMenuItem>
-                                <DropdownMenuItem>Print Ticket</DropdownMenuItem>
-                                <DropdownMenuItem className="text-destructive">Cancel Repair</DropdownMenuItem>
+                                <DropdownMenuLabel>{t('actions.label')}</DropdownMenuLabel>
+                                <DropdownMenuItem>{t('actions.updateStatus')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('actions.addNote')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('actions.printTicket')}</DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive">{t('actions.cancelRepair')}</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>

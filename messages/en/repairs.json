@@ -1,0 +1,85 @@
+
+{
+    "title": "Repair Tickets",
+    "checkIn": "Check In New Repair",
+    "searchPlaceholder": "Search by ticket, device, or serial...",
+    "filterStatus": "Filter by Status",
+    "statuses": {
+        "inProgress": "In Progress",
+        "awaitingParts": "Awaiting Parts",
+        "completed": "Completed",
+        "readyForPickup": "Ready for Pickup"
+    },
+    "table": {
+        "device": "Device",
+        "ticket": "Ticket #",
+        "serial": "Serial Number",
+        "customer": "Customer",
+        "status": "Status",
+        "checkedIn": "Checked In",
+        "actions": "Actions"
+    },
+    "actions": {
+        "label": "Actions",
+        "updateStatus": "Update Status",
+        "addNote": "Add Note",
+        "printTicket": "Print Ticket",
+        "cancelRepair": "Cancel Repair"
+    },
+    "details": {
+        "back": "Back to All Repairs",
+        "reportedIssue": "Reported Issue",
+        "notesTitle": "Repair Notes & History",
+        "addNoteLabel": "Add New Note",
+        "addNotePlaceholder": "e.g., Replaced screen assembly. All tests passing.",
+        "addNoteButton": "Add Note",
+        "customerTitle": "Customer Details",
+        "sendEmail": "Send Email Update",
+        "sendSMS": "Send SMS Update",
+        "logTitle": "Repair Log"
+    },
+    "checkInPage": {
+        "title": "Repair Check-in",
+        "header": "New Repair Ticket",
+        "description": "Fill out the customer and device details below.",
+        "customerInfo": "Customer Information",
+        "customerName": "Customer Name",
+        "customerNamePlaceholder": "John Doe",
+        "customerPhone": "Phone Number",
+        "customerPhonePlaceholder": "(123) 456-7890",
+        "customerEmail": "Email Address",
+        "customerEmailPlaceholder": "john.doe@example.com",
+        "deviceInfo": "Device & Issue",
+        "deviceName": "Device Name / Model",
+        "deviceNamePlaceholder": "e.g., MacBook Pro 16-inch",
+        "serialNumber": "Serial Number",
+        "serialNumberPlaceholder": "e.g., C02G80F3Q05D",
+        "photosLabel": "Upload Photos for AI Condition Assessment",
+        "analyzeButton": "Analyze",
+        "reportedIssueLabel": "Reported Issue",
+        "diagnoseButton": "AI Diagnose",
+        "diagnosingButton": "Diagnosing...",
+        "reportedIssuePlaceholder": "e.g., Screen is cracked, battery drains quickly...",
+        "technicianLabel": "Assigned Technician",
+        "technicianPlaceholder": "Select a technician",
+        "technician1": "Jane Doe",
+        "technician2": "Mike Smith",
+        "quoteLabel": "Estimated Quote ($)",
+        "quotePlaceholder": "150.00",
+        "saveButton": "Save & Create Ticket",
+        "aiDiagnosis": {
+            "title": "AI Diagnosis",
+            "preliminary": "Preliminary Diagnosis",
+            "parts": "Suggested Parts",
+            "difficulty": "Estimated Difficulty"
+        },
+        "toasts": {
+            "ticketCreatedTitle": "Repair Ticket Created",
+            "ticketCreatedDesc": "The new repair has been added to the system.",
+            "missingInfoTitle": "Missing Information",
+            "missingInfoDesc": "Please enter the reported issue first.",
+            "assessmentTitle": "AI Condition Assessment",
+            "assessmentDesc": "Photo uploaded. AI is analyzing for cosmetic issues... (simulation complete, condition set to 'B-Grade')"
+        }
+    }
+}
