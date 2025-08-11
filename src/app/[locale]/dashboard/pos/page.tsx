@@ -18,6 +18,7 @@ import { suggestPersonalized } from "@/ai/flows/suggest-personalized-flow";
 import dynamic from "next/dynamic";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 
 const PaymentDialog = dynamic(() => import('@/components/pos/payment-dialog'));
 const HandoverDialog = dynamic(() => import('@/components/pos/handover-dialog'));
@@ -78,6 +79,7 @@ const customers: Customer[] = [
 
 
 export default function POSPage() {
+    const t = useTranslations('POS');
     const [cart, setCart] = useState<CartItem[]>([]);
     const [heldCarts, setHeldCarts] = useState<CartItem[][]>([]);
     const [discount, setDiscount] = useState(0);
@@ -109,14 +111,14 @@ export default function POSPage() {
             if (!navigator.onLine) {
                 toast({
                     variant: 'destructive',
-                    title: "You are offline",
-                    description: "You are currently working in offline mode. Sales will be synced when you reconnect.",
+                    title: t('toasts.offline.title'),
+                    description: t('toasts.offline.description'),
                 });
             } else {
                 if(offlineQueue > 0) {
                      toast({
-                        title: "You are back online!",
-                        description: `Syncing ${offlineQueue} offline transactions.`,
+                        title: t('toasts.online.title'),
+                        description: t('toasts.online.description', { count: offlineQueue }),
                     });
                     setOfflineQueue(0);
                 }
@@ -129,14 +131,14 @@ export default function POSPage() {
             window.removeEventListener('online', updateOnlineStatus);
             window.removeEventListener('offline', updateOnlineStatus);
         };
-    }, [toast, offlineQueue]);
+    }, [toast, offlineQueue, t]);
 
     const handleAddToCart = (product: Product) => {
         if (product.stock <= 0) {
             toast({
                 variant: 'destructive',
-                title: 'Out of Stock',
-                description: `${product.name} is currently out of stock.`
+                title: t('toasts.outOfStock.title'),
+                description: t('toasts.outOfStock.description', { name: product.name })
             })
             return;
         }
@@ -205,12 +207,12 @@ export default function POSPage() {
         if (cart.length === 0) return;
         setHeldCarts([...heldCarts, cart]);
         handleClearCart();
-        toast({ title: "Sale Held", description: "The current sale has been saved. You can resume it later." });
+        toast({ title: t('toasts.saleHeld.title'), description: t('toasts.saleHeld.description') });
     };
 
     const handleResumeCart = (index: number) => {
         if (cart.length > 0) {
-            toast({ variant: "destructive", title: "Current Sale Active", description: "Please hold or complete the current sale before resuming another." });
+            toast({ variant: "destructive", title: t('toasts.resumeError.title'), description: t('toasts.resumeError.description') });
             return;
         }
         const cartToResume = heldCarts[index];
@@ -245,7 +247,7 @@ export default function POSPage() {
     const total = subtotal - totalDiscount + tax;
 
     const completeSale = () => {
-        toast({ title: "Sale Complete!", description: `Total: $${total.toFixed(2)}.` });
+        toast({ title: t('toasts.saleComplete.title'), description: t('toasts.saleComplete.description', {total: total.toFixed(2)}) });
         if (!isOnline) {
             setOfflineQueue(q => q + 1);
         }
@@ -260,11 +262,11 @@ export default function POSPage() {
     <div className="h-[calc(100vh-8rem)] flex flex-col gap-6">
         <Tabs defaultValue="sale" className="h-full flex flex-col">
              <TabsList className="grid grid-cols-5 w-full">
-                <TabsTrigger value="sale">Sale</TabsTrigger>
-                <TabsTrigger value="returns">Returns</TabsTrigger>
-                <TabsTrigger value="customers">Customers</TabsTrigger>
-                <TabsTrigger value="session">Cashier Session</TabsTrigger>
-                <TabsTrigger value="orders">Pending Orders</TabsTrigger>
+                <TabsTrigger value="sale">{t('tabs.sale')}</TabsTrigger>
+                <TabsTrigger value="returns">{t('tabs.returns')}</TabsTrigger>
+                <TabsTrigger value="customers">{t('tabs.customers')}</TabsTrigger>
+                <TabsTrigger value="session">{t('tabs.session')}</TabsTrigger>
+                <TabsTrigger value="orders">{t('tabs.orders')}</TabsTrigger>
             </TabsList>
             <TabsContent value="sale" className="flex-1 grid grid-cols-1 gap-6 lg:grid-cols-3 mt-4">
                 <div className="lg:col-span-2">
@@ -272,15 +274,15 @@ export default function POSPage() {
                         <CardHeader>
                             <div className="flex flex-col md:flex-row gap-4 justify-between">
                                 <div className="relative flex-1">
-                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                    <Input placeholder="Search products by name or scan barcode..." className="h-12 text-lg pl-12" />
+                                    <Search className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Input placeholder={t('search.placeholder')} className="h-12 text-lg ltr:pl-12 rtl:pr-12" />
                                 </div>
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <Button variant="outline" className="h-12"><ScanLine className="mr-2 h-6 w-6" /> Scan</Button>
+                                        <Button variant="outline" className="h-12"><ScanLine className="ltr:mr-2 rtl:ml-2 h-6 w-6" /> {t('buttons.scan')}</Button>
                                     </DialogTrigger>
                                     <DialogContent className="max-w-md">
-                                        <DialogHeader><DialogTitle className="flex items-center gap-2"><Camera className="h-6 w-6 text-primary"/> Scan Barcode</DialogTitle></DialogHeader>
+                                        <DialogHeader><DialogTitle className="flex items-center gap-2"><Camera className="h-6 w-6 text-primary"/> {t('dialogs.scan.title')}</DialogTitle></DialogHeader>
                                         <div className="p-4 rounded-lg bg-muted border-dashed border-2">
                                             {/* In a real app, a camera component would be rendered here */}
                                             <div className="w-full aspect-video rounded-md bg-black" />
@@ -294,8 +296,8 @@ export default function POSPage() {
                                 <TabsList>
                                     {categories.map(category => (
                                         <TabsTrigger key={category} value={category} disabled={category === 'For You' && !activeCustomer}>
-                                            {category === 'For You' && <Sparkles className="mr-2 h-4 w-4 text-primary" />}
-                                            {category}
+                                            {category === 'For You' && <Sparkles className="ltr:mr-2 rtl:ml-2 h-4 w-4 text-primary" />}
+                                            {category === 'For You' ? t('products.forYou') : category}
                                         </TabsTrigger>
                                     ))}
                                 </TabsList>
@@ -305,7 +307,7 @@ export default function POSPage() {
                                             <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
                                                 <CardContent className="p-2 relative">
                                                     <Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/>
-                                                    {item.stock <= 0 && <Badge variant="destructive" className="absolute top-1 left-1">Out of Stock</Badge>}
+                                                    {item.stock <= 0 && <Badge variant="destructive" className="absolute top-1 left-1">{t('products.outOfStock')}</Badge>}
                                                 </CardContent>
                                                 <CardFooter className="p-2 flex-col items-start">
                                                     <p className="font-semibold text-sm truncate w-full">{item.name}</p>
@@ -322,7 +324,7 @@ export default function POSPage() {
                                                 <Card key={item.id} className="cursor-pointer hover:border-primary transition-colors" onClick={() => handleAddToCart(item)}>
                                                     <CardContent className="p-2 relative">
                                                         <Image src={item.image} alt={item.name} width={150} height={150} className="w-full rounded-md aspect-square object-cover" data-ai-hint="phone laptop"/>
-                                                        {item.stock <= 0 && <Badge variant="destructive" className="absolute top-1 left-1">Out of Stock</Badge>}
+                                                        {item.stock <= 0 && <Badge variant="destructive" className="absolute top-1 left-1">{t('products.outOfStock')}</Badge>}
                                                     </CardContent>
                                                     <CardFooter className="p-2 flex-col items-start">
                                                         <p className="font-semibold text-sm truncate w-full">{item.name}</p>
@@ -335,7 +337,7 @@ export default function POSPage() {
                                 ))}
                                 <TabsContent value="For You">
                                     <div className="pt-4">
-                                        {isGeneratingSuggestions && <p>Loading suggestions...</p>}
+                                        {isGeneratingSuggestions && <p>{t('products.loading')}</p>}
                                         {personalizedSuggestions && (
                                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                                 {personalizedSuggestions.suggestions.map((suggestion, index) => {
@@ -364,14 +366,14 @@ export default function POSPage() {
                     <Card className="h-full flex flex-col bg-card">
                         <CardHeader>
                             <div className="flex items-center justify-between">
-                                <CardTitle className="font-headline text-xl">Current Sale</CardTitle>
+                                <CardTitle className="font-headline text-xl">{t('cart.title')}</CardTitle>
                                 <div className="flex items-center gap-2">
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => setHandoverModalOpen(true)}>
                                         <BookText className="h-4 w-4"/>
                                     </Button>
                                     <div className={`flex items-center gap-1.5 text-xs font-medium ${isOnline ? 'text-green-500' : 'text-destructive'}`}>
                                         {isOnline ? <Wifi className="h-4 w-4"/> : <WifiOff className="h-4 w-4"/>}
-                                        <span>{isOnline ? 'Online' : `Offline (${offlineQueue})`}</span>
+                                        <span>{isOnline ? t('cart.status.online') : t('cart.status.offline', { count: offlineQueue })}</span>
                                     </div>
                                 </div>
                             </div>
@@ -385,14 +387,14 @@ export default function POSPage() {
                                             </Button>
                                         </PopoverTrigger>
                                         <PopoverContent>
-                                            <h4 className="font-semibold mb-2">Purchase History</h4>
-                                            <ul className="list-disc list-inside text-sm text-muted-foreground">
+                                            <h4 className="font-semibold mb-2">{t('dialogs.customer.purchaseHistory')}</h4>
+                                            <ul className="list-disc ltr:list-inside rtl:list-outside rtl:mr-4 text-sm text-muted-foreground">
                                                 {activeCustomer.purchaseHistory.map(item => <li key={item}>{item}</li>)}
                                             </ul>
                                         </PopoverContent>
                                     </Popover>
                                 ) : (
-                                    <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="mr-2 h-4 w-4"/>Add Customer</Button>
+                                    <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="ltr:mr-2 rtl:ml-2 h-4 w-4"/>{t('buttons.addCustomer')}</Button>
                                 )}
                                 <div className="flex items-center gap-1">
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleHoldCart}><Pause className="h-4 w-4"/></Button>
@@ -401,13 +403,13 @@ export default function POSPage() {
                                             <Button variant="outline" size="icon" className="h-8 w-8" disabled={heldCarts.length === 0}><Play className="h-4 w-4"/></Button>
                                         </DialogTrigger>
                                         <DialogContent>
-                                            <DialogHeader><DialogTitle>Held Sales</DialogTitle></DialogHeader>
+                                            <DialogHeader><DialogTitle>{t('dialogs.held.title')}</DialogTitle></DialogHeader>
                                             <div className="space-y-2">
                                                 {heldCarts.map((heldCart, index) => (
                                                     <DialogClose asChild key={index}>
                                                         <Button variant="outline" className="w-full justify-between" onClick={() => handleResumeCart(index)}>
-                                                            <span>Sale with {heldCart.length} item(s)</span>
-                                                            <span>Total: ${heldCart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2)}</span>
+                                                            <span>{t('dialogs.held.saleSummary', { count: heldCart.length })}</span>
+                                                            <span>{t('dialogs.held.total', { total: heldCart.reduce((acc, item) => acc + item.price * item.quantity, 0).toFixed(2) })}</span>
                                                         </Button>
                                                     </DialogClose>
                                                 ))}
@@ -417,7 +419,7 @@ export default function POSPage() {
                                 </div>
                             </div>
                             {activeCustomer && (
-                                <div className="text-xs text-muted-foreground">Credit Limit: ${activeCustomer.creditUsed.toFixed(2)} / ${activeCustomer.creditLimit.toFixed(2)}</div>
+                                <div className="text-xs text-muted-foreground">{t('cart.creditLimit', { used: activeCustomer.creditUsed.toFixed(2), limit: activeCustomer.creditLimit.toFixed(2) })}</div>
                             )}
                         </CardHeader>
                         <CardContent className="flex-1 space-y-4 overflow-y-auto p-4">
@@ -427,7 +429,7 @@ export default function POSPage() {
                                         <Image src={cartItem.image} alt={cartItem.name} width={64} height={64} className="rounded-md border-2 border-primary/50" data-ai-hint="phone"/>
                                         <div className="flex-1">
                                             <p className="font-semibold">{cartItem.name}</p>
-                                            {cartItem.stock < 5 && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3"/> Low Stock ({cartItem.stock} left)</p>}
+                                            {cartItem.stock < 5 && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="h-3 w-3"/> {t('cart.lowStock', { count: cartItem.stock })}</p>}
                                             <div className="flex items-center gap-2 mt-1">
                                                 <Input type="number" value={cartItem.price.toFixed(2)} onChange={(e) => handlePriceChange(cartItem.id, parseFloat(e.target.value))} className="h-7 w-24 p-1 text-sm font-mono" />
                                                 {cartItem.selectedSerial && <Badge variant="secondary" className="text-xs">{cartItem.selectedSerial}</Badge>}
@@ -449,7 +451,7 @@ export default function POSPage() {
                             ) : (
                                 <div className="text-center text-muted-foreground py-10 flex flex-col items-center gap-4 h-full justify-center">
                                     <ShoppingCart className="h-16 w-16" />
-                                    <p>No items in cart</p>
+                                    <p>{t('cart.empty')}</p>
                                 </div>
                             )}
                         </CardContent>
@@ -457,32 +459,32 @@ export default function POSPage() {
                         <CardFooter className="flex-col !p-4 border-t mt-auto">
                             <div className="w-full space-y-2 text-sm">
                                 <div className="flex justify-between">
-                                    <p>Subtotal</p>
+                                    <p>{t('cart.subtotal')}</p>
                                     <p className="font-medium font-mono">${subtotal.toFixed(2)}</p>
                                 </div>
                                 <div className="flex justify-between items-center">
-                                    <button className="flex items-center gap-1 hover:text-primary" onClick={() => setDiscountModalOpen(true)}><Tags className="h-3 w-3" /> Discount ({discount}%) <Edit2 className="h-3 w-3" /></button>
+                                    <button className="flex items-center gap-1 hover:text-primary" onClick={() => setDiscountModalOpen(true)}><Tags className="h-3 w-3" /> {t('cart.discount', { percent: discount })} <Edit2 className="h-3 w-3" /></button>
                                     <p className="font-medium font-mono text-destructive">-${totalDiscount.toFixed(2)}</p>
                                 </div>
                                 <div className="flex justify-between">
-                                    <p>Tax (8%)</p>
+                                    <p>{t('cart.tax')}</p>
                                     <p className="font-medium font-mono">${tax.toFixed(2)}</p>
                                 </div>
                                 <div className="flex justify-between text-xs text-muted-foreground">
-                                    <p>Est. Commission (5%)</p>
+                                    <p>{t('cart.commission')}</p>
                                     <p className="font-mono">${commission.toFixed(2)}</p>
                                 </div>
                                 <Separator className="my-2" />
                                 <div className="flex justify-between text-lg font-bold text-primary">
-                                    <p>Total</p>
+                                    <p>{t('cart.total')}</p>
                                     <p className="font-mono">${total.toFixed(2)}</p>
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2 w-full mt-4">
-                                <Button variant="outline" onClick={() => setPromotionsModalOpen(true)}><Gift className="mr-2 h-4 w-4" /> Promotions</Button>
-                                <Button size="lg" className="h-12 text-lg font-bold" onClick={() => setPaymentOpen(true)}><CreditCard className="mr-2 h-6 w-6" />Pay</Button>
+                                <Button variant="outline" onClick={() => setPromotionsModalOpen(true)}><Gift className="ltr:mr-2 rtl:ml-2 h-4 w-4" /> {t('buttons.promotions')}</Button>
+                                <Button size="lg" className="h-12 text-lg font-bold" onClick={() => setPaymentOpen(true)}><CreditCard className="ltr:mr-2 rtl:ml-2 h-6 w-6" />{t('buttons.pay')}</Button>
                             </div>
-                            <Button variant="destructive" size="sm" className="w-full mt-2" onClick={handleClearCart}><Trash2 className="mr-2 h-4 w-4" />Clear Cart</Button>
+                            <Button variant="destructive" size="sm" className="w-full mt-2" onClick={handleClearCart}><Trash2 className="ltr:mr-2 rtl:ml-2 h-4 w-4" />{t('buttons.clearCart')}</Button>
                         </CardFooter>
                         }
                     </Card>
@@ -501,10 +503,10 @@ export default function POSPage() {
             <TabsContent value="orders" className="flex-1 mt-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle>Pending & Online Orders</CardTitle>
+                        <CardTitle>{t('orders.title')}</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-muted-foreground">This feature is not yet implemented.</p>
+                        <p className="text-muted-foreground">{t('orders.notImplemented')}</p>
                     </CardContent>
                 </Card>
             </TabsContent>

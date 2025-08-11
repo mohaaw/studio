@@ -4,6 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useTranslations } from "next-intl";
 
 interface CartItem {
     name: string;
@@ -18,16 +19,17 @@ interface SerialSelectorDialogProps {
 }
 
 export default function SerialSelectorDialog({ open, onOpenChange, currentItem, onSelectSerial }: SerialSelectorDialogProps) {
+    const t = useTranslations('POS.dialogs.serial');
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Select Serial Number for {currentItem?.name}</DialogTitle>
+                    <DialogTitle>{t('title', {name: currentItem?.name})}</DialogTitle>
                 </DialogHeader>
                 <div className="py-4 space-y-2">
-                    <Label>Available Serial Numbers</Label>
+                    <Label>{t('label')}</Label>
                     <Select onValueChange={onSelectSerial}>
-                        <SelectTrigger><SelectValue placeholder="Select a serial..." /></SelectTrigger>
+                        <SelectTrigger><SelectValue placeholder={t('placeholder')} /></SelectTrigger>
                         <SelectContent>
                             {currentItem?.serials.map(serial => (
                                 <SelectItem key={serial} value={serial}>{serial}</SelectItem>
@@ -36,7 +38,7 @@ export default function SerialSelectorDialog({ open, onOpenChange, currentItem, 
                     </Select>
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+                    <Button variant="outline" onClick={() => onOpenChange(false)}>{useTranslations('POS.buttons')('cancel')}</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

@@ -1,0 +1,192 @@
+
+{
+    "tabs": {
+        "sale": "بيع",
+        "returns": "مرتجعات",
+        "customers": "عملاء",
+        "session": "جلسة الكاشير",
+        "orders": "طلبات معلقة"
+    },
+    "search": {
+        "placeholder": "ابحث بالمنتج أو امسح الباركود..."
+    },
+    "buttons": {
+        "scan": "مسح",
+        "addCustomer": "إضافة عميل",
+        "pay": "دفع",
+        "promotions": "عروض",
+        "clearCart": "مسح السلة",
+        "finalize": "إتمام البيع",
+        "cancel": "إلغاء",
+        "resume": "استئناف",
+        "hold": "تعليق",
+        "refresh": "تحديث",
+        "apply": "تطبيق",
+        "removeDiscount": "إزالة الخصم"
+    },
+    "dialogs": {
+        "scan": {
+            "title": "مسح الباركود"
+        },
+        "held": {
+            "title": "المبيعات المعلقة",
+            "saleSummary": "عملية بيع بـ {count} عنصر",
+            "total": "الإجمالي: ${total}"
+        },
+        "payment": {
+            "title": "الدفع",
+            "method": "طريقة الدفع",
+            "summary": "ملخص",
+            "totalDue": "الإجمالي المطلوب",
+            "tendered": "المبلغ المدفوع",
+            "changeDue": "الباقي",
+            "tabs": {
+                "cash": "نقداً",
+                "card": "بطاقة",
+                "credit": "على الحساب",
+                "split": "تقسيم"
+            },
+            "cardMessage": "محاكاة الدفع بالبطاقة غير منفذة بعد. اضغط على \"إتمام البيع\" للإنهاء.",
+            "creditMessage": "الدفع من رصيد العميل غير منفذ بعد.",
+            "splitMessage": "تقسيم الدفع غير منفذ بعد.",
+            "cashTenderedLabel": "المبلغ النقدي المدفوع",
+            "quickCash": {
+                "nextBill": "${value}",
+                "exact": "بالضبط"
+            }
+        },
+        "discount": {
+            "title": "تطبيق خصم",
+            "description": "أدخل نسبة الخصم لتطبيقها على إجمالي الفاتورة.",
+            "label": "نسبة الخصم",
+            "placeholder": "مثال: 10"
+        },
+        "customer": {
+            "title": "اختر عميل",
+            "purchaseHistory": "سجل المشتريات"
+        },
+        "handover": {
+            "title": "ملاحظات تسليم الوردية",
+            "previousNotes": "الملاحظات السابقة",
+            "newNoteLabel": "إضافة ملاحظة جديدة",
+            "newNotePlaceholder": "اكتب ملاحظتك هنا...",
+            "save": "حفظ الملاحظات"
+        },
+        "promotions": {
+            "title": "تطبيق عرض",
+            "description": "اختر قاعدة تسعير أو عرضًا لتطبيقه على السلة.",
+            "promo1": "اشترِ واحدة واحصل على الثانية مجانًا على واقيات الشاشة",
+            "promo2": "خصم 20% على جميع الإكسسوارات عند شراء هاتف",
+            "promo3": "خصم الطالب - 10% على أجهزة الكمبيوتر المحمول"
+        },
+        "serial": {
+            "title": "اختر الرقم التسلسلي لـ {name}",
+            "label": "الأرقام التسلسلية المتاحة",
+            "placeholder": "اختر رقمًا تسلسليًا..."
+        },
+        "warranty": {
+            "title": "حالة الضمان",
+            "description": "تفاصيل الضمان لـ {name}",
+            "serial": "الرقم التسلسلي: {serial}"
+        }
+    },
+    "cart": {
+        "title": "البيع الحالي",
+        "status": {
+            "online": "متصل",
+            "offline": "غير متصل ({count})"
+        },
+        "creditLimit": "حد الائتمان: {used}$ / {limit}$",
+        "lowStock": "مخزون منخفض ({count} متبقٍ)",
+        "empty": "لا توجد عناصر في السلة",
+        "subtotal": "المجموع الفرعي",
+        "discount": "خصم ({percent}%)",
+        "tax": "ضريبة (8%)",
+        "commission": "العمولة المقدرة (5%)",
+        "total": "الإجمالي"
+    },
+    "products": {
+        "outOfStock": "نفد المخزون",
+        "forYou": "مقترح لك",
+        "loading": "جارٍ تحميل الاقتراحات..."
+    },
+    "toasts": {
+        "offline": {
+            "title": "أنت غير متصل بالإنترنت",
+            "description": "أنت تعمل حاليًا في وضع عدم الاتصال. ستتم مزامنة المبيعات عند إعادة الاتصال."
+        },
+        "online": {
+            "title": "لقد عدت متصلاً!",
+            "description": "جارٍ مزامنة {count} من المعاملات غير المتصلة."
+        },
+        "outOfStock": {
+            "title": "نفد المخزون",
+            "description": "{name} نفد مخزونه حاليًا."
+        },
+        "saleHeld": {
+            "title": "تم تعليق البيع",
+            "description": "تم حفظ عملية البيع الحالية. يمكنك استئنافها لاحقًا."
+        },
+        "resumeError": {
+            "title": "عملية بيع نشطة",
+            "description": "يرجى تعليق أو إتمام عملية البيع الحالية قبل استئناف أخرى."
+        },
+        "saleComplete": {
+            "title": "اكتمل البيع!",
+            "description": "الإجمالي: ${total}."
+        }
+    },
+    "returns": {
+        "title": "معالجة مرتجع",
+        "description": "ابحث عن الطلب الأصلي بالمعرّف أو الرقم التسلسلي أو العميل.",
+        "orderIdLabel": "معرّف الطلب",
+        "orderIdPlaceholder": "ORD-1234",
+        "search": "بحث",
+        "selectTitle": "اختر العناصر المراد إرجاعها",
+        "orderInfo": "طلب {id} - {customer}",
+        "summaryTitle": "ملخص الإرجاع",
+        "empty": "لم يتم تحديد أي عناصر للإرجاع.",
+        "totalRefund": "قيمة الإرجاع الإجمالية",
+        "refundButton": "استرداد إلى وسيلة الدفع الأصلية",
+        "creditButton": "إصدار رصيد متجر",
+        "exchangeButton": "استبدال بعنصر آخر",
+        "notFound": "لم نتمكن من العثور على طلب بهذا المعرّف. يرجى التحقق منه مرة أخرى والمحاولة مرة أخرى."
+    },
+    "customers": {
+        "title": "بحث أو إنشاء عميل",
+        "searchPlaceholder": "ابحث بالاسم، البريد الإلكتروني، الهاتف...",
+        "createButton": "إنشاء عميل جديد",
+        "detailsTitle": "تفاصيل العميل",
+        "loyaltyTitle": "الولاء",
+        "creditTitle": "رصيد المتجر",
+        "creditLimit": "الحد: ${limit}",
+        "historyTitle": "سجل الشراء",
+        "selectPrompt": "اختر عميلاً لعرض التفاصيل"
+    },
+    "session": {
+        "startTitle": "بدء جلسة كاشير جديدة",
+        "startDescription": "أدخل مبلغ النقدية الافتتاحي في الدرج.",
+        "openingCashLabel": "المبلغ النقدي الافتتاحي ($)",
+        "openingCashPlaceholder": "150.00",
+        "startButton": "بدء الجلسة",
+        "activeTitle": "ملخص الجلسة النشطة",
+        "activeDescription": "ملخص المعاملات في الجلسة الحالية.",
+        "expectedCash": "النقد المتوقع في الدرج",
+        "openingCash": "النقد الافتتاحي:",
+        "cashSales": "المبيعات النقدية:",
+        "cardSales": "مبيعات البطاقات:",
+        "totalSales": "إجمالي المبيعات:",
+        "printButton": "طباعة تقرير Z",
+        "endButton": "إنهاء الجلسة",
+        "toasts": {
+            "started": "بدأت الجلسة",
+            "startedDesc": "تم فتح درج النقود بمبلغ ${amount}.",
+            "ended": "انتهت الجلسة",
+            "endedDesc": "تم إغلاق درج النقود وتسجيل الإجماليات."
+        }
+    },
+    "orders": {
+        "title": "الطلبات المعلقة والإلكترونية",
+        "notImplemented": "هذه الميزة لم تنفذ بعد."
+    }
+}

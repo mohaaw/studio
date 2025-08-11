@@ -8,6 +8,8 @@ import { Search, Undo2, ArrowLeftRight, CreditCard, Gift } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { Separator } from "@/components/ui/separator";
+import { useTranslations } from "next-intl";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const dummyOrder = {
     orderId: "ORD-1234",
@@ -22,12 +24,15 @@ const dummyOrder = {
 type ReturnItem = typeof dummyOrder.items[0] & { returnQty: number };
 
 export default function ReturnsPage() {
+    const t = useTranslations('POS.returns');
     const [orderId, setOrderId] = useState("");
     const [foundOrder, setFoundOrder] = useState<typeof dummyOrder | null>(null);
     const [returnItems, setReturnItems] = useState<ReturnItem[]>([]);
+    const [searched, setSearched] = useState(false);
 
     const handleSearchOrder = (e: React.FormEvent) => {
         e.preventDefault();
+        setSearched(true);
         if (orderId.toUpperCase() === "ORD-1234") {
             setFoundOrder(dummyOrder);
             setReturnItems(dummyOrder.items.map(item => ({...item, returnQty: 0})));
@@ -48,24 +53,24 @@ export default function ReturnsPage() {
                 <div>
                     <Card>
                         <CardHeader>
-                            <CardTitle>Process a Return</CardTitle>
-                            <CardDescription>Search for the original order by ID, Serial, or Customer.</CardDescription>
+                            <CardTitle>{t('title')}</CardTitle>
+                            <CardDescription>{t('description')}</CardDescription>
                         </CardHeader>
                         <form onSubmit={handleSearchOrder}>
                             <CardContent>
-                                <Label htmlFor="order-search">Order ID</Label>
+                                <Label htmlFor="order-search">{t('orderIdLabel')}</Label>
                                 <div className="flex gap-2">
-                                    <Input id="order-search" value={orderId} onChange={e => setOrderId(e.target.value)} placeholder="ORD-1234" />
-                                    <Button type="submit"><Search className="mr-2"/> Search</Button>
+                                    <Input id="order-search" value={orderId} onChange={e => setOrderId(e.target.value)} placeholder={t('orderIdPlaceholder')} />
+                                    <Button type="submit"><Search className="ltr:mr-2 rtl:ml-2"/> {t('search')}</Button>
                                 </div>
                             </CardContent>
                         </form>
                     </Card>
-                    {foundOrder && (
+                    {foundOrder ? (
                          <Card className="mt-6">
                             <CardHeader>
-                                <CardTitle>Select Items to Return</CardTitle>
-                                <CardDescription>Order {foundOrder.orderId} - {foundOrder.customer}</CardDescription>
+                                <CardTitle>{t('selectTitle')}</CardTitle>
+                                <CardDescription>{t('orderInfo', {id: foundOrder.orderId, customer: foundOrder.customer})}</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 {returnItems.map(item => (
@@ -90,12 +95,19 @@ export default function ReturnsPage() {
                                 ))}
                             </CardContent>
                         </Card>
+                    ) : searched && (
+                         <Alert variant="destructive" className="mt-6">
+                            <AlertTitle>{useTranslations('Actions')('error')}</AlertTitle>
+                            <AlertDescription>
+                                {t('notFound')}
+                            </AlertDescription>
+                        </Alert>
                     )}
                 </div>
                 <div>
                     <Card>
                          <CardHeader>
-                            <CardTitle className="font-headline text-xl">Return Summary</CardTitle>
+                            <CardTitle className="font-headline text-xl">{t('summaryTitle')}</CardTitle>
                         </CardHeader>
                         <CardContent>
                              {totalRefund > 0 ? (
@@ -108,18 +120,18 @@ export default function ReturnsPage() {
                                     ))}
                                     <Separator />
                                      <div className="flex justify-between text-lg font-bold">
-                                        <p>Total Refund Value</p>
+                                        <p>{t('totalRefund')}</p>
                                         <p className="font-mono text-primary">${totalRefund.toFixed(2)}</p>
                                     </div>
                                 </div>
                             ) : (
-                                <p className="text-muted-foreground text-center py-8">No items selected for return.</p>
+                                <p className="text-muted-foreground text-center py-8">{t('empty')}</p>
                             )}
                         </CardContent>
                         <CardFooter className="flex flex-col gap-2">
-                             <Button size="lg" className="w-full" disabled={totalRefund <= 0}><CreditCard className="mr-2"/> Refund to Original Payment</Button>
-                             <Button size="lg" variant="secondary" className="w-full" disabled={totalRefund <= 0}><Gift className="mr-2"/> Issue Store Credit</Button>
-                             <Button size="lg" variant="outline" className="w-full" disabled={totalRefund <= 0}><ArrowLeftRight className="mr-2"/> Exchange for Other Item</Button>
+                             <Button size="lg" className="w-full" disabled={totalRefund <= 0}><CreditCard className="ltr:mr-2 rtl:ml-2"/> {t('refundButton')}</Button>
+                             <Button size="lg" variant="secondary" className="w-full" disabled={totalRefund <= 0}><Gift className="ltr:mr-2 rtl:ml-2"/> {t('creditButton')}</Button>
+                             <Button size="lg" variant="outline" className="w-full" disabled={totalRefund <= 0}><ArrowLeftRight className="ltr:mr-2 rtl:ml-2"/> {t('exchangeButton')}</Button>
                         </CardFooter>
                     </Card>
                 </div>
@@ -127,5 +139,3 @@ export default function ReturnsPage() {
         </main>
     )
 }
-
-    

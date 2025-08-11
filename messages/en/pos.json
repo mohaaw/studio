@@ -1,0 +1,192 @@
+
+{
+    "tabs": {
+        "sale": "Sale",
+        "returns": "Returns",
+        "customers": "Customers",
+        "session": "Cashier Session",
+        "orders": "Pending Orders"
+    },
+    "search": {
+        "placeholder": "Search products by name or scan barcode..."
+    },
+    "buttons": {
+        "scan": "Scan",
+        "addCustomer": "Add Customer",
+        "pay": "Pay",
+        "promotions": "Promotions",
+        "clearCart": "Clear Cart",
+        "finalize": "Finalize Sale",
+        "cancel": "Cancel",
+        "resume": "Resume",
+        "hold": "Hold",
+        "refresh": "Refresh",
+        "apply": "Apply",
+        "removeDiscount": "Remove Discount"
+    },
+    "dialogs": {
+        "scan": {
+            "title": "Scan Barcode"
+        },
+        "held": {
+            "title": "Held Sales",
+            "saleSummary": "Sale with {count} item(s)",
+            "total": "Total: ${total}"
+        },
+        "payment": {
+            "title": "Payment",
+            "method": "Payment Method",
+            "summary": "Summary",
+            "totalDue": "Total Due",
+            "tendered": "Cash Tendered",
+            "changeDue": "Change Due",
+            "tabs": {
+                "cash": "Cash",
+                "card": "Card",
+                "credit": "On Credit",
+                "split": "Split"
+            },
+            "cardMessage": "Card payment simulation is not yet implemented. Click \"Finalize Sale\" to complete.",
+            "creditMessage": "Customer credit payment is not yet implemented.",
+            "splitMessage": "Split payment is not yet implemented.",
+            "cashTenderedLabel": "Cash Tendered",
+            "quickCash": {
+                "nextBill": "${value}",
+                "exact": "Exact"
+            }
+        },
+        "discount": {
+            "title": "Apply Discount",
+            "description": "Enter a percentage discount to apply to the entire sale.",
+            "label": "Discount Percentage",
+            "placeholder": "e.g. 10"
+        },
+        "customer": {
+            "title": "Select Customer",
+            "purchaseHistory": "Purchase History"
+        },
+        "handover": {
+            "title": "Shift Handover Notes",
+            "previousNotes": "Previous Notes",
+            "newNoteLabel": "Add New Note",
+            "newNotePlaceholder": "Type your note here...",
+            "save": "Save Notes"
+        },
+        "promotions": {
+            "title": "Apply Promotion",
+            "description": "Select an available pricing rule or promotion to apply to the cart.",
+            "promo1": "Buy One Get One Free on Screen Protectors",
+            "promo2": "20% Off All Accessories with Phone Purchase",
+            "promo3": "Student Discount - 10% Off Laptops"
+        },
+        "serial": {
+            "title": "Select Serial Number for {name}",
+            "label": "Available Serial Numbers",
+            "placeholder": "Select a serial..."
+        },
+        "warranty": {
+            "title": "Warranty Status",
+            "description": "Warranty details for {name}",
+            "serial": "Serial: {serial}"
+        }
+    },
+    "cart": {
+        "title": "Current Sale",
+        "status": {
+            "online": "Online",
+            "offline": "Offline ({count})"
+        },
+        "creditLimit": "Credit Limit: ${used} / ${limit}",
+        "lowStock": "Low Stock ({count} left)",
+        "empty": "No items in cart",
+        "subtotal": "Subtotal",
+        "discount": "Discount ({percent}%)",
+        "tax": "Tax (8%)",
+        "commission": "Est. Commission (5%)",
+        "total": "Total"
+    },
+    "products": {
+        "outOfStock": "Out of Stock",
+        "forYou": "For You",
+        "loading": "Loading suggestions..."
+    },
+    "toasts": {
+        "offline": {
+            "title": "You are offline",
+            "description": "You are currently working in offline mode. Sales will be synced when you reconnect."
+        },
+        "online": {
+            "title": "You are back online!",
+            "description": "Syncing {count} offline transactions."
+        },
+        "outOfStock": {
+            "title": "Out of Stock",
+            "description": "{name} is currently out of stock."
+        },
+        "saleHeld": {
+            "title": "Sale Held",
+            "description": "The current sale has been saved. You can resume it later."
+        },
+        "resumeError": {
+            "title": "Current Sale Active",
+            "description": "Please hold or complete the current sale before resuming another."
+        },
+        "saleComplete": {
+            "title": "Sale Complete!",
+            "description": "Total: ${total}."
+        }
+    },
+    "returns": {
+        "title": "Process a Return",
+        "description": "Search for the original order by ID, Serial, or Customer.",
+        "orderIdLabel": "Order ID",
+        "orderIdPlaceholder": "ORD-1234",
+        "search": "Search",
+        "selectTitle": "Select Items to Return",
+        "orderInfo": "Order {id} - {customer}",
+        "summaryTitle": "Return Summary",
+        "empty": "No items selected for return.",
+        "totalRefund": "Total Refund Value",
+        "refundButton": "Refund to Original Payment",
+        "creditButton": "Issue Store Credit",
+        "exchangeButton": "Exchange for Other Item",
+        "notFound": "We couldn't find an order with that ID. Please double-check it and try again."
+    },
+    "customers": {
+        "title": "Search or Create Customer",
+        "searchPlaceholder": "Search by name, email, phone...",
+        "createButton": "Create New Customer",
+        "detailsTitle": "Customer Details",
+        "loyaltyTitle": "Loyalty",
+        "creditTitle": "Store Credit",
+        "creditLimit": "Limit: ${limit}",
+        "historyTitle": "Purchase History",
+        "selectPrompt": "Select a customer to view details"
+    },
+    "session": {
+        "startTitle": "Start New Cashier Session",
+        "startDescription": "Enter the opening cash amount in the drawer.",
+        "openingCashLabel": "Opening Cash Amount ($)",
+        "openingCashPlaceholder": "150.00",
+        "startButton": "Start Session",
+        "activeTitle": "Active Session Summary",
+        "activeDescription": "Summary of transactions in the current session.",
+        "expectedCash": "Expected Cash in Drawer",
+        "openingCash": "Opening Cash:",
+        "cashSales": "Cash Sales:",
+        "cardSales": "Card Sales:",
+        "totalSales": "Total Sales:",
+        "printButton": "Print Z-Report",
+        "endButton": "End Session",
+        "toasts": {
+            "started": "Session Started",
+            "startedDesc": "Cash drawer opened with ${amount}.",
+            "ended": "Session Ended",
+            "endedDesc": "Cash drawer closed and totals have been recorded."
+        }
+    },
+    "orders": {
+        "title": "Pending & Online Orders",
+        "notImplemented": "This feature is not yet implemented."
+    }
+}
