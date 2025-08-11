@@ -1,0 +1,44 @@
+
+{
+    "title": "Team Hub",
+    "announcements": {
+        "title": "Announcements"
+    },
+    "chat": {
+        "title": "Communication Hub",
+        "description": "Real-time chat for cross-departmental communication.",
+        "placeholder": "Message #{channel}...",
+        "channels": {
+            "general": "general",
+            "sales": "sales",
+            "repairs": "repairs",
+            "marketing": "marketing"
+        }
+    },
+    "marketing": {
+        "title": "AI Marketing Assistant",
+        "description": "Generate promotional content for social media or email.",
+        "topicLabel": "Topic",
+        "topicPlaceholder": "e.g., Weekend sale on laptops",
+        "platformLabel": "Platform",
+        "platforms": {
+            "social": "Social Media",
+            "email": "Email"
+        },
+        "generatedLabel": "Generated Copy",
+        "generate": "Generate Content",
+        "generating": "Generating..."
+    },
+    "toasts": {
+        "missingTopic": {
+            "title": "Missing Topic",
+            "description": "Please enter a topic for the marketing content."
+        },
+        "genFailed": {
+            "title": "Generation Failed",
+            "description": "Could not generate marketing copy. Please try again."
+        }
+    }
+}
+
+    

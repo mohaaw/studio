@@ -1,0 +1,28 @@
+
+{
+    "header": {
+        "title": "Welcome to TechShop",
+        "subtitle": "Your self-service kiosk for browsing products and checking repairs."
+    },
+    "tabs": {
+        "browse": "Browse Products",
+        "repair": "Check Repair Status"
+    },
+    "repair": {
+        "title": "Check Repair Status",
+        "description": "Enter your repair ticket number below to see the latest update.",
+        "placeholder": "e.g., RPR-001",
+        "statusTitle": "Status for {device}: {status}",
+        "notFound": {
+            "title": "Not Found",
+            "description": "We couldn't find a repair ticket with that number. Please double-check it and try again."
+        }
+    },
+    "chat": {
+        "title": "TechShop Assistant",
+        "placeholder": "Ask a question...",
+        "thinking": "..."
+    }
+}
+
+    

@@ -15,6 +15,7 @@ import { useState, useTransition } from "react";
 import { generateMarketingCopy } from "@/ai/flows/generate-marketing-flow";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "next-intl";
 
 const announcements = [
     { title: "New Q3 Sales Goals", content: "Team, new sales targets are up on the Team Hub. Let's crush them! See the attached document for full details.", author: "Management", date: "2 days ago", authorImage: "https://placehold.co/40x40" },
@@ -30,6 +31,7 @@ const chatMessages = [
 ]
 
 export default function TeamHubPage() {
+    const t = useTranslations('TeamHub');
     const { toast } = useToast();
     const [isGenerating, startGenerationTransition] = useTransition();
 
@@ -42,8 +44,8 @@ export default function TeamHubPage() {
         if (!topic) {
             toast({
                 variant: 'destructive',
-                title: "Missing Topic",
-                description: "Please enter a topic for the marketing content.",
+                title: t('toasts.missingTopic.title'),
+                description: t('toasts.missingTopic.description'),
             });
             return;
         }
@@ -54,8 +56,8 @@ export default function TeamHubPage() {
             } else {
                 toast({
                     variant: 'destructive',
-                    title: "Generation Failed",
-                    description: "Could not generate marketing copy. Please try again.",
+                    title: t('toasts.genFailed.title'),
+                    description: t('toasts.genFailed.description'),
                 });
             }
         });
@@ -63,12 +65,12 @@ export default function TeamHubPage() {
 
     return (
         <div className="space-y-6">
-             <h1 className="font-headline text-3xl font-bold">Team Hub</h1>
+             <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
              <div className="grid gap-8 lg:grid-cols-3">
                 <div className="lg:col-span-2 space-y-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline text-2xl flex items-center gap-2"><Megaphone className="h-6 w-6 text-primary"/> Announcements</CardTitle>
+                            <CardTitle className="font-headline text-2xl flex items-center gap-2"><Megaphone className="h-6 w-6 text-primary"/> {t('announcements.title')}</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4">
                              {announcements.map((item, index) => (
@@ -96,16 +98,16 @@ export default function TeamHubPage() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline text-2xl flex items-center gap-2"><Mail className="h-6 w-6 text-primary"/> Communication Hub</CardTitle>
-                            <CardDescription>Real-time chat for cross-departmental communication.</CardDescription>
+                            <CardTitle className="font-headline text-2xl flex items-center gap-2"><Mail className="h-6 w-6 text-primary"/> {t('chat.title')}</CardTitle>
+                            <CardDescription>{t('chat.description')}</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-4">
                                 <div className="w-1/4 space-y-2">
-                                    <Button onClick={() => setActiveChannel('general')} variant={activeChannel === 'general' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> general</Button>
-                                    <Button onClick={() => setActiveChannel('sales')} variant={activeChannel === 'sales' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> sales</Button>
-                                    <Button onClick={() => setActiveChannel('repairs')} variant={activeChannel === 'repairs' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> repairs</Button>
-                                    <Button onClick={() => setActiveChannel('marketing')} variant={activeChannel === 'marketing' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> marketing</Button>
+                                    <Button onClick={() => setActiveChannel('general')} variant={activeChannel === 'general' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> {t('chat.channels.general')}</Button>
+                                    <Button onClick={() => setActiveChannel('sales')} variant={activeChannel === 'sales' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> {t('chat.channels.sales')}</Button>
+                                    <Button onClick={() => setActiveChannel('repairs')} variant={activeChannel === 'repairs' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> {t('chat.channels.repairs')}</Button>
+                                    <Button onClick={() => setActiveChannel('marketing')} variant={activeChannel === 'marketing' ? 'secondary' : 'ghost'} className="w-full justify-start"><Hash/> {t('chat.channels.marketing')}</Button>
                                 </div>
                                 <div className="w-3/4 bg-muted/50 rounded-lg p-4 h-96 flex flex-col">
                                     <div className="flex-1 space-y-4 overflow-y-auto">
@@ -126,7 +128,7 @@ export default function TeamHubPage() {
                                         ))}
                                     </div>
                                     <div className="mt-4 flex gap-2">
-                                        <Input placeholder={`Message #${activeChannel}...`} />
+                                        <Input placeholder={t('chat.placeholder', { channel: activeChannel })} />
                                         <Button><Send className="h-4 w-4"/></Button>
                                     </div>
                                 </div>
@@ -137,27 +139,27 @@ export default function TeamHubPage() {
                 <div className="space-y-6">
                      <Card>
                         <CardHeader>
-                            <CardTitle className="font-headline text-lg flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary"/> AI Marketing Assistant</CardTitle>
-                            <CardDescription>Generate promotional content for social media or email.</CardDescription>
+                            <CardTitle className="font-headline text-lg flex items-center gap-2"><Sparkles className="h-5 w-5 text-primary"/> {t('marketing.title')}</CardTitle>
+                            <CardDescription>{t('marketing.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="topic">Topic</Label>
-                                <Input id="topic" placeholder="e.g., Weekend sale on laptops" value={topic} onChange={e => setTopic(e.target.value)} />
+                                <Label htmlFor="topic">{t('marketing.topicLabel')}</Label>
+                                <Input id="topic" placeholder={t('marketing.topicPlaceholder')} value={topic} onChange={e => setTopic(e.target.value)} />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="platform">Platform</Label>
+                                <Label htmlFor="platform">{t('marketing.platformLabel')}</Label>
                                 <Select value={platform} onValueChange={setPlatform}>
                                     <SelectTrigger id="platform"><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="social-media">Social Media</SelectItem>
-                                        <SelectItem value="email">Email</SelectItem>
+                                        <SelectItem value="social-media">{t('marketing.platforms.social')}</SelectItem>
+                                        <SelectItem value="email">{t('marketing.platforms.email')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             {generatedCopy && (
                                 <div className="space-y-2 pt-2">
-                                    <Label>Generated Copy</Label>
+                                    <Label>{t('marketing.generatedLabel')}</Label>
                                     <Textarea value={generatedCopy} readOnly className="h-32 bg-muted"/>
                                 </div>
                             )}
@@ -165,7 +167,7 @@ export default function TeamHubPage() {
                         <CardFooter>
                             <Button className="w-full" onClick={handleGenerateCopy} disabled={isGenerating}>
                                 <Wand2 className="mr-2 h-4 w-4" />
-                                {isGenerating ? 'Generating...' : 'Generate Content'}
+                                {isGenerating ? t('marketing.generating') : t('marketing.generate')}
                             </Button>
                         </CardFooter>
                     </Card>
@@ -174,3 +176,5 @@ export default function TeamHubPage() {
         </div>
     );
 }
+
+    

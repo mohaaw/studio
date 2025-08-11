@@ -1,5 +1,4 @@
 
-
 'use client'
 
 import { Button } from "@/components/ui/button";
@@ -18,8 +17,10 @@ import { suggestPrice } from "@/ai/flows/suggest-price-flow";
 import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslations } from "next-intl";
 
 export default function IntakePage() {
+    const t = useTranslations('Intake');
     const [qrCodeGenerated, setQrCodeGenerated] = useState(false);
     const [isGeneratingDesc, startDescTransition] = useTransition();
     const [isGeneratingPrice, startPriceTransition] = useTransition();
@@ -55,8 +56,8 @@ export default function IntakePage() {
         if (!serial) {
              toast({
                 variant: 'destructive',
-                title: "Missing Serial Number",
-                description: "A serial number is required for all new items.",
+                title: t('toasts.missingSerial.title'),
+                description: t('toasts.missingSerial.description'),
             });
             return;
         }
@@ -67,8 +68,8 @@ export default function IntakePage() {
         if (!itemName || !category || !specs) {
             toast({
                 variant: 'destructive',
-                title: "Missing Information",
-                description: "Please fill in Item Name, Category, and Specifications first.",
+                title: t('toasts.missingInfo.title'),
+                description: t('toasts.missingInfo.description'),
             });
             return;
         }
@@ -81,11 +82,15 @@ export default function IntakePage() {
             });
             if (result) {
                 setDescription(result);
+                 toast({
+                    title: t('toasts.descGenerated.title'),
+                    description: t('toasts.descGenerated.description'),
+                });
             } else {
                  toast({
                     variant: 'destructive',
-                    title: "Generation Failed",
-                    description: "Could not generate a description. Please try again.",
+                    title: t('toasts.genFailed.title'),
+                    description: t('toasts.genFailed.description'),
                 });
             }
         });
@@ -95,8 +100,8 @@ export default function IntakePage() {
         if (!itemName || !category || !specs || !condition) {
             toast({
                 variant: 'destructive',
-                title: "Missing Information",
-                description: "Please fill in Item Name, Category, Specs and Condition first.",
+                title: t('toasts.missingInfo.title'),
+                description: t('toasts.missingInfo.description'),
             });
             return;
         }
@@ -110,11 +115,15 @@ export default function IntakePage() {
             });
             if (result) {
                 setSalePrice(result.toString());
+                 toast({
+                    title: t('toasts.priceSuggested.title'),
+                    description: t('toasts.priceSuggested.description', { price: result.toFixed(2) }),
+                });
             } else {
                  toast({
                     variant: 'destructive',
-                    title: "Suggestion Failed",
-                    description: "Could not suggest a price. Please try again.",
+                    title: t('toasts.suggestionFailed.title'),
+                    description: t('toasts.suggestionFailed.description'),
                 });
             }
         });
@@ -136,7 +145,7 @@ export default function IntakePage() {
     };
     
     const removeBackground = () => {
-        toast({ title: 'Simulating AI Background Removal...', description: 'This would be replaced with a call to an image processing AI.' });
+        toast({ title: t('toasts.bgRemoval.title'), description: t('toasts.bgRemoval.description') });
         // In a real app, you'd send the image for processing and get back a new one.
         // For now, we just show a toast.
     };
@@ -146,7 +155,7 @@ export default function IntakePage() {
              <div className="flex items-center justify-between print:hidden">
                 <Link href="/dashboard/inventory" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
                     <ArrowLeft className="h-4 w-4" />
-                    Back to Inventory
+                    {t('back')}
                 </Link>
             </div>
             
@@ -163,24 +172,24 @@ export default function IntakePage() {
             <Card className="print:hidden">
                 <form onSubmit={handleSubmit}>
                     <CardHeader>
-                        <CardTitle className="font-headline text-xl">Register New Item</CardTitle>
-                        <CardDescription>Fill out the details below to add a new item to the inventory.</CardDescription>
+                        <CardTitle className="font-headline text-xl">{t('title')}</CardTitle>
+                        <CardDescription>{t('description')}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-8 p-6">
                         <div className="space-y-4">
-                             <h3 className="font-headline text-lg font-semibold border-b pb-2">Media</h3>
+                             <h3 className="font-headline text-lg font-semibold border-b pb-2">{t('media.title')}</h3>
                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                                 <div>
-                                    <Label htmlFor="image-upload">Product Image</Label>
+                                    <Label htmlFor="image-upload">{t('media.imageLabel')}</Label>
                                     <Input id="image-upload" type="file" accept="image/*" onChange={handleImageUpload} />
                                 </div>
                                 {imagePreview && (
                                     <div className="space-y-2">
-                                        <p className="font-medium text-sm">Image Preview</p>
+                                        <p className="font-medium text-sm">{t('media.preview')}</p>
                                         <div className="relative group">
                                             <Image src={imagePreview} alt="Preview" width={200} height={200} className="rounded-lg border object-cover aspect-square" />
                                             <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-lg">
-                                                <Button type="button" variant="secondary" onClick={removeBackground}><Brush className="mr-2 h-4 w-4" />Remove BG</Button>
+                                                <Button type="button" variant="secondary" onClick={removeBackground}><Brush className="mr-2 h-4 w-4" />{t('media.removeBg')}</Button>
                                             </div>
                                         </div>
                                     </div>
@@ -189,60 +198,60 @@ export default function IntakePage() {
                         </div>
 
                         <div className="space-y-4">
-                            <h3 className="font-headline text-lg font-semibold border-b pb-2">Item Details</h3>
+                            <h3 className="font-headline text-lg font-semibold border-b pb-2">{t('details.title')}</h3>
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="name">Item Name / Model</Label>
-                                    <Input id="name" placeholder="e.g., MacBook Pro 16-inch" value={itemName} onChange={(e) => setItemName(e.target.value)} required/>
+                                    <Label htmlFor="name">{t('details.name')}</Label>
+                                    <Input id="name" placeholder={t('details.namePlaceholder')} value={itemName} onChange={(e) => setItemName(e.target.value)} required/>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="category">Category</Label>
+                                    <Label htmlFor="category">{t('details.category')}</Label>
                                     <Select value={category} onValueChange={setCategory} required>
-                                        <SelectTrigger><SelectValue placeholder="Select a category" /></SelectTrigger>
+                                        <SelectTrigger><SelectValue placeholder={t('details.categoryPlaceholder')} /></SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="phones">Phones</SelectItem>
-                                            <SelectItem value="laptops">Laptops</SelectItem>
-                                            <SelectItem value="wearables">Wearables</SelectItem>
-                                            <SelectItem value="accessories">Accessories</SelectItem>
-                                            <SelectItem value="gaming">Gaming Consoles</SelectItem>
-                                            <SelectItem value="parts">Repair Parts</SelectItem>
+                                            <SelectItem value="phones">{t('details.categories.phones')}</SelectItem>
+                                            <SelectItem value="laptops">{t('details.categories.laptops')}</SelectItem>
+                                            <SelectItem value="wearables">{t('details.categories.wearables')}</SelectItem>
+                                            <SelectItem value="accessories">{t('details.categories.accessories')}</SelectItem>
+                                            <SelectItem value="gaming">{t('details.categories.gaming')}</SelectItem>
+                                            <SelectItem value="parts">{t('details.categories.parts')}</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="serial">Serial Number / IMEI</Label>
-                                    <Input id="serial" placeholder="e.g., C02G80F3Q05D" value={serial} onChange={(e) => setSerial(e.target.value)} required/>
+                                    <Label htmlFor="serial">{t('details.serial')}</Label>
+                                    <Input id="serial" placeholder={t('details.serialPlaceholder')} value={serial} onChange={(e) => setSerial(e.target.value)} required/>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="condition">Condition</Label>
-                                     <Select value={condition} onValueChange={setCondition} required><SelectTrigger><SelectValue placeholder="Select condition" /></SelectTrigger><SelectContent><SelectItem value="a-grade">A-Grade (Like New)</SelectItem><SelectItem value="b-grade">B-Grade (Good)</SelectItem><SelectItem value="c-grade">C-Grade (Fair)</SelectItem></SelectContent></Select>
+                                    <Label htmlFor="condition">{t('details.condition')}</Label>
+                                     <Select value={condition} onValueChange={setCondition} required><SelectTrigger><SelectValue placeholder={t('details.conditionPlaceholder')} /></SelectTrigger><SelectContent><SelectItem value="a-grade">{t('details.conditions.a')}</SelectItem><SelectItem value="b-grade">{t('details.conditions.b')}</SelectItem><SelectItem value="c-grade">{t('details.conditions.c')}</SelectItem></SelectContent></Select>
                                 </div>
                                  <div className="md:col-span-2 space-y-2">
-                                    <Label htmlFor="specs">Full Specifications / Notes</Label>
-                                    <Textarea id="specs" placeholder="e.g., 16GB RAM, 512GB SSD, M1 Pro Chip..." value={specs} onChange={(e) => setSpecs(e.target.value)} />
+                                    <Label htmlFor="specs">{t('details.specs')}</Label>
+                                    <Textarea id="specs" placeholder={t('details.specsPlaceholder')} value={specs} onChange={(e) => setSpecs(e.target.value)} />
                                 </div>
                                 <div className="md:col-span-2 space-y-2">
-                                    <Label>AI-Generated Product Listing</Label>
+                                    <Label>{t('details.listing.title')}</Label>
                                     <Tabs defaultValue="default">
                                         <div className="flex items-center justify-between">
                                             <TabsList>
-                                                <TabsTrigger value="default">Website</TabsTrigger>
-                                                <TabsTrigger value="ebay">eBay</TabsTrigger>
-                                                <TabsTrigger value="facebook">Facebook</TabsTrigger>
+                                                <TabsTrigger value="default">{t('details.listing.website')}</TabsTrigger>
+                                                <TabsTrigger value="ebay">{t('details.listing.ebay')}</TabsTrigger>
+                                                <TabsTrigger value="facebook">{t('details.listing.facebook')}</TabsTrigger>
                                             </TabsList>
                                             <Button type="button" variant="outline" size="sm" onClick={() => handleGenerateDescription('default')} disabled={isGeneratingDesc}>
                                                 <Wand2 className="mr-2 h-4 w-4" />
-                                                {isGeneratingDesc ? 'Generating...' : 'Generate'}
+                                                {isGeneratingDesc ? t('details.listing.generating') : t('details.listing.generate')}
                                             </Button>
                                         </div>
                                         <TabsContent value="default">
-                                             <Textarea placeholder="A compelling sales description will appear here..." value={description} onChange={e => setDescription(e.target.value)} rows={6} />
+                                             <Textarea placeholder={t('details.listing.placeholder')} value={description} onChange={e => setDescription(e.target.value)} rows={6} />
                                         </TabsContent>
                                         <TabsContent value="ebay">
-                                            <Textarea placeholder="An eBay-formatted listing will appear here..." value={description} onChange={e => setDescription(e.target.value)} rows={6} />
+                                            <Textarea placeholder={t('details.listing.placeholder')} value={description} onChange={e => setDescription(e.target.value)} rows={6} />
                                         </TabsContent>
                                         <TabsContent value="facebook">
-                                            <Textarea placeholder="A Facebook Marketplace-formatted listing will appear here..." value={description} onChange={e => setDescription(e.target.value)} rows={6} />
+                                            <Textarea placeholder={t('details.listing.placeholder')} value={description} onChange={e => setDescription(e.target.value)} rows={6} />
                                         </TabsContent>
                                     </Tabs>
                                 </div>
@@ -250,7 +259,7 @@ export default function IntakePage() {
                         </div>
                         
                         <div className="space-y-4">
-                             <h3 className="font-headline text-lg font-semibold border-b pb-2">Custom Details</h3>
+                             <h3 className="font-headline text-lg font-semibold border-b pb-2">{t('custom.title')}</h3>
                              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="flex items-center space-x-2">
                                     <Checkbox id="original-box" />
@@ -258,48 +267,48 @@ export default function IntakePage() {
                                         htmlFor="original-box"
                                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                                     >
-                                        Original Box Included?
+                                        {t('custom.originalBox')}
                                     </label>
                                 </div>
                                 <div className="md:col-span-2 space-y-2">
-                                    <Label htmlFor="cosmetic-notes">Cosmetic Notes</Label>
-                                    <Textarea id="cosmetic-notes" placeholder="e.g., Minor scuff on top left corner." />
+                                    <Label htmlFor="cosmetic-notes">{t('custom.cosmeticNotes')}</Label>
+                                    <Textarea id="cosmetic-notes" placeholder={t('custom.cosmeticNotesPlaceholder')} />
                                 </div>
                              </div>
                         </div>
 
                          <div className="space-y-4">
-                            <h3 className="font-headline text-lg font-semibold border-b pb-2">Pricing & Costing</h3>
+                            <h3 className="font-headline text-lg font-semibold border-b pb-2">{t('pricing.title')}</h3>
                              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 pt-2">
                                 <div className="space-y-2">
-                                    <Label htmlFor="purchase-price">Base Purchase Price ($)</Label>
+                                    <Label htmlFor="purchase-price">{t('pricing.basePurchase')}</Label>
                                     <Input id="purchase-price" type="number" placeholder="750.00" value={purchasePrice} onChange={(e) => setPurchasePrice(e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="shipping-cost">Shipping / Intake Cost ($)</Label>
+                                    <Label htmlFor="shipping-cost">{t('pricing.shippingCost')}</Label>
                                     <Input id="shipping-cost" type="number" placeholder="15.00" value={shippingCost} onChange={(e) => setShippingCost(e.target.value)} />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="refurb-cost">Refurbishment Cost ($)</Label>
+                                    <Label htmlFor="refurb-cost">{t('pricing.refurbCost')}</Label>
                                     <Input id="refurb-cost" type="number" placeholder="50.00" value={refurbishmentCost} onChange={(e) => setRefurbishmentCost(e.target.value)} />
                                 </div>
                                  <div className="space-y-2">
-                                    <Label htmlFor="other-cost">Other Costs ($)</Label>
+                                    <Label htmlFor="other-cost">{t('pricing.otherCosts')}</Label>
                                     <Input id="other-cost" type="number" placeholder="5.00" value={otherCosts} onChange={(e) => setOtherCosts(e.target.value)} />
                                 </div>
                                 <div className="md:col-span-2 p-4 rounded-lg bg-muted border-dashed border">
                                     <div className="flex justify-between items-center font-semibold">
-                                        <p>Total Landed Cost</p>
+                                        <p>{t('pricing.totalLanded')}</p>
                                         <p className="font-mono text-lg">${totalLandedCost.toFixed(2)}</p>
                                     </div>
-                                    <p className="text-xs text-muted-foreground">This is the true cost of the item after all expenses.</p>
+                                    <p className="text-xs text-muted-foreground">{t('pricing.totalLandedDesc')}</p>
                                 </div>
                                 <div className="md:col-span-2 space-y-2">
                                     <div className="flex justify-between items-center">
-                                        <Label htmlFor="sale-price">Suggested Sale Price ($)</Label>
+                                        <Label htmlFor="sale-price">{t('pricing.salePrice')}</Label>
                                         <Button type="button" variant="outline" size="sm" onClick={handleSuggestPrice} disabled={isGeneratingPrice}>
                                             <Sparkles className="mr-2 h-4 w-4" />
-                                            {isGeneratingPrice ? 'Suggesting...' : 'Suggest'}
+                                            {isGeneratingPrice ? t('pricing.suggesting') : t('pricing.suggest')}
                                         </Button>
                                     </div>
                                     <Input id="sale-price" type="number" placeholder="999.00" value={salePrice} onChange={(e) => setSalePrice(e.target.value)} required/>
@@ -311,19 +320,19 @@ export default function IntakePage() {
 
                         {qrCodeGenerated ? (
                             <div className="space-y-4 rounded-lg border-2 border-dashed border-primary bg-primary/10 p-6 text-center transition-all duration-300">
-                                <h3 className="font-headline text-lg font-semibold text-primary">QR Code Generated</h3>
+                                <h3 className="font-headline text-lg font-semibold text-primary">{t('qr.title')}</h3>
                                 <div className="flex justify-center">
                                      <Image src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${serial}`} alt="QR Code" width={200} height={200} data-ai-hint="qr code"/>
                                 </div>
-                                <p className="text-muted-foreground">Item registered successfully. Print this QR code and attach it to the item.</p>
+                                <p className="text-muted-foreground">{t('qr.description')}</p>
                                 <Button type="button" variant="outline" onClick={handlePrint}>
-                                    <Printer className="mr-2 h-4 w-4" /> Print QR Code Label
+                                    <Printer className="mr-2 h-4 w-4" /> {t('qr.print')}
                                 </Button>
                             </div>
                         ) : (
                              <div className="flex justify-end gap-2">
                                 <Button type="submit">
-                                    <Save className="mr-2 h-4 w-4" /> Save & Generate QR
+                                    <Save className="mr-2 h-4 w-4" /> {t('save')}
                                 </Button>
                             </div>
                         )}
@@ -356,3 +365,5 @@ export default function IntakePage() {
         </div>
     );
 }
+
+    

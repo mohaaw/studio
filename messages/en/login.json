@@ -1,0 +1,19 @@
+
+{
+    "title": "TechShop Manager",
+    "descriptions": {
+        "credentials": "Enter your credentials to access your dashboard",
+        "twoFactor": "Enter the code from your authenticator app"
+    },
+    "labels": {
+        "email": "Email",
+        "password": "Password",
+        "twoFactor": "6-Digit Code"
+    },
+    "buttons": {
+        "login": "Login",
+        "verify": "Verify"
+    }
+}
+
+    

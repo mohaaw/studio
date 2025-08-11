@@ -15,48 +15,50 @@ import { Rocket, Save, Shield, ServerCrash, Building2, Globe, FileText, Percent,
 import { useSettings } from "@/context/settings-context";
 import { Link } from '@/navigation';
 import { useToast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 
 export default function SettingsPage() {
+    const t = useTranslations('Settings');
     const { theme, setTheme } = useTheme();
     const { settings, updateSetting } = useSettings();
     const { toast } = useToast();
 
     const handleSave = () => {
         toast({
-            title: "Settings Saved",
-            description: "Your changes have been saved successfully."
+            title: t('toasts.saved.title'),
+            description: t('toasts.saved.description')
         });
     }
 
     return (
         <div className="space-y-6">
             <div>
-                <h1 className="font-headline text-3xl font-bold">Settings</h1>
-                <p className="text-muted-foreground">Manage your shop's configuration and preferences.</p>
+                <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
+                <p className="text-muted-foreground">{t('description')}</p>
             </div>
             <Tabs defaultValue="general" className="w-full">
                 <TabsList className="grid h-auto w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-9">
-                    <TabsTrigger value="general"><Building2 className="mr-2 h-4 w-4" />General</TabsTrigger>
-                    <TabsTrigger value="localization"><Globe className="mr-2 h-4 w-4" />Localization</TabsTrigger>
-                    <TabsTrigger value="invoicing"><FileText className="mr-2 h-4 w-4" />Invoicing</TabsTrigger>
-                    <TabsTrigger value="taxes"><Percent className="mr-2 h-4 w-4" />Taxes</TabsTrigger>
-                    <TabsTrigger value="appearance"><Palette className="mr-2 h-4 w-4" />Appearance</TabsTrigger>
-                    <TabsTrigger value="security"><Shield className="mr-2 h-4 w-4" />Security</TabsTrigger>
-                    <TabsTrigger value="automation"><Workflow className="mr-2 h-4 w-4" />Automation</TabsTrigger>
-                    <TabsTrigger value="data"><Database className="mr-2 h-4 w-4" />Data</TabsTrigger>
-                     <TabsTrigger value="advanced"><ServerCrash className="mr-2 h-4 w-4" />Advanced</TabsTrigger>
+                    <TabsTrigger value="general"><Building2 className="mr-2 h-4 w-4" />{t('tabs.general')}</TabsTrigger>
+                    <TabsTrigger value="localization"><Globe className="mr-2 h-4 w-4" />{t('tabs.localization')}</TabsTrigger>
+                    <TabsTrigger value="invoicing"><FileText className="mr-2 h-4 w-4" />{t('tabs.invoicing')}</TabsTrigger>
+                    <TabsTrigger value="taxes"><Percent className="mr-2 h-4 w-4" />{t('tabs.taxes')}</TabsTrigger>
+                    <TabsTrigger value="appearance"><Palette className="mr-2 h-4 w-4" />{t('tabs.appearance')}</TabsTrigger>
+                    <TabsTrigger value="security"><Shield className="mr-2 h-4 w-4" />{t('tabs.security')}</TabsTrigger>
+                    <TabsTrigger value="automation"><Workflow className="mr-2 h-4 w-4" />{t('tabs.automation')}</TabsTrigger>
+                    <TabsTrigger value="data"><Database className="mr-2 h-4 w-4" />{t('tabs.data')}</TabsTrigger>
+                     <TabsTrigger value="advanced"><ServerCrash className="mr-2 h-4 w-4" />{t('tabs.advanced')}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="general">
                     <Card>
                         <CardHeader>
-                            <CardTitle>General Information</CardTitle>
-                            <CardDescription>Update your shop's public details and location management.</CardDescription>
+                            <CardTitle>{t('general.title')}</CardTitle>
+                            <CardDescription>{t('general.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="space-y-2">
-                                <Label htmlFor="shop-name">Shop Name</Label>
+                                <Label htmlFor="shop-name">{t('general.shopName')}</Label>
                                 <Input 
                                     id="shop-name" 
                                     value={settings.shopName} 
@@ -64,17 +66,17 @@ export default function SettingsPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="shop-address">Default Address</Label>
+                                <Label htmlFor="shop-address">{t('general.address')}</Label>
                                 <Textarea id="shop-address" defaultValue="123 Market St, San Francisco, CA 94103" />
                             </div>
                              <div className="rounded-lg border p-4 space-y-4">
-                                <Label>Multi-Store Location Management</Label>
+                                <Label>{t('general.multiStore.title')}</Label>
                                 <div className="space-y-2">
-                                    <Input placeholder="Shop 1 (Default)" disabled/>
-                                    <Input placeholder="Storehouse (Warehouse)" disabled/>
-                                    <Input placeholder="Add new location..."/>
+                                    <Input placeholder={t('general.multiStore.shop1')} disabled/>
+                                    <Input placeholder={t('general.multiStore.storehouse')} disabled/>
+                                    <Input placeholder={t('general.multiStore.addPlaceholder')}/>
                                 </div>
-                                <Button variant="outline" size="sm">Add Location</Button>
+                                <Button variant="outline" size="sm">{t('general.multiStore.addButton')}</Button>
                              </div>
                         </CardContent>
                     </Card>
@@ -83,49 +85,49 @@ export default function SettingsPage() {
                 <TabsContent value="localization">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Localization</CardTitle>
-                            <CardDescription>Set your region-specific currency, language, and timezone settings.</CardDescription>
+                            <CardTitle>{t('localization.title')}</CardTitle>
+                            <CardDescription>{t('localization.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="currency">Default Currency</Label>
+                                <Label htmlFor="currency">{t('localization.currency.label')}</Label>
                                 <Select defaultValue="USD">
                                     <SelectTrigger id="currency"><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="USD">USD ($) - United States Dollar</SelectItem>
-                                        <SelectItem value="EUR">EUR (€) - Euro</SelectItem>
-                                        <SelectItem value="GBP">GBP (£) - British Pound</SelectItem>
-                                        <SelectItem value="JPY">JPY (¥) - Japanese Yen</SelectItem>
+                                        <SelectItem value="USD">{t('localization.currency.usd')}</SelectItem>
+                                        <SelectItem value="EUR">{t('localization.currency.eur')}</SelectItem>
+                                        <SelectItem value="GBP">{t('localization.currency.gbp')}</SelectItem>
+                                        <SelectItem value="JPY">{t('localization.currency.jpy')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="rounded-lg border p-4 space-y-2">
-                                <Label>Multi-Currency Support</Label>
+                                <Label>{t('localization.multiCurrency.title')}</Label>
                                 <div className="flex items-center justify-between">
-                                    <p className="text-sm text-muted-foreground">Allow transactions in other currencies?</p>
+                                    <p className="text-sm text-muted-foreground">{t('localization.multiCurrency.description')}</p>
                                     <Switch/>
                                 </div>
-                                <p className="text-xs text-muted-foreground pt-2">Exchange rates will be handled by an integrated service. Additional configuration may be required.</p>
+                                <p className="text-xs text-muted-foreground pt-2">{t('localization.multiCurrency.footer')}</p>
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="language">Language</Label>
+                                <Label htmlFor="language">{t('localization.language.label')}</Label>
                                 <Select defaultValue="en-US">
                                     <SelectTrigger id="language"><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="en-US">English (United States)</SelectItem>
-                                        <SelectItem value="es-ES">Español (España)</SelectItem>
-                                        <SelectItem value="fr-FR">Français (France)</SelectItem>
+                                        <SelectItem value="en-US">{t('localization.language.en')}</SelectItem>
+                                        <SelectItem value="es-ES">{t('localization.language.es')}</SelectItem>
+                                        <SelectItem value="fr-FR">{t('localization.language.fr')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                              <div className="space-y-2">
-                                <Label htmlFor="timezone">Timezone</Label>
+                                <Label htmlFor="timezone">{t('localization.timezone.label')}</Label>
                                 <Select defaultValue="pst">
                                     <SelectTrigger id="timezone"><SelectValue /></SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="pst"> (UTC-08:00) Pacific Time (US & Canada)</SelectItem>
-                                        <SelectItem value="est"> (UTC-05:00) Eastern Time (US & Canada)</SelectItem>
-                                        <SelectItem value="gmt"> (UTC+00:00) Greenwich Mean Time</SelectItem>
+                                        <SelectItem value="pst">{t('localization.timezone.pst')}</SelectItem>
+                                        <SelectItem value="est">{t('localization.timezone.est')}</SelectItem>
+                                        <SelectItem value="gmt">{t('localization.timezone.gmt')}</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
@@ -136,26 +138,26 @@ export default function SettingsPage() {
                  <TabsContent value="invoicing">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Document Customization</CardTitle>
-                            <CardDescription>Customize your invoices, receipts, and purchase orders.</CardDescription>
+                            <CardTitle>{t('invoicing.title')}</CardTitle>
+                            <CardDescription>{t('invoicing.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                              <div className="space-y-2">
-                                <Label htmlFor="logo-upload">Shop Logo for Documents</Label>
+                                <Label htmlFor="logo-upload">{t('invoicing.logo')}</Label>
                                 <Input id="logo-upload" type="file" />
                             </div>
                              <div className="space-y-2">
-                                <Label htmlFor="invoice-prefix">Invoice Prefix</Label>
+                                <Label htmlFor="invoice-prefix">{t('invoicing.prefix')}</Label>
                                 <Input id="invoice-prefix" defaultValue="INV-" />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="invoice-footer">Invoice & Receipt Footer Text</Label>
-                                <Textarea id="invoice-footer" placeholder="e.g., Thank you for your business! 90-day warranty on all used items." />
+                                <Label htmlFor="invoice-footer">{t('invoicing.footerLabel')}</Label>
+                                <Textarea id="invoice-footer" placeholder={t('invoicing.footerPlaceholder')} />
                             </div>
                             <div className="rounded-lg border p-4 space-y-2">
-                                 <Label>Template Customization</Label>
-                                <p className="text-sm text-muted-foreground">Use the full template editor to modify the layout of printed documents using variables like `{{ '{{customer.name}}' }}`.</p>
-                                <Button variant="secondary">Open Template Editor</Button>
+                                 <Label>{t('invoicing.template.title')}</Label>
+                                <p className="text-sm text-muted-foreground">{t('invoicing.template.description')}</p>
+                                <Button variant="secondary">{t('invoicing.template.button')}</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -164,17 +166,17 @@ export default function SettingsPage() {
                  <TabsContent value="taxes">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Tax Settings</CardTitle>
-                            <CardDescription>Configure default tax rates for sales.</CardDescription>
+                            <CardTitle>{t('taxes.title')}</CardTitle>
+                            <CardDescription>{t('taxes.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                              <div className="space-y-2">
-                                <Label htmlFor="default-tax">Default Tax Rate (%)</Label>
+                                <Label htmlFor="default-tax">{t('taxes.rateLabel')}</Label>
                                 <Input id="default-tax" type="number" defaultValue="8.5" />
                             </div>
                              <div className="flex items-center space-x-2">
                                 <Switch id="tax-inclusive" />
-                                <Label htmlFor="tax-inclusive">Prices entered are inclusive of tax</Label>
+                                <Label htmlFor="tax-inclusive">{t('taxes.inclusiveLabel')}</Label>
                             </div>
                         </CardContent>
                     </Card>
@@ -183,16 +185,16 @@ export default function SettingsPage() {
                 <TabsContent value="appearance">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Appearance</CardTitle>
-                            <CardDescription>Customize the look and feel of the application.</CardDescription>
+                            <CardTitle>{t('appearance.title')}</CardTitle>
+                            <CardDescription>{t('appearance.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                            <Label>Theme</Label>
+                            <Label>{t('appearance.theme')}</Label>
                             <div className="flex flex-wrap gap-2">
-                                <Button variant={theme === 'light' ? 'default' : 'outline'} onClick={() => setTheme('light')}>Light</Button>
-                                <Button variant={theme === 'dark' ? 'default' : 'outline'} onClick={() => setTheme('dark')}>Dark</Button>
+                                <Button variant={theme === 'light' ? 'default' : 'outline'} onClick={() => setTheme('light')}>{t('appearance.themes.light')}</Button>
+                                <Button variant={theme === 'dark' ? 'default' : 'outline'} onClick={() => setTheme('dark')}>{t('appearance.themes.dark')}</Button>
                                 <Button variant={theme === 'pro' ? 'default' : 'outline'} onClick={() => setTheme('pro')}>
-                                    <Rocket className="mr-2 h-4 w-4" /> Pro
+                                    <Rocket className="mr-2 h-4 w-4" /> {t('appearance.themes.pro')}
                                 </Button>
                             </div>
                         </CardContent>
@@ -202,24 +204,24 @@ export default function SettingsPage() {
                 <TabsContent value="automation">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Automation Rules</CardTitle>
-                            <CardDescription>Set up rules to automate purchasing and other workflows.</CardDescription>
+                            <CardTitle>{t('automation.title')}</CardTitle>
+                            <CardDescription>{t('automation.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="rounded-lg border p-4 space-y-2">
-                                <Label>Automated Purchasing</Label>
-                                <p className="text-sm text-muted-foreground">Automatically generate a draft Purchase Order when a specific item's stock falls below its reorder point.</p>
-                                <Button variant="secondary">Configure Purchasing Rules</Button>
+                                <Label>{t('automation.purchasing.title')}</Label>
+                                <p className="text-sm text-muted-foreground">{t('automation.purchasing.description')}</p>
+                                <Button variant="secondary">{t('automation.purchasing.button')}</Button>
                             </div>
                             <div className="rounded-lg border p-4 space-y-2">
-                                <Label>Visual Workflow Automator</Label>
-                                <p className="text-sm text-muted-foreground">Create custom multi-step automations for any process, like sending an SMS to a customer when a repair is marked 'Completed'.</p>
-                                 <Button asChild><Link href="/dashboard/settings/forms">Open Full Workflow Builder</Link></Button>
+                                <Label>{t('automation.workflow.title')}</Label>
+                                <p className="text-sm text-muted-foreground">{t('automation.workflow.description')}</p>
+                                 <Button asChild><Link href="/dashboard/settings/forms">{t('automation.workflow.button')}</Link></Button>
                             </div>
                              <div className="rounded-lg border p-4 space-y-2">
-                                <Label>Customer Loyalty Tiers</Label>
-                                <p className="text-sm text-muted-foreground">Define custom loyalty tiers (e.g., Bronze, Silver, Gold) with different point multipliers and rewards.</p>
-                                <Button variant="secondary">Configure Loyalty Program</Button>
+                                <Label>{t('automation.loyalty.title')}</Label>
+                                <p className="text-sm text-muted-foreground">{t('automation.loyalty.description')}</p>
+                                <Button variant="secondary">{t('automation.loyalty.button')}</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -228,21 +230,21 @@ export default function SettingsPage() {
                 <TabsContent value="security">
                      <Card>
                         <CardHeader>
-                            <CardTitle>Security & Roles</CardTitle>
-                            <CardDescription>Manage user roles, permissions, and application security.</CardDescription>
+                            <CardTitle>{t('security.title')}</CardTitle>
+                            <CardDescription>{t('security.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex items-center justify-between rounded-lg border p-4">
                                 <div>
-                                    <Label className="font-bold">Two-Factor Authentication</Label>
-                                    <p className="text-sm text-muted-foreground">Add an extra layer of security to all accounts.</p>
+                                    <Label className="font-bold">{t('security.twoFactor.title')}</Label>
+                                    <p className="text-sm text-muted-foreground">{t('security.twoFactor.description')}</p>
                                 </div>
                                 <Switch id="2fa-switch" defaultChecked/>
                             </div>
                              <div className="rounded-lg border p-4 space-y-2">
-                                <Label>Custom Roles & Permissions</Label>
-                                <p className="text-sm text-muted-foreground">Create new user roles and finely tune the exact permissions for each one.</p>
-                                <Button variant="secondary">Manage Roles</Button>
+                                <Label>{t('security.roles.title')}</Label>
+                                <p className="text-sm text-muted-foreground">{t('security.roles.description')}</p>
+                                <Button variant="secondary">{t('security.roles.button')}</Button>
                             </div>
                         </CardContent>
                     </Card>
@@ -251,22 +253,22 @@ export default function SettingsPage() {
                  <TabsContent value="data">
                      <Card>
                         <CardHeader>
-                            <CardTitle>Data Management</CardTitle>
-                            <CardDescription>Configure policies for data retention and archiving.</CardDescription>
+                            <CardTitle>{t('data.title')}</CardTitle>
+                            <CardDescription>{t('data.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                            <div className="space-y-2">
-                               <Label htmlFor="data-retention">Keep Sales Data For</Label>
+                               <Label htmlFor="data-retention">{t('data.retention.label')}</Label>
                                <Select defaultValue="forever">
                                    <SelectTrigger id="data-retention"><SelectValue /></SelectTrigger>
                                    <SelectContent>
-                                       <SelectItem value="1y">1 Year</SelectItem>
-                                       <SelectItem value="3y">3 Years</SelectItem>
-                                       <SelectItem value="5y">5 Years</SelectItem>
-                                       <SelectItem value="forever">Forever</SelectItem>
+                                       <SelectItem value="1y">{t('data.retention.year1')}</SelectItem>
+                                       <SelectItem value="3y">{t('data.retention.year3')}</SelectItem>
+                                       <SelectItem value="5y">{t('data.retention.year5')}</SelectItem>
+                                       <SelectItem value="forever">{t('data.retention.forever')}</SelectItem>
                                    </SelectContent>
                                </Select>
-                               <p className="text-xs text-muted-foreground">Older data will be automatically archived to save space and improve performance. Archived data can still be accessed via historical reports.</p>
+                               <p className="text-xs text-muted-foreground">{t('data.retention.footer')}</p>
                            </div>
                         </CardContent>
                     </Card>
@@ -275,15 +277,15 @@ export default function SettingsPage() {
                  <TabsContent value="advanced">
                      <Card>
                         <CardHeader>
-                            <CardTitle>Advanced Settings</CardTitle>
-                            <CardDescription>Manage system-level settings. Use with caution.</CardDescription>
+                            <CardTitle>{t('advanced.title')}</CardTitle>
+                            <CardDescription>{t('advanced.description')}</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
                             <div className="flex items-center justify-between rounded-lg border p-4">
                                 <div>
-                                    <Label className="font-bold">Maintenance Mode</Label>
+                                    <Label className="font-bold">{t('advanced.maintenance.title')}</Label>
                                     <p className="text-sm text-muted-foreground">
-                                        Puts the application into maintenance mode, disabling access for non-admins.
+                                        {t('advanced.maintenance.description')}
                                     </p>
                                 </div>
                                 <Switch id="maintenance-mode" />
@@ -296,9 +298,11 @@ export default function SettingsPage() {
              <div className="flex justify-end">
                 <Button onClick={handleSave}>
                     <Save className="mr-2 h-4 w-4" />
-                    Save all changes
+                    {t('saveButton')}
                 </Button>
             </div>
         </div>
     );
 }
+
+    

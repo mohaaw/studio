@@ -1,0 +1,66 @@
+
+{
+    "title": "Reporting & Analytics",
+    "description": "Generate and export detailed reports for your business.",
+    "builder": {
+        "title": "Custom Report Builder",
+        "description": "This is a placeholder for a powerful, user-configurable report builder.",
+        "body": "Select data points, choose columns, and apply filters to build your own reports.",
+        "button": "Build Custom Report"
+    },
+    "pl": {
+        "title": "Profit & Loss Statement",
+        "description": "Simulated P&L for the selected period.",
+        "totalRevenue": "Total Revenue",
+        "cogs": "Cost of Goods Sold (Landed)",
+        "grossProfit": "Gross Profit",
+        "opEx": "Operational Expenses",
+        "netProfit": "Net Profit"
+    },
+    "forecast": {
+        "title": "AI Demand Forecasting",
+        "description": "Predicted demand for A-Grade Smartphones for the next quarter.",
+        "generate": "Generate Forecast",
+        "generating": "Generating..."
+    },
+    "standard": {
+        "title": "Standard Reports",
+        "description": "Export detailed CSV reports for analysis.",
+        "sales": "Sales Summary",
+        "inventory": "Inventory Value",
+        "repairs": "Repair Statistics",
+        "customerSpending": "Customer Spending",
+        "aging": "Aging Inventory",
+        "ltv": "Customer Lifetime Value"
+    },
+    "supplyChain": {
+        "title": "Supply Chain Disruption Monitor",
+        "description": "AI-powered alerts for potential supply chain issues based on simulated real-world events.",
+        "scanning": "AI is scanning global data sources for potential disruptions...",
+        "noDisruptions": "No immediate disruptions detected in the supply chain.",
+        "alertTitle": "{risk}-Risk Alert: {event}",
+        "recommendation": "Recommendation",
+        "scanButton": "Run AI Supply Chain Scan"
+    },
+    "toasts": {
+        "exporting": "Exporting \"{reportName}\" report...",
+        "scanComplete": {
+            "title": "Supply Chain Scan Complete",
+            "description": "{count} potential disruptions identified."
+        },
+        "monitoringFailed": {
+            "title": "Monitoring Failed",
+            "description": "Could not monitor the supply chain at this time."
+        },
+        "forecastGenerated": {
+            "title": "Forecast Generated",
+            "description": "Demand forecast has been updated with new AI predictions."
+        },
+        "forecastingFailed": {
+            "title": "Forecasting Failed",
+            "description": "Could not generate a demand forecast at this time."
+        }
+    }
+}
+
+    

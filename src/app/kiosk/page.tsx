@@ -1,4 +1,5 @@
 
+
 'use client'
 
 import { useState, useTransition, useRef, useEffect } from 'react';
@@ -13,6 +14,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { kioskChat } from '@/ai/flows/kiosk-chatbot-flow';
 import { useToast } from '@/hooks/use-toast';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useTranslations } from 'next-intl';
 
 const inventoryItems = [
   { id: '1', name: 'iPhone 13 Pro', category: 'Phones', status: 'For Sale', salePrice: 999.00, image: 'https://placehold.co/300x300.png' },
@@ -40,6 +42,7 @@ interface ChatMessage {
 
 
 export default function KioskPage() {
+    const t = useTranslations('Kiosk');
     const [repairTicket, setRepairTicket] = useState('');
     const [statusResult, setStatusResult] = useState<RepairStatus>(null);
     const [searched, setSearched] = useState(false);
@@ -90,14 +93,14 @@ export default function KioskPage() {
     <div className="container mx-auto">
         <header className="flex flex-col items-center justify-center text-center py-8">
              <CircuitBoard className="h-16 w-16 text-primary mb-4" />
-             <h1 className="font-headline text-4xl font-bold text-primary">Welcome to TechShop</h1>
-             <p className="text-muted-foreground mt-2 text-lg">Your self-service kiosk for browsing products and checking repairs.</p>
+             <h1 className="font-headline text-4xl font-bold text-primary">{t('header.title')}</h1>
+             <p className="text-muted-foreground mt-2 text-lg">{t('header.subtitle')}</p>
         </header>
         
         <Tabs defaultValue="browse" className="w-full">
             <TabsList className="grid w-full grid-cols-2 h-14">
-                <TabsTrigger value="browse" className="text-lg">Browse Products</TabsTrigger>
-                <TabsTrigger value="repair" className="text-lg">Check Repair Status</TabsTrigger>
+                <TabsTrigger value="browse" className="text-lg">{t('tabs.browse')}</TabsTrigger>
+                <TabsTrigger value="repair" className="text-lg">{t('tabs.repair')}</TabsTrigger>
             </TabsList>
             <TabsContent value="browse" className="mt-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -119,14 +122,14 @@ export default function KioskPage() {
                 <div className="flex justify-center">
                     <Card className="w-full max-w-lg">
                         <CardHeader>
-                            <CardTitle className="font-headline text-xl">Check Repair Status</CardTitle>
-                            <CardDescription>Enter your repair ticket number below to see the latest update.</CardDescription>
+                            <CardTitle className="font-headline text-xl">{t('repair.title')}</CardTitle>
+                            <CardDescription>{t('repair.description')}</CardDescription>
                         </CardHeader>
                         <form onSubmit={handleCheckStatus}>
                             <CardContent className="space-y-4">
                                 <div className="relative">
                                     <Input 
-                                        placeholder="e.g., RPR-001" 
+                                        placeholder={t('repair.placeholder')}
                                         className="h-12 text-lg pl-4 pr-12" 
                                         value={repairTicket}
                                         onChange={e => setRepairTicket(e.target.value)}
@@ -139,16 +142,16 @@ export default function KioskPage() {
                                     statusResult ? (
                                         <Alert variant="default" className="bg-green-500/10 border-green-500/50 text-green-700 dark:text-green-400">
                                             <CheckCircle className="h-4 w-4 !text-green-500" />
-                                            <AlertTitle className="font-bold">Status for {statusResult.device}: <span className="text-primary">{statusResult.status}</span></AlertTitle>
+                                            <AlertTitle className="font-bold">{t('repair.statusTitle', { device: statusResult.device, status: statusResult.status })}</AlertTitle>
                                             <AlertDescription>
                                                {statusResult.message}
                                             </AlertDescription>
                                         </Alert>
                                     ) : (
                                          <Alert variant="destructive">
-                                            <AlertTitle>Not Found</AlertTitle>
+                                            <AlertTitle>{t('repair.notFound.title')}</AlertTitle>
                                             <AlertDescription>
-                                                We couldn't find a repair ticket with that number. Please double-check it and try again.
+                                                {t('repair.notFound.description')}
                                             </AlertDescription>
                                         </Alert>
                                     )
@@ -165,7 +168,7 @@ export default function KioskPage() {
                     <CardHeader className="flex flex-row items-center justify-between p-3 border-b">
                         <div className="flex items-center gap-2">
                             <Bot className="h-6 w-6 text-primary"/>
-                            <CardTitle className="text-lg font-headline">TechShop Assistant</CardTitle>
+                            <CardTitle className="text-lg font-headline">{t('chat.title')}</CardTitle>
                         </div>
                         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setIsChatOpen(false)}>
                             <X className="h-4 w-4"/>
@@ -183,7 +186,7 @@ export default function KioskPage() {
                             ))}
                             {isChatting && (
                                 <div className="flex justify-start">
-                                    <div className="rounded-lg px-3 py-2 bg-muted text-sm">...</div>
+                                    <div className="rounded-lg px-3 py-2 bg-muted text-sm">{t('chat.thinking')}</div>
                                 </div>
                             )}
                             </div>
@@ -191,7 +194,7 @@ export default function KioskPage() {
                     </CardContent>
                     <CardFooter className="p-2 border-t">
                         <form onSubmit={handleChatSubmit} className="flex w-full gap-2">
-                            <Input placeholder="Ask a question..." value={chatInput} onChange={e => setChatInput(e.target.value)} />
+                            <Input placeholder={t('chat.placeholder')} value={chatInput} onChange={e => setChatInput(e.target.value)} />
                             <Button type="submit" size="icon" disabled={isChatting}><Send className="h-4 w-4"/></Button>
                         </form>
                     </CardFooter>
@@ -205,3 +208,5 @@ export default function KioskPage() {
     </div>
   );
 }
+
+    

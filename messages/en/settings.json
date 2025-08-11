@@ -1,0 +1,147 @@
+
+{
+    "title": "Settings",
+    "description": "Manage your shop's configuration and preferences.",
+    "saveButton": "Save all changes",
+    "tabs": {
+        "general": "General",
+        "localization": "Localization",
+        "invoicing": "Invoicing",
+        "taxes": "Taxes",
+        "appearance": "Appearance",
+        "security": "Security",
+        "automation": "Automation",
+        "data": "Data",
+        "advanced": "Advanced"
+    },
+    "general": {
+        "title": "General Information",
+        "description": "Update your shop's public details and location management.",
+        "shopName": "Shop Name",
+        "address": "Default Address",
+        "multiStore": {
+            "title": "Multi-Store Location Management",
+            "shop1": "Shop 1 (Default)",
+            "storehouse": "Storehouse (Warehouse)",
+            "addPlaceholder": "Add new location...",
+            "addButton": "Add Location"
+        }
+    },
+    "localization": {
+        "title": "Localization",
+        "description": "Set your region-specific currency, language, and timezone settings.",
+        "currency": {
+            "label": "Default Currency",
+            "usd": "USD ($) - United States Dollar",
+            "eur": "EUR (€) - Euro",
+            "gbp": "GBP (£) - British Pound",
+            "jpy": "JPY (¥) - Japanese Yen"
+        },
+        "multiCurrency": {
+            "title": "Multi-Currency Support",
+            "description": "Allow transactions in other currencies?",
+            "footer": "Exchange rates will be handled by an integrated service. Additional configuration may be required."
+        },
+        "language": {
+            "label": "Language",
+            "en": "English (United States)",
+            "es": "Español (España)",
+            "fr": "Français (France)"
+        },
+        "timezone": {
+            "label": "Timezone",
+            "pst": "(UTC-08:00) Pacific Time (US & Canada)",
+            "est": "(UTC-05:00) Eastern Time (US & Canada)",
+            "gmt": "(UTC+00:00) Greenwich Mean Time"
+        }
+    },
+    "invoicing": {
+        "title": "Document Customization",
+        "description": "Customize your invoices, receipts, and purchase orders.",
+        "logo": "Shop Logo for Documents",
+        "prefix": "Invoice Prefix",
+        "footerLabel": "Invoice & Receipt Footer Text",
+        "footerPlaceholder": "e.g., Thank you for your business! 90-day warranty on all used items.",
+        "template": {
+            "title": "Template Customization",
+            "description": "Use the full template editor to modify the layout of printed documents using variables like `{{customer.name}}`.",
+            "button": "Open Template Editor"
+        }
+    },
+    "taxes": {
+        "title": "Tax Settings",
+        "description": "Configure default tax rates for sales.",
+        "rateLabel": "Default Tax Rate (%)",
+        "inclusiveLabel": "Prices entered are inclusive of tax"
+    },
+    "appearance": {
+        "title": "Appearance",
+        "description": "Customize the look and feel of the application.",
+        "theme": "Theme",
+        "themes": {
+            "light": "Light",
+            "dark": "Dark",
+            "pro": "Pro"
+        }
+    },
+    "automation": {
+        "title": "Automation Rules",
+        "description": "Set up rules to automate purchasing and other workflows.",
+        "purchasing": {
+            "title": "Automated Purchasing",
+            "description": "Automatically generate a draft Purchase Order when a specific item's stock falls below its reorder point.",
+            "button": "Configure Purchasing Rules"
+        },
+        "workflow": {
+            "title": "Visual Workflow Automator",
+            "description": "Create custom multi-step automations for any process, like sending an SMS to a customer when a repair is marked 'Completed'.",
+            "button": "Open Full Workflow Builder"
+        },
+        "loyalty": {
+            "title": "Customer Loyalty Tiers",
+            "description": "Define custom loyalty tiers (e.g., Bronze, Silver, Gold) with different point multipliers and rewards.",
+            "button": "Configure Loyalty Program"
+        }
+    },
+    "security": {
+        "title": "Security & Roles",
+        "description": "Manage user roles, permissions, and application security.",
+        "twoFactor": {
+            "title": "Two-Factor Authentication",
+            "description": "Add an extra layer of security to all accounts."
+        },
+        "roles": {
+            "title": "Custom Roles & Permissions",
+            "description": "Create new user roles and finely tune the exact permissions for each one.",
+            "button": "Manage Roles"
+        }
+    },
+    "data": {
+        "title": "Data Management",
+        "description": "Configure policies for data retention and archiving.",
+        "retention": {
+            "label": "Keep Sales Data For",
+            "year1": "1 Year",
+            "year3": "3 Years",
+            "year5": "5 Years",
+            "forever": "Forever",
+            "footer": "Older data will be automatically archived to save space and improve performance. Archived data can still be accessed via historical reports."
+        }
+    },
+    "advanced": {
+        "title": "Advanced Settings",
+        "description": "Manage system-level settings. Use with caution.",
+        "maintenance": {
+            "title": "Maintenance Mode",
+            "description": "Puts the application into maintenance mode, disabling access for non-admins."
+        }
+    },
+    "toasts": {
+        "saved": {
+            "title": "Settings Saved",
+            "description": "Your changes have been saved successfully."
+        }
+    }
+}
+
+    

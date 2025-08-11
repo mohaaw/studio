@@ -1,0 +1,103 @@
+
+{
+    "back": "Back to Inventory",
+    "title": "Register New Item",
+    "description": "Fill out the details below to add a new item to the inventory.",
+    "media": {
+        "title": "Media",
+        "imageLabel": "Product Image",
+        "preview": "Image Preview",
+        "removeBg": "Remove BG"
+    },
+    "details": {
+        "title": "Item Details",
+        "name": "Item Name / Model",
+        "namePlaceholder": "e.g., MacBook Pro 16-inch",
+        "category": "Category",
+        "categoryPlaceholder": "Select a category",
+        "categories": {
+            "phones": "Phones",
+            "laptops": "Laptops",
+            "wearables": "Wearables",
+            "accessories": "Accessories",
+            "gaming": "Gaming Consoles",
+            "parts": "Repair Parts"
+        },
+        "serial": "Serial Number / IMEI",
+        "serialPlaceholder": "e.g., C02G80F3Q05D",
+        "condition": "Condition",
+        "conditionPlaceholder": "Select condition",
+        "conditions": {
+            "a": "A-Grade (Like New)",
+            "b": "B-Grade (Good)",
+            "c": "C-Grade (Fair)"
+        },
+        "specs": "Full Specifications / Notes",
+        "specsPlaceholder": "e.g., 16GB RAM, 512GB SSD, M1 Pro Chip...",
+        "listing": {
+            "title": "AI-Generated Product Listing",
+            "website": "Website",
+            "ebay": "eBay",
+            "facebook": "Facebook",
+            "generate": "Generate",
+            "generating": "Generating...",
+            "placeholder": "A compelling sales description will appear here..."
+        }
+    },
+    "custom": {
+        "title": "Custom Details",
+        "originalBox": "Original Box Included?",
+        "cosmeticNotes": "Cosmetic Notes",
+        "cosmeticNotesPlaceholder": "e.g., Minor scuff on top left corner."
+    },
+    "pricing": {
+        "title": "Pricing & Costing",
+        "basePurchase": "Base Purchase Price ($)",
+        "shippingCost": "Shipping / Intake Cost ($)",
+        "refurbCost": "Refurbishment Cost ($)",
+        "otherCosts": "Other Costs ($)",
+        "totalLanded": "Total Landed Cost",
+        "totalLandedDesc": "This is the true cost of the item after all expenses.",
+        "salePrice": "Suggested Sale Price ($)",
+        "suggest": "Suggest",
+        "suggesting": "Suggesting..."
+    },
+    "qr": {
+        "title": "QR Code Generated",
+        "description": "Item registered successfully. Print this QR code and attach it to the item.",
+        "print": "Print QR Code Label"
+    },
+    "save": "Save & Generate QR",
+    "toasts": {
+        "missingSerial": {
+            "title": "Missing Serial Number",
+            "description": "A serial number is required for all new items."
+        },
+        "missingInfo": {
+            "title": "Missing Information",
+            "description": "Please fill in Item Name, Category, and Specifications first."
+        },
+        "genFailed": {
+            "title": "Generation Failed",
+            "description": "Could not generate a description. Please try again."
+        },
+        "suggestionFailed": {
+            "title": "Suggestion Failed",
+            "description": "Could not suggest a price. Please try again."
+        },
+        "descGenerated": {
+            "title": "Description Generated",
+            "description": "AI has created a new product description."
+        },
+        "priceSuggested": {
+            "title": "Price Suggested",
+            "description": "AI has suggested a sale price of ${price}."
+        },
+        "bgRemoval": {
+            "title": "Simulating AI Background Removal...",
+            "description": "This would be replaced with a call to an image processing AI."
+        }
+    }
+}
+
+    

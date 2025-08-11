@@ -22,6 +22,14 @@ export default getRequestConfig(async ({locale}) => {
       PurchaseOrders: (await import(`../messages/${locale}/purchase-orders.json`)).default,
       Expenses: (await import(`../messages/${locale}/expenses.json`)).default,
       TradeIns: (await import(`../messages/${locale}/trade-ins.json`)).default,
+      Intake: (await import(`../messages/${locale}/intake.json`)).default,
+      Reporting: (await import(`../messages/${locale}/reporting.json`)).default,
+      TeamHub: (await import(`../messages/${locale}/team-hub.json`)).default,
+      Settings: (await import(`../messages/${locale}/settings.json`)).default,
+      Kiosk: (await import(`../messages/${locale}/kiosk.json`)).default,
+      Login: (await import(`../messages/${locale}/login.json`)).default,
     }
   }
 });
+
+    

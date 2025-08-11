@@ -15,6 +15,7 @@ import { monitorSupplyChain, SupplyChainDisruption } from "@/ai/flows/monitor-su
 import { forecastDemand, ForecastDemandOutput } from "@/ai/flows/demand-forecasting-flow";
 import { useToast } from "@/hooks/use-toast";
 import { CartesianGrid, XAxis, YAxis } from "recharts";
+import { useTranslations } from "next-intl";
 
 const initialForecastData = [
   { month: "Jan", demand: 186, predicted: false },
@@ -34,6 +35,7 @@ const chartConfig = {
 
 
 export default function ReportingPage() {
+    const t = useTranslations('Reporting');
     const { toast } = useToast();
     const [isMonitoring, startMonitoringTransition] = useTransition();
     const [disruptions, setDisruptions] = useState<SupplyChainDisruption[]>([]);
@@ -42,7 +44,7 @@ export default function ReportingPage() {
     const [forecastData, setForecastData] = useState<(typeof initialForecastData)>(initialForecastData);
 
     const handleExport = (title: string) => {
-        toast({ title: `Exporting "${title}" report...` });
+        toast({ title: t('toasts.exporting', { reportName: title }) });
     }
 
     const handleMonitorChain = () => {
@@ -50,12 +52,12 @@ export default function ReportingPage() {
             const result = await monitorSupplyChain();
             if (result) {
                 setDisruptions(result.disruptions);
-                toast({ title: "Supply Chain Scan Complete", description: `${result.disruptions.length} potential disruptions identified.` });
+                toast({ title: t('toasts.scanComplete.title'), description: t('toasts.scanComplete.description', { count: result.disruptions.length }) });
             } else {
                  toast({
                     variant: 'destructive',
-                    title: "Monitoring Failed",
-                    description: "Could not monitor the supply chain at this time.",
+                    title: t('toasts.monitoringFailed.title'),
+                    description: t('toasts.monitoringFailed.description'),
                 });
             }
         });
@@ -70,12 +72,12 @@ export default function ReportingPage() {
             });
             if (result) {
                 setForecastData(result.forecast);
-                toast({ title: "Forecast Generated", description: "Demand forecast has been updated with new AI predictions." });
+                toast({ title: t('toasts.forecastGenerated.title'), description: t('toasts.forecastGenerated.description') });
             } else {
                  toast({
                     variant: 'destructive',
-                    title: "Forecasting Failed",
-                    description: "Could not generate a demand forecast at this time.",
+                    title: t('toasts.forecastingFailed.title'),
+                    description: t('toasts.forecastingFailed.description'),
                 });
             }
         });
@@ -85,8 +87,8 @@ export default function ReportingPage() {
     <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h1 className="font-headline text-3xl font-bold">Reporting & Analytics</h1>
-                <p className="text-muted-foreground">Generate and export detailed reports for your business.</p>
+                <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
+                <p className="text-muted-foreground">{t('description')}</p>
             </div>
             <div className="flex items-center gap-2">
                 <DateRangePicker />
@@ -96,13 +98,13 @@ export default function ReportingPage() {
             <CardHeader>
                 <CardTitle className="font-headline text-lg flex items-center gap-2">
                     <Target className="h-5 w-5 text-primary" />
-                    Custom Report Builder
+                    {t('builder.title')}
                 </CardTitle>
-                <CardDescription>This is a placeholder for a powerful, user-configurable report builder.</CardDescription>
+                <CardDescription>{t('builder.description')}</CardDescription>
             </CardHeader>
              <CardContent className="flex flex-col items-center justify-center text-center gap-4 py-12 bg-muted/30">
-                <p className="text-muted-foreground">Select data points, choose columns, and apply filters to build your own reports.</p>
-                <Button>Build Custom Report</Button>
+                <p className="text-muted-foreground">{t('builder.body')}</p>
+                <Button>{t('builder.button')}</Button>
             </CardContent>
         </Card>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -110,31 +112,31 @@ export default function ReportingPage() {
                 <CardHeader>
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
                         <PiggyBank className="h-5 w-5 text-primary" />
-                        Profit & Loss Statement
+                        {t('pl.title')}
                     </CardTitle>
-                    <CardDescription>Simulated P&L for the selected period.</CardDescription>
+                    <CardDescription>{t('pl.description')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableBody>
                             <TableRow>
-                                <TableCell className="font-semibold">Total Revenue</TableCell>
+                                <TableCell className="font-semibold">{t('pl.totalRevenue')}</TableCell>
                                 <TableCell className="text-right font-mono text-green-500">+$150,000.00</TableCell>
                             </TableRow>
                              <TableRow>
-                                <TableCell className="pl-8 text-muted-foreground">Cost of Goods Sold (Landed)</TableCell>
+                                <TableCell className="pl-8 text-muted-foreground">{t('pl.cogs')}</TableCell>
                                 <TableCell className="text-right font-mono text-destructive">-$85,000.00</TableCell>
                             </TableRow>
                             <TableRow className="font-semibold bg-muted/30">
-                                <TableCell>Gross Profit</TableCell>
+                                <TableCell>{t('pl.grossProfit')}</TableCell>
                                 <TableCell className="text-right font-mono">=$65,000.00</TableCell>
                             </TableRow>
                              <TableRow>
-                                <TableCell className="pl-8 text-muted-foreground">Operational Expenses</TableCell>
+                                <TableCell className="pl-8 text-muted-foreground">{t('pl.opEx')}</TableCell>
                                 <TableCell className="text-right font-mono text-destructive">-$15,000.00</TableCell>
                             </TableRow>
                             <TableRow className="font-bold text-lg border-t-2 border-primary">
-                                <TableCell>Net Profit</TableCell>
+                                <TableCell>{t('pl.netProfit')}</TableCell>
                                 <TableCell className="text-right font-mono text-primary">=$50,000.00</TableCell>
                             </TableRow>
                         </TableBody>
@@ -148,13 +150,13 @@ export default function ReportingPage() {
                         <div>
                             <CardTitle className="font-headline text-lg flex items-center gap-2">
                                 <Sparkles className="h-5 w-5 text-primary" />
-                                AI Demand Forecasting
+                                {t('forecast.title')}
                             </CardTitle>
-                            <CardDescription>Predicted demand for A-Grade Smartphones for the next quarter.</CardDescription>
+                            <CardDescription>{t('forecast.description')}</CardDescription>
                         </div>
                          <Button size="sm" onClick={handleGenerateForecast} disabled={isForecasting}>
                             <Wand2 className="mr-2 h-4 w-4" />
-                            {isForecasting ? 'Generating...' : 'Generate Forecast'}
+                            {isForecasting ? t('forecast.generating') : t('forecast.generate')}
                         </Button>
                     </div>
                 </CardHeader>
@@ -179,51 +181,51 @@ export default function ReportingPage() {
                 <CardHeader>
                      <CardTitle className="font-headline text-lg flex items-center gap-2">
                         <Download className="h-5 w-5 text-primary" />
-                        Standard Reports
+                        {t('standard.title')}
                     </CardTitle>
-                    <CardDescription>Export detailed CSV reports for analysis.</CardDescription>
+                    <CardDescription>{t('standard.description')}</CardDescription>
                 </CardHeader>
                  <CardContent className="flex flex-col gap-3">
-                    <Button variant="outline" className="w-full justify-start"><DollarSign className="mr-2"/> Sales Summary</Button>
-                    <Button variant="outline" className="w-full justify-start"><Package className="mr-2"/> Inventory Value</Button>
-                    <Button variant="outline" className="w-full justify-start"><Wrench className="mr-2"/> Repair Statistics</Button>
-                    <Button variant="outline" className="w-full justify-start"><Users className="mr-2"/> Customer Spending</Button>
-                    <Button variant="outline" className="w-full justify-start"><TrendingDown className="mr-2"/> Aging Inventory</Button>
-                    <Button variant="outline" className="w-full justify-start"><Users className="mr-2"/> Customer Lifetime Value</Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => handleExport(t('standard.sales'))}><DollarSign className="mr-2"/> {t('standard.sales')}</Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => handleExport(t('standard.inventory'))}><Package className="mr-2"/> {t('standard.inventory')}</Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => handleExport(t('standard.repairs'))}><Wrench className="mr-2"/> {t('standard.repairs')}</Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => handleExport(t('standard.customerSpending'))}><Users className="mr-2"/> {t('standard.customerSpending')}</Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => handleExport(t('standard.aging'))}><TrendingDown className="mr-2"/> {t('standard.aging')}</Button>
+                    <Button variant="outline" className="w-full justify-start" onClick={() => handleExport(t('standard.ltv'))}><Users className="mr-2"/> {t('standard.ltv')}</Button>
                  </CardContent>
             </Card>
              <Card className="lg:col-span-3">
                 <CardHeader>
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
                         <Component className="h-5 w-5 text-primary" />
-                        Supply Chain Disruption Monitor
+                        {t('supplyChain.title')}
                     </CardTitle>
-                    <CardDescription>AI-powered alerts for potential supply chain issues based on simulated real-world events.</CardDescription>
+                    <CardDescription>{t('supplyChain.description')}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {isMonitoring ? (
-                        <p className="text-muted-foreground">AI is scanning global data sources for potential disruptions...</p>
+                        <p className="text-muted-foreground">{t('supplyChain.scanning')}</p>
                     ) : disruptions.length > 0 ? (
                         disruptions.map((d, i) => (
                              <Alert key={i} variant={d.riskLevel === 'High' ? 'destructive' : 'default'}>
                                 <AlertTriangle className="h-4 w-4" />
-                                <AlertTitle className="font-bold">{d.riskLevel}-Risk Alert: {d.event}</AlertTitle>
+                                <AlertTitle className="font-bold">{t('supplyChain.alertTitle', { risk: d.riskLevel, event: d.event })}</AlertTitle>
                                 <AlertDescription>
                                     {d.impact}
                                     <Separator className="my-2" />
-                                    <p className="font-semibold">Recommendation:</p> 
+                                    <p className="font-semibold">{t('supplyChain.recommendation')}:</p> 
                                     <p>{d.recommendation}</p>
                                 </AlertDescription>
                             </Alert>
                         ))
                     ) : (
-                        <p className="text-sm text-muted-foreground">No immediate disruptions detected in the supply chain.</p>
+                        <p className="text-sm text-muted-foreground">{t('supplyChain.noDisruptions')}</p>
                     )}
                 </CardContent>
                 <CardFooter>
                     <Button onClick={handleMonitorChain} disabled={isMonitoring}>
                         <Sparkles className="mr-2 h-4 w-4" />
-                        {isMonitoring ? 'Scanning...' : 'Run AI Supply Chain Scan'}
+                        {isMonitoring ? t('supplyChain.scanning') : t('supplyChain.scanButton')}
                     </Button>
                 </CardFooter>
             </Card>
@@ -231,3 +233,5 @@ export default function ReportingPage() {
     </div>
   );
 }
+
+    

@@ -7,8 +7,10 @@ import { Label } from "@/components/ui/label";
 import { CircuitBoard, ShieldCheck } from "lucide-react";
 import { Link } from '@/navigation';
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
+  const t = useTranslations('Login');
   const [step, setStep] = useState<'credentials' | '2fa'>('credentials');
 
   const handleLogin = (e: React.FormEvent) => {
@@ -24,40 +26,40 @@ export default function LoginPage() {
           <div className="mb-4 flex justify-center">
             <CircuitBoard className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="font-headline text-3xl text-primary">TechShop Manager</CardTitle>
+          <CardTitle className="font-headline text-3xl text-primary">{t('title')}</CardTitle>
            <CardDescription>
             {step === 'credentials' 
-              ? "Enter your credentials to access your dashboard"
-              : "Enter the code from your authenticator app"}
+              ? t('descriptions.credentials')
+              : t('descriptions.twoFactor')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           {step === 'credentials' ? (
              <form className="space-y-4" onSubmit={handleLogin}>
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('labels.email')}</Label>
                 <Input id="email" type="email" placeholder="employee@techshop.com" required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('labels.password')}</Label>
                 <Input id="password" type="password" required />
               </div>
               <div className="pt-2">
                 <Button type="submit" className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90">
-                  Login
+                  {t('buttons.login')}
                 </Button>
               </div>
             </form>
           ) : (
             <form className="space-y-4">
                <div className="space-y-2">
-                <Label htmlFor="2fa-code">6-Digit Code</Label>
+                <Label htmlFor="2fa-code">{t('labels.twoFactor')}</Label>
                 <Input id="2fa-code" type="text" inputMode="numeric" maxLength={6} placeholder="123456" required />
               </div>
                <Link href="/dashboard" className="block w-full pt-2">
                 <Button type="submit" className="w-full font-bold bg-primary text-primary-foreground hover:bg-primary/90">
                    <ShieldCheck className="mr-2 h-4 w-4"/>
-                  Verify
+                  {t('buttons.verify')}
                 </Button>
               </Link>
             </form>
@@ -67,3 +69,5 @@ export default function LoginPage() {
     </main>
   );
 }
+
+    
