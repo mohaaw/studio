@@ -1,0 +1,66 @@
+
+{
+    "title": "Trade-in / Buyback",
+    "back": "Back to Dashboard",
+    "header": {
+        "title": "Process New Trade-in",
+        "description": "Fill out the customer and device details to process a trade-in."
+    },
+    "customer": {
+        "title": "Customer Information",
+        "name": "Customer Name",
+        "namePlaceholder": "Existing or new customer",
+        "phone": "Phone Number",
+        "phonePlaceholder": "(123) 456-7890"
+    },
+    "device": {
+        "title": "Device Details",
+        "name": "Device Name / Model",
+        "namePlaceholder": "e.g., iPhone 11",
+        "category": "Category",
+        "categoryPlaceholder": "Select a category",
+        "categories": {
+            "phones": "Phones",
+            "laptops": "Laptops",
+            "wearables": "Wearables",
+            "accessories": "Accessories"
+        },
+        "serial": "Serial Number / IMEI",
+        "serialPlaceholder": "e.g., C02ABCD12345",
+        "serialChecking": "Checking serial number against global database...",
+        "serialFlagged": "Warning: This serial number has been flagged as potentially stolen.",
+        "condition": "Condition",
+        "conditionPlaceholder": "Select condition",
+        "conditions": {
+            "a": "A-Grade (Like New)",
+            "b": "B-Grade (Good)",
+            "c": "C-Grade (Fair)",
+            "d": "D-Grade (Poor)"
+        },
+        "specs": "Full Specifications / Cosmetic Notes",
+        "specsPlaceholder": "e.g., 64GB, Unlocked, Black. Minor scratches on back."
+    },
+    "valuation": {
+        "title": "Valuation",
+        "value": "Trade-in Value ($)",
+        "valuePlaceholder": "150.00",
+        "suggest": "Suggest Value",
+        "suggesting": "Suggesting...",
+        "description": "This is the amount of store credit or cash to be given to the customer."
+    },
+    "submit": "Complete Trade-in & Add to Inventory",
+    "toast": {
+        "missingInfo": {
+            "title": "Missing Information",
+            "description": "Please fill in the device details (Name, Category, Specs, Condition) first."
+        },
+        "suggestionFailed": {
+            "title": "Suggestion Failed",
+            "description": "Could not suggest a trade-in value. Please try again."
+        },
+        "complete": {
+            "title": "Trade-in Complete",
+            "description": "{itemName} has been added to inventory."
+        }
+    }
+}

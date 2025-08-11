@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 export type PoStatus = 'Completed' | 'Shipped' | 'Processing' | 'Pending' | 'Cancelled';
 
@@ -33,14 +34,16 @@ const getStatusVariant = (status: PoStatus) => {
 }
 
 export default function PoTableRow({ po: initialPo }: { po: PurchaseOrder }) {
+    const t = useTranslations('PurchaseOrders.actions');
+    const t_statuses = useTranslations('PurchaseOrders.statuses');
     const { toast } = useToast();
     const [po, setPo] = useState(initialPo);
 
     const handleStatusChange = (newStatus: PoStatus) => {
         setPo(prev => ({ ...prev, status: newStatus }));
         toast({
-            title: "PO Status Updated",
-            description: `Purchase Order ${po.poNumber} updated to "${newStatus}".`
+            title: t('toast.title'),
+            description: t('toast.desc', { poNumber: po.poNumber, status: newStatus }),
         });
     }
 
@@ -52,7 +55,7 @@ export default function PoTableRow({ po: initialPo }: { po: PurchaseOrder }) {
             <TableCell>{po.expectedDelivery}</TableCell>
             <TableCell>
                 <Badge variant={getStatusVariant(po.status)} className="capitalize">
-                    {po.status}
+                    {t_statuses(po.status.toLowerCase())}
                 </Badge>
             </TableCell>
             <TableCell className="text-right font-mono">${po.total.toFixed(2)}</TableCell>
@@ -61,26 +64,26 @@ export default function PoTableRow({ po: initialPo }: { po: PurchaseOrder }) {
                     <DropdownMenuTrigger asChild>
                         <Button size="icon" variant="ghost">
                             <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">More actions</span>
+                            <span className="sr-only">{t('label')}</span>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View PO Details</DropdownMenuItem>
+                        <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
+                        <DropdownMenuItem>{t('view')}</DropdownMenuItem>
                         <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                            <DropdownMenuSubTrigger>{t('updateStatus')}</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                                 <DropdownMenuSubContent>
                                     <DropdownMenuRadioGroup value={po.status} onValueChange={(value) => handleStatusChange(value as PoStatus)}>
-                                        <DropdownMenuRadioItem value="Pending">Pending</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="Processing">Processing</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="Shipped">Shipped</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="Completed">Completed</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Pending">{t_statuses('pending')}</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Processing">{t_statuses('processing')}</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Shipped">{t_statuses('shipped')}</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Completed">{t_statuses('completed')}</DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
-                        <DropdownMenuItem className="text-destructive" onClick={() => handleStatusChange('Cancelled')}>Cancel PO</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive" onClick={() => handleStatusChange('Cancelled')}>{t('cancel')}</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>

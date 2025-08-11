@@ -18,6 +18,10 @@ export default getRequestConfig(async ({locale}) => {
       POS: (await import(`../messages/${locale}/pos.json`)).default,
       Customers: (await import(`../messages/${locale}/customers.json`)).default,
       Returns: (await import(`../messages/${locale}/returns.json`)).default,
+      Suppliers: (await import(`../messages/${locale}/suppliers.json`)).default,
+      PurchaseOrders: (await import(`../messages/${locale}/purchase-orders.json`)).default,
+      Expenses: (await import(`../messages/${locale}/expenses.json`)).default,
+      TradeIns: (await import(`../messages/${locale}/trade-ins.json`)).default,
     }
   }
 });

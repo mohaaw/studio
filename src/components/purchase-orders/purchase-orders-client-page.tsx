@@ -7,14 +7,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search, Filter, PlusCircle } from "lucide-react";
 import PoTableRow, { PurchaseOrder } from "./po-table-row";
+import { useTranslations } from "next-intl";
 
 export default function PurchaseOrdersClientPage({ initialPOs }: { initialPOs: PurchaseOrder[] }) {
+  const t = useTranslations('PurchaseOrders');
+  const t_statuses = useTranslations('PurchaseOrders.statuses');
+
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
-            <h1 className="font-headline text-3xl font-bold">Purchase Orders</h1>
+            <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
             <Button>
-                <PlusCircle className="mr-2 h-4 w-4" /> Create New PO
+                <PlusCircle className="mr-2 h-4 w-4" /> {t('new')}
             </Button>
         </div>
       <Card>
@@ -22,20 +26,20 @@ export default function PurchaseOrdersClientPage({ initialPOs }: { initialPOs: P
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search by PO number or supplier..." className="pl-10" />
+                    <Input placeholder={t('searchPlaceholder')} className="pl-10" />
                 </div>
                 <div className="flex items-center gap-2">
                     <Filter className="h-5 w-5 text-muted-foreground" />
                      <Select>
                         <SelectTrigger className="w-full md:w-[180px]">
-                            <SelectValue placeholder="Filter by Status" />
+                            <SelectValue placeholder={t('filterStatus')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Statuses</SelectItem>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="processing">Processing</SelectItem>
-                            <SelectItem value="shipped">Shipped</SelectItem>
-                            <SelectItem value="completed">Completed</SelectItem>
+                            <SelectItem value="all">{t_statuses('all')}</SelectItem>
+                            <SelectItem value="pending">{t_statuses('pending')}</SelectItem>
+                            <SelectItem value="processing">{t_statuses('processing')}</SelectItem>
+                            <SelectItem value="shipped">{t_statuses('shipped')}</SelectItem>
+                            <SelectItem value="completed">{t_statuses('completed')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -46,13 +50,13 @@ export default function PurchaseOrdersClientPage({ initialPOs }: { initialPOs: P
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>PO Number</TableHead>
-                  <TableHead>Supplier</TableHead>
-                  <TableHead>Order Date</TableHead>
-                  <TableHead>Expected Delivery</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Total</TableHead>
-                  <TableHead><span className="sr-only">Actions</span></TableHead>
+                  <TableHead>{t('table.poNumber')}</TableHead>
+                  <TableHead>{t('table.supplier')}</TableHead>
+                  <TableHead>{t('table.orderDate')}</TableHead>
+                  <TableHead>{t('table.expectedDelivery')}</TableHead>
+                  <TableHead>{t('table.status')}</TableHead>
+                  <TableHead className="text-right">{t('table.total')}</TableHead>
+                  <TableHead><span className="sr-only">{t('table.actions')}</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

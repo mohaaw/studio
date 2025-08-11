@@ -1,0 +1,17 @@
+
+{
+    "title": "Suppliers",
+    "addNew": "Add New Supplier",
+    "searchPlaceholder": "Search by supplier name or contact...",
+    "table": {
+        "supplier": "Supplier",
+        "contact": "Contact",
+        "products": "Products Supplied",
+        "actions": "Actions"
+    },
+    "actions": {
+        "edit": "Edit Supplier",
+        "viewPOs": "View Purchase Orders",
+        "delete": "Delete Supplier"
+    }
+}

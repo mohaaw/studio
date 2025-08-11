@@ -1,0 +1,33 @@
+
+{
+    "title": "Purchase Orders",
+    "new": "Create New PO",
+    "searchPlaceholder": "Search by PO number or supplier...",
+    "filterStatus": "Filter by Status",
+    "table": {
+        "poNumber": "PO Number",
+        "supplier": "Supplier",
+        "orderDate": "Order Date",
+        "expectedDelivery": "Expected Delivery",
+        "status": "Status",
+        "total": "Total",
+        "actions": "Actions"
+    },
+    "statuses": {
+        "all": "All Statuses",
+        "pending": "Pending",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+    },
+    "actions": {
+        "view": "View PO Details",
+        "updateStatus": "Update Status",
+        "cancel": "Cancel PO",
+        "toast": {
+            "title": "PO Status Updated",
+            "desc": "Purchase Order {poNumber} updated to \"{status}\"."
+        }
+    }
+}

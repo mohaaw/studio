@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge";
+import { useTranslations } from "next-intl";
 
 
 type Supplier = {
@@ -25,12 +26,13 @@ type Supplier = {
 };
 
 export default function SuppliersClientPage({ initialSuppliers }: { initialSuppliers: Supplier[] }) {
+  const t = useTranslations('Suppliers');
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
-            <h1 className="font-headline text-3xl font-bold">Suppliers</h1>
+            <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
             <Button>
-                <PlusCircle className="mr-2 h-4 w-4" /> Add New Supplier
+                <PlusCircle className="mr-2 h-4 w-4" /> {t('addNew')}
             </Button>
         </div>
       <Card>
@@ -38,7 +40,7 @@ export default function SuppliersClientPage({ initialSuppliers }: { initialSuppl
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search by supplier name or contact..." className="pl-10" />
+                    <Input placeholder={t('searchPlaceholder')} className="pl-10" />
                 </div>
             </div>
         </CardHeader>
@@ -47,10 +49,10 @@ export default function SuppliersClientPage({ initialSuppliers }: { initialSuppl
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[250px]">Supplier</TableHead>
-                  <TableHead>Contact</TableHead>
-                  <TableHead>Products Supplied</TableHead>
-                  <TableHead><span className="sr-only">Actions</span></TableHead>
+                  <TableHead className="w-[250px]">{t('table.supplier')}</TableHead>
+                  <TableHead>{t('table.contact')}</TableHead>
+                  <TableHead>{t('table.products')}</TableHead>
+                  <TableHead><span className="sr-only">{t('table.actions')}</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -74,14 +76,14 @@ export default function SuppliersClientPage({ initialSuppliers }: { initialSuppl
                             <DropdownMenuTrigger asChild>
                                 <Button size="icon" variant="ghost">
                                     <MoreHorizontal className="h-4 w-4"/>
-                                    <span className="sr-only">More actions</span>
+                                    <span className="sr-only">{t('table.actions')}</span>
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuItem>Edit Supplier</DropdownMenuItem>
-                                <DropdownMenuItem>View Purchase Orders</DropdownMenuItem>
-                                <DropdownMenuItem className="text-destructive">Delete Supplier</DropdownMenuItem>
+                                <DropdownMenuLabel>{t('table.actions')}</DropdownMenuLabel>
+                                <DropdownMenuItem>{t('actions.edit')}</DropdownMenuItem>
+                                <DropdownMenuItem>{t('actions.viewPOs')}</DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive">{t('actions.delete')}</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>

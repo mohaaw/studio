@@ -1,0 +1,48 @@
+
+{
+    "title": "Operational Expenses",
+    "log": {
+        "title": "Log New Expense",
+        "date": "Date",
+        "category": "Category",
+        "categoryPlaceholder": "Select a category",
+        "categories": {
+            "rent": "Rent",
+            "utilities": "Utilities",
+            "salaries": "Salaries",
+            "marketing": "Marketing",
+            "supplies": "Supplies",
+            "other": "Other"
+        },
+        "description": "Description",
+        "descriptionPlaceholder": "e.g., Office supplies",
+        "amount": "Amount ($)",
+        "amountPlaceholder": "150.00",
+        "location": "Location",
+        "locationPlaceholder": "Select a location",
+        "locations": {
+            "all": "All Locations",
+            "shop1": "Shop 1",
+            "shop2": "Shop 2",
+            "storehouse": "Storehouse"
+        },
+        "add": "Add Expense"
+    },
+    "history": {
+        "title": "Expense History",
+        "description": "A log of all operational expenses for the business.",
+        "searchPlaceholder": "Search by description...",
+        "filterCategory": "Filter by Category",
+        "table": {
+            "date": "Date",
+            "category": "Category",
+            "description": "Description",
+            "location": "Location",
+            "amount": "Amount"
+        }
+    },
+    "toast": {
+        "title": "Expense Added",
+        "description": "{description} has been logged."
+    }
+}

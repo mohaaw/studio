@@ -1,0 +1,33 @@
+
+{
+    "title": "طلبات الشراء",
+    "new": "إنشاء طلب شراء جديد",
+    "searchPlaceholder": "ابحث برقم طلب الشراء أو المورد...",
+    "filterStatus": "تصفية حسب الحالة",
+    "table": {
+        "poNumber": "رقم طلب الشراء",
+        "supplier": "المورد",
+        "orderDate": "تاريخ الطلب",
+        "expectedDelivery": "التسليم المتوقع",
+        "status": "الحالة",
+        "total": "الإجمالي",
+        "actions": "الإجراءات"
+    },
+    "statuses": {
+        "all": "جميع الحالات",
+        "pending": "قيد الانتظار",
+        "processing": "قيد المعالجة",
+        "shipped": "تم الشحن",
+        "completed": "مكتمل",
+        "cancelled": "ملغى"
+    },
+    "actions": {
+        "view": "عرض تفاصيل طلب الشراء",
+        "updateStatus": "تحديث الحالة",
+        "cancel": "إلغاء طلب الشراء",
+        "toast": {
+            "title": "تم تحديث حالة طلب الشراء",
+            "desc": "تم تحديث طلب الشراء {poNumber} إلى \"{status}\"."
+        }
+    }
+}

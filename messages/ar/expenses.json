@@ -1,0 +1,48 @@
+
+{
+    "title": "المصروفات التشغيلية",
+    "log": {
+        "title": "تسجيل مصروف جديد",
+        "date": "التاريخ",
+        "category": "الفئة",
+        "categoryPlaceholder": "اختر فئة",
+        "categories": {
+            "rent": "إيجار",
+            "utilities": "خدمات",
+            "salaries": "رواتب",
+            "marketing": "تسويق",
+            "supplies": "لوازم",
+            "other": "أخرى"
+        },
+        "description": "الوصف",
+        "descriptionPlaceholder": "مثال: لوازم مكتبية",
+        "amount": "المبلغ ($)",
+        "amountPlaceholder": "150.00",
+        "location": "الموقع",
+        "locationPlaceholder": "اختر موقعاً",
+        "locations": {
+            "all": "كل المواقع",
+            "shop1": "المتجر 1",
+            "shop2": "المتجر 2",
+            "storehouse": "المستودع"
+        },
+        "add": "إضافة مصروف"
+    },
+    "history": {
+        "title": "سجل المصروفات",
+        "description": "سجل لجميع المصروفات التشغيلية للعمل.",
+        "searchPlaceholder": "ابحث بالوصف...",
+        "filterCategory": "تصفية حسب الفئة",
+        "table": {
+            "date": "التاريخ",
+            "category": "الفئة",
+            "description": "الوصف",
+            "location": "الموقع",
+            "amount": "المبلغ"
+        }
+    },
+    "toast": {
+        "title": "تمت إضافة المصروف",
+        "description": "تم تسجيل {description}."
+    }
+}
