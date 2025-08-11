@@ -16,6 +16,7 @@ import { useTransition, useState, useEffect } from "react";
 import { suggestPersonalized, SuggestPersonalizedOutput } from "@/ai/flows/suggest-personalized-flow";
 import { useToast } from "@/hooks/use-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useTranslations } from "next-intl";
 
 
 const customer = {
@@ -45,6 +46,7 @@ const customer = {
 };
 
 export default function CustomerProfilePage({ params }: { params: { id: string } }) {
+  const t = useTranslations('Customers.profile');
   // In a real app, you would fetch customer data based on params.id
   const { toast } = useToast();
   const [isGenerating, startGenerationTransition] = useTransition();
@@ -63,14 +65,14 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
               if (result && result.suggestions) {
                   setSuggestions(result);
               } else {
-                  throw new Error("The AI flow returned an empty result.");
+                  throw new Error(t('upsell.failedDesc'));
               }
           } catch (e: any) {
-              const errorMessage = e.message || "Could not generate personalized suggestions at this time.";
+              const errorMessage = e.message || t('upsell.failedDesc');
               setError(errorMessage);
               toast({
                   variant: "destructive",
-                  title: "Suggestion Failed",
+                  title: t('upsell.failed'),
                   description: errorMessage,
               });
           }
@@ -82,7 +84,7 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
     <div className="space-y-6">
        <Link href="/dashboard/customers" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
-            Back to All Customers
+            {t('back')}
         </Link>
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-1 space-y-6">
@@ -95,7 +97,7 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                         </Avatar>
                         <div>
                              <h1 className="font-headline text-2xl font-bold">{customer.name}</h1>
-                             <Badge variant={customer.tier === 'Gold' ? 'default' : 'secondary'}>{customer.tier} Member</Badge>
+                             <Badge variant={customer.tier === 'Gold' ? 'default' : 'secondary'}>{t('tier', { tier: customer.tier })}</Badge>
                         </div>
                     </div>
                 </CardHeader>
@@ -110,19 +112,19 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                     </div>
                      <div className="flex items-center gap-3 text-sm">
                         <User className="h-4 w-4 text-muted-foreground" />
-                        <span>Customer since {customer.memberSince}</span>
+                        <span>{t('memberSince', { date: customer.memberSince })}</span>
                     </div>
                     <Separator />
                      <div className="flex justify-between items-center text-sm">
-                        <p className="text-muted-foreground">Total Spending</p>
+                        <p className="text-muted-foreground">{t('spending')}</p>
                         <p className="font-bold text-lg font-mono">${customer.totalSpent.toFixed(2)}</p>
                     </div>
                      <div className="flex justify-between items-center text-sm">
-                        <p className="text-muted-foreground">Loyalty Points</p>
+                        <p className="text-muted-foreground">{t('loyalty')}</p>
                         <p className="font-bold text-lg font-mono flex items-center gap-1.5"><Award className="h-4 w-4 text-primary"/> {customer.loyaltyPoints}</p>
                     </div>
                      <div className="flex justify-between items-center text-sm">
-                        <p className="text-muted-foreground">AI Sentiment Score</p>
+                        <p className="text-muted-foreground">{t('sentiment')}</p>
                         <p className={`font-bold text-lg font-mono flex items-center gap-1.5 ${customer.satisfactionScore > 80 ? 'text-green-500' : 'text-amber-500'}`}>
                             <ShieldCheck className="h-4 w-4"/> {customer.satisfactionScore}/100
                         </p>
@@ -133,15 +135,15 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
             <Card>
                 <CardHeader>
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
-                        <Bot className="h-5 w-5 text-primary"/> AI Upsell Suggestions
+                        <Bot className="h-5 w-5 text-primary"/> {t('upsell.title')}
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    {isGenerating && <p className="text-sm text-muted-foreground">Analyzing purchase history...</p>}
+                    {isGenerating && <p className="text-sm text-muted-foreground">{t('upsell.loading')}</p>}
                     {error && (
                         <Alert variant="destructive">
                             <AlertCircle className="h-4 w-4" />
-                            <AlertTitle>Suggestion Failed</AlertTitle>
+                            <AlertTitle>{t('upsell.failed')}</AlertTitle>
                             <AlertDescription className="text-xs">{error}</AlertDescription>
                         </Alert>
                     )}
@@ -155,13 +157,13 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                             ))}
                         </div>
                     ) : !isGenerating && !error && (
-                        <p className="text-sm text-muted-foreground">No suggestions available. Click refresh to generate.</p>
+                        <p className="text-sm text-muted-foreground">{t('upsell.empty')}</p>
                     )}
                 </CardContent>
                 <CardFooter>
                     <Button variant="outline" size="sm" onClick={handleGetSuggestions} disabled={isGenerating}>
                         <Sparkles className="mr-2 h-4 w-4" />
-                        {isGenerating ? 'Refreshing...' : 'Refresh Suggestions'}
+                        {isGenerating ? t('upsell.refreshing') : t('upsell.refresh')}
                     </Button>
                 </CardFooter>
             </Card>
@@ -169,7 +171,7 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
              <Card>
                 <CardHeader>
                     <CardTitle className="font-headline text-lg flex items-center gap-2">
-                        <MessageSquare className="h-5 w-5 text-primary"/> Communication Log
+                        <MessageSquare className="h-5 w-5 text-primary"/> {t('log.title')}
                     </CardTitle>
                 </CardHeader>
                  <CardContent className="space-y-4">
@@ -186,9 +188,9 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
                     </div>
                     <Separator />
                      <div className="space-y-2">
-                        <Label htmlFor="new-note">Add New Note</Label>
-                        <Textarea id="new-note" placeholder="Log a call or a visit..." />
-                        <Button size="sm">Add Note</Button>
+                        <Label htmlFor="new-note">{t('log.newNote')}</Label>
+                        <Textarea id="new-note" placeholder={t('log.newNotePlaceholder')} />
+                        <Button size="sm">{t('log.addNote')}</Button>
                     </div>
                 </CardContent>
             </Card>
@@ -196,11 +198,11 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
         <div className="lg:col-span-2 space-y-6">
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-xl flex items-center gap-2"><ShoppingBag className="h-5 w-5 text-primary"/> Purchase History</CardTitle>
+                    <CardTitle className="font-headline text-xl flex items-center gap-2"><ShoppingBag className="h-5 w-5 text-primary"/> {t('purchaseHistory.title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                      <Table>
-                        <TableHeader><TableRow><TableHead>Date</TableHead><TableHead>Item</TableHead><TableHead className="text-right">Price</TableHead></TableRow></TableHeader>
+                        <TableHeader><TableRow><TableHead>{t('purchaseHistory.date')}</TableHead><TableHead>{t('purchaseHistory.item')}</TableHead><TableHead className="text-right">{t('purchaseHistory.price')}</TableHead></TableRow></TableHeader>
                         <TableBody>
                             {customer.purchaseHistory.map(p => (
                                 <TableRow key={p.id}>
@@ -215,11 +217,11 @@ export default function CustomerProfilePage({ params }: { params: { id: string }
             </Card>
             <Card>
                 <CardHeader>
-                    <CardTitle className="font-headline text-xl flex items-center gap-2"><Wrench className="h-5 w-5 text-primary"/> Repair History</CardTitle>
+                    <CardTitle className="font-headline text-xl flex items-center gap-2"><Wrench className="h-5 w-5 text-primary"/> {t('repairHistory.title')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                      <Table>
-                        <TableHeader><TableRow><TableHead>Date</TableHead><TableHead>Ticket</TableHead><TableHead>Device</TableHead><TableHead className="text-right">Status</TableHead></TableRow></TableHeader>
+                        <TableHeader><TableRow><TableHead>{t('repairHistory.date')}</TableHead><TableHead>{t('repairHistory.ticket')}</TableHead><TableHead>{t('repairHistory.device')}</TableHead><TableHead className="text-right">{t('repairHistory.status')}</TableHead></TableRow></TableHeader>
                         <TableBody>
                             {customer.repairHistory.map(r => (
                                 <TableRow key={r.id}>

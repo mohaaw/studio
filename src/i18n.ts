@@ -16,6 +16,7 @@ export default getRequestConfig(async ({locale}) => {
       Team: (await import(`../messages/${locale}/team.json`)).default,
       Modules: (await import(`../messages/${locale}/modules.json`)).default,
       POS: (await import(`../messages/${locale}/pos.json`)).default,
+      Customers: (await import(`../messages/${locale}/customers.json`)).default,
     }
   }
 });

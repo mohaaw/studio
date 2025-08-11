@@ -1,0 +1,59 @@
+
+{
+    "list": {
+        "title": "Customers",
+        "addNew": "Add New Customer",
+        "searchPlaceholder": "Search by name, email, or phone...",
+        "table": {
+            "customer": "Customer",
+            "contact": "Contact",
+            "lastSeen": "Last Seen",
+            "spending": "Spending & Loyalty",
+            "actions": "Actions"
+        },
+        "actions": {
+            "viewProfile": "View Profile",
+            "viewHistory": "View Purchase History",
+            "sendEmail": "Send Email",
+            "sendSMS": "Send SMS",
+            "delete": "Delete Customer"
+        },
+        "loyaltyUnit": "pts"
+    },
+    "profile": {
+        "back": "Back to All Customers",
+        "memberSince": "Customer since {date}",
+        "tier": "{tier} Member",
+        "spending": "Total Spending",
+        "loyalty": "Loyalty Points",
+        "sentiment": "AI Sentiment Score",
+        "upsell": {
+            "title": "AI Upsell Suggestions",
+            "loading": "Analyzing purchase history...",
+            "failed": "Suggestion Failed",
+            "failedDesc": "Could not generate personalized suggestions at this time.",
+            "empty": "No suggestions available. Click refresh to generate.",
+            "refresh": "Refresh Suggestions",
+            "refreshing": "Refreshing..."
+        },
+        "log": {
+            "title": "Communication Log",
+            "newNote": "Add New Note",
+            "newNotePlaceholder": "Log a call or a visit...",
+            "addNote": "Add Note"
+        },
+        "purchaseHistory": {
+            "title": "Purchase History",
+            "date": "Date",
+            "item": "Item",
+            "price": "Price"
+        },
+        "repairHistory": {
+            "title": "Repair History",
+            "date": "Date",
+            "ticket": "Ticket",
+            "device": "Device",
+            "status": "Status"
+        }
+    }
+}
