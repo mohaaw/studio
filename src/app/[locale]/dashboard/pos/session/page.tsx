@@ -47,8 +47,8 @@ export default function SessionPage() {
                              <div className="space-y-2">
                                 <Label htmlFor="opening-cash">{t('openingCashLabel')}</Label>
                                 <div className="relative">
-                                     <Banknote className="absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                    <Input id="opening-cash" name="opening-cash" type="number" step="0.01" placeholder={t('openingCashPlaceholder')} className="ltr:pl-10 rtl:pr-10 text-lg" required />
+                                     <Banknote className="absolute left-3 rtl:right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Input id="opening-cash" name="opening-cash" type="number" step="0.01" placeholder={t('openingCashPlaceholder')} className="ps-10 text-lg" required />
                                 </div>
                             </div>
                         </CardContent>
@@ -77,7 +77,7 @@ export default function SessionPage() {
                         </CardContent>
                         <CardFooter className="flex-col gap-2">
                             <div className="flex w-full gap-2">
-                                <Button variant="outline" className="w-full"><Receipt className="ltr:mr-2 rtl:ml-2"/> {t('printButton')}</Button>
+                                <Button variant="outline" className="w-full"><Receipt className="me-2"/> {t('printButton')}</Button>
                                 <Button variant="destructive" className="w-full" onClick={handleEndSession}>{t('endButton')}</Button>
                             </div>
                         </CardFooter>

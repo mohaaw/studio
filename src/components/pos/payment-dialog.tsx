@@ -61,9 +61,9 @@ export default function PaymentDialog({ open, onOpenChange, total, onCompleteSal
                                     <Button variant="outline" onClick={() => setCashTendered(total.toFixed(2))}>{t('quickCash.exact')}</Button>
                                 </div>
                             </TabsContent>
-                            <TabsContent value="card" className="pt-4 text-center text-muted-foreground"><p>{t('tabs.cardMessage')}</p></TabsContent>
-                            <TabsContent value="credit" className="pt-4 text-center text-muted-foreground"><p>{t('tabs.creditMessage')}</p></TabsContent>
-                            <TabsContent value="split" className="pt-4 text-center text-muted-foreground"><p>{t('tabs.splitMessage')}</p></TabsContent>
+                            <TabsContent value="card" className="pt-4 text-center text-muted-foreground"><p>{t('cardMessage')}</p></TabsContent>
+                            <TabsContent value="credit" className="pt-4 text-center text-muted-foreground"><p>{t('creditMessage')}</p></TabsContent>
+                            <TabsContent value="split" className="pt-4 text-center text-muted-foreground"><p>{t('splitMessage')}</p></TabsContent>
                         </Tabs>
                     </div>
                     <div className="flex flex-col">

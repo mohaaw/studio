@@ -9,10 +9,10 @@
         "description": "دردشة في الوقت الفعلي للتواصل بين الأقسام.",
         "placeholder": "مراسلة #{channel}...",
         "channels": {
-            "general": "عام",
-            "sales": "مبيعات",
-            "repairs": "إصلاحات",
-            "marketing": "تسويق"
+            "general": "عامة",
+            "sales": "المبيعات",
+            "repairs": "الإصلاحات",
+            "marketing": "التسويق"
         }
     },
     "marketing": {
@@ -40,5 +40,3 @@
         }
     }
 }
-
-    

@@ -38,7 +38,7 @@ export default function CustomersPosPage() {
                                 <Input placeholder={t('searchPlaceholder')} value={search} onChange={e => setSearch(e.target.value)} />
                                 <Button type="submit" size="icon"><Search/></Button>
                             </div>
-                            <Button className="w-full"><UserPlus className="ltr:mr-2 rtl:ml-2"/> {t('createButton')}</Button>
+                            <Button className="w-full"><UserPlus className="ms-2"/> {t('createButton')}</Button>
                             <Separator />
                             <div className="space-y-2">
                                {dummyCustomers.filter(c => c.name.toLowerCase().includes(search.toLowerCase())).map(customer => (

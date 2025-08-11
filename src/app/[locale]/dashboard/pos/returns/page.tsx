@@ -61,7 +61,7 @@ export default function ReturnsPage() {
                                 <Label htmlFor="order-search">{t('orderIdLabel')}</Label>
                                 <div className="flex gap-2">
                                     <Input id="order-search" value={orderId} onChange={e => setOrderId(e.target.value)} placeholder={t('orderIdPlaceholder')} />
-                                    <Button type="submit"><Search className="ltr:mr-2 rtl:ml-2"/> {t('search')}</Button>
+                                    <Button type="submit"><Search className="me-2"/> {t('search')}</Button>
                                 </div>
                             </CardContent>
                         </form>
@@ -129,9 +129,9 @@ export default function ReturnsPage() {
                             )}
                         </CardContent>
                         <CardFooter className="flex flex-col gap-2">
-                             <Button size="lg" className="w-full" disabled={totalRefund <= 0}><CreditCard className="ltr:mr-2 rtl:ml-2"/> {t('refundButton')}</Button>
-                             <Button size="lg" variant="secondary" className="w-full" disabled={totalRefund <= 0}><Gift className="ltr:mr-2 rtl:ml-2"/> {t('creditButton')}</Button>
-                             <Button size="lg" variant="outline" className="w-full" disabled={totalRefund <= 0}><ArrowLeftRight className="ltr:mr-2 rtl:ml-2"/> {t('exchangeButton')}</Button>
+                             <Button size="lg" className="w-full" disabled={totalRefund <= 0}><CreditCard className="me-2"/> {t('refundButton')}</Button>
+                             <Button size="lg" variant="secondary" className="w-full" disabled={totalRefund <= 0}><Gift className="me-2"/> {t('creditButton')}</Button>
+                             <Button size="lg" variant="outline" className="w-full" disabled={totalRefund <= 0}><ArrowLeftRight className="me-2"/> {t('exchangeButton')}</Button>
                         </CardFooter>
                     </Card>
                 </div>

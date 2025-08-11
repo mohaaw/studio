@@ -274,12 +274,12 @@ export default function POSPage() {
                         <CardHeader>
                             <div className="flex flex-col md:flex-row gap-4 justify-between">
                                 <div className="relative flex-1">
-                                    <Search className="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                    <Input placeholder={t('search.placeholder')} className="h-12 text-lg ltr:pl-12 rtl:pr-12" />
+                                    <Search className="absolute left-4 rtl:right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                    <Input placeholder={t('search.placeholder')} className="h-12 text-lg ps-12" />
                                 </div>
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <Button variant="outline" className="h-12"><ScanLine className="ltr:mr-2 rtl:ml-2 h-6 w-6" /> {t('buttons.scan')}</Button>
+                                        <Button variant="outline" className="h-12"><ScanLine className="me-2 h-6 w-6" /> {t('buttons.scan')}</Button>
                                     </DialogTrigger>
                                     <DialogContent className="max-w-md">
                                         <DialogHeader><DialogTitle className="flex items-center gap-2"><Camera className="h-6 w-6 text-primary"/> {t('dialogs.scan.title')}</DialogTitle></DialogHeader>
@@ -296,7 +296,7 @@ export default function POSPage() {
                                 <TabsList>
                                     {categories.map(category => (
                                         <TabsTrigger key={category} value={category} disabled={category === 'For You' && !activeCustomer}>
-                                            {category === 'For You' && <Sparkles className="ltr:mr-2 rtl:ml-2 h-4 w-4 text-primary" />}
+                                            {category === 'For You' && <Sparkles className="me-2 h-4 w-4 text-primary" />}
                                             {category === 'For You' ? t('products.forYou') : category}
                                         </TabsTrigger>
                                     ))}
@@ -394,7 +394,7 @@ export default function POSPage() {
                                         </PopoverContent>
                                     </Popover>
                                 ) : (
-                                    <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="ltr:mr-2 rtl:ml-2 h-4 w-4"/>{t('buttons.addCustomer')}</Button>
+                                    <Button variant="outline" size="sm" onClick={() => setCustomerModalOpen(true)}><UserPlus className="me-2 h-4 w-4"/>{t('buttons.addCustomer')}</Button>
                                 )}
                                 <div className="flex items-center gap-1">
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={handleHoldCart}><Pause className="h-4 w-4"/></Button>
@@ -481,10 +481,10 @@ export default function POSPage() {
                                 </div>
                             </div>
                             <div className="grid grid-cols-2 gap-2 w-full mt-4">
-                                <Button variant="outline" onClick={() => setPromotionsModalOpen(true)}><Gift className="ltr:mr-2 rtl:ml-2 h-4 w-4" /> {t('buttons.promotions')}</Button>
-                                <Button size="lg" className="h-12 text-lg font-bold" onClick={() => setPaymentOpen(true)}><CreditCard className="ltr:mr-2 rtl:ml-2 h-6 w-6" />{t('buttons.pay')}</Button>
+                                <Button variant="outline" onClick={() => setPromotionsModalOpen(true)}><Gift className="me-2 h-4 w-4" /> {t('buttons.promotions')}</Button>
+                                <Button size="lg" className="h-12 text-lg font-bold" onClick={() => setPaymentOpen(true)}><CreditCard className="me-2 h-6 w-6" />{t('buttons.pay')}</Button>
                             </div>
-                            <Button variant="destructive" size="sm" className="w-full mt-2" onClick={handleClearCart}><Trash2 className="ltr:mr-2 rtl:ml-2 h-4 w-4" />{t('buttons.clearCart')}</Button>
+                            <Button variant="destructive" size="sm" className="w-full mt-2" onClick={handleClearCart}><Trash2 className="me-2 h-4 w-4" />{t('buttons.clearCart')}</Button>
                         </CardFooter>
                         }
                     </Card>

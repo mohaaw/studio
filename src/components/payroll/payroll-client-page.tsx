@@ -114,7 +114,7 @@ export default function PayrollClientPage() {
                     <CardFooter className="justify-end">
                         <Dialog open={isRunPayrollOpen} onOpenChange={setRunPayrollOpen}>
                             <DialogTrigger asChild>
-                                <Button><Calculator className="mx-2"/> {t('runPayrollButton')}</Button>
+                                <Button><Calculator className="me-2"/> {t('runPayrollButton')}</Button>
                             </DialogTrigger>
                              <DialogContent>
                                 <DialogHeader>

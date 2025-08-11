@@ -82,7 +82,7 @@ export default function TeamManagementClientPage({ initialTeamMembers }: { initi
                 <p className="text-muted-foreground">{t('description')}</p>
             </div>
             <Button>
-                <PlusCircle className="mx-2 h-4 w-4" /> {t('inviteButton')}
+                <PlusCircle className="me-2 h-4 w-4" /> {t('inviteButton')}
             </Button>
         </div>
       <Card>
@@ -117,7 +117,7 @@ export default function TeamManagementClientPage({ initialTeamMembers }: { initi
                     </TableCell>
                     <TableCell>
                         <Badge variant={getRoleVariant(member.role as Role)}>
-                            {member.role === 'Admin' ? <ShieldCheck className="mx-1.5 h-3.5 w-3.5" /> : <UserCog className="mx-1.5 h-3.5 w-3.5" />}
+                            {member.role === 'Admin' ? <ShieldCheck className="me-1.5 h-3.5 w-3.5" /> : <UserCog className="me-1.5 h-3.5 w-3.5" />}
                             {t(`roles.${member.role.toLowerCase()}`)}
                         </Badge>
                     </TableCell>

@@ -2,20 +2,20 @@
 {
     "tabs": {
         "sale": "بيع",
-        "returns": "مرتجعات",
-        "customers": "عملاء",
+        "returns": "المرتجعات",
+        "customers": "العملاء",
         "session": "جلسة الكاشير",
-        "orders": "طلبات معلقة"
+        "orders": "الطلبات المعلقة"
     },
     "search": {
-        "placeholder": "ابحث بالمنتج أو امسح الباركود..."
+        "placeholder": "ابحث عن منتج أو امسح الباركود..."
     },
     "buttons": {
         "scan": "مسح",
         "addCustomer": "إضافة عميل",
         "pay": "دفع",
-        "promotions": "عروض",
-        "clearCart": "مسح السلة",
+        "promotions": "العروض",
+        "clearCart": "إفراغ السلة",
         "finalize": "إتمام البيع",
         "cancel": "إلغاء",
         "resume": "استئناف",
@@ -30,14 +30,14 @@
         },
         "held": {
             "title": "المبيعات المعلقة",
-            "saleSummary": "عملية بيع بـ {count} عنصر",
+            "saleSummary": "عملية بيع بها {count} عنصر",
             "total": "الإجمالي: ${total}"
         },
         "payment": {
             "title": "الدفع",
             "method": "طريقة الدفع",
-            "summary": "ملخص",
-            "totalDue": "الإجمالي المطلوب",
+            "summary": "الملخص",
+            "totalDue": "الإجمالي المستحق",
             "tendered": "المبلغ المدفوع",
             "changeDue": "الباقي",
             "tabs": {
@@ -51,7 +51,7 @@
             "splitMessage": "تقسيم الدفع غير منفذ بعد.",
             "cashTenderedLabel": "المبلغ النقدي المدفوع",
             "quickCash": {
-                "nextBill": "${value}",
+                "nextBill": "أقرب فاتورة ${value}",
                 "exact": "بالضبط"
             }
         },
@@ -148,7 +148,7 @@
         "empty": "لم يتم تحديد أي عناصر للإرجاع.",
         "totalRefund": "قيمة الإرجاع الإجمالية",
         "refundButton": "استرداد إلى وسيلة الدفع الأصلية",
-        "creditButton": "إصدار رصيد متجر",
+        "creditButton": "إصدار رصيد للمتجر",
         "exchangeButton": "استبدال بعنصر آخر",
         "notFound": "لم نتمكن من العثور على طلب بهذا المعرّف. يرجى التحقق منه مرة أخرى والمحاولة مرة أخرى."
     },

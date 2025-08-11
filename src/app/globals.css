@@ -145,8 +145,8 @@
    }
 
   [dir="rtl"] {
-    --font-body: var(--font-cairo);
-    --font-headline: var(--font-cairo);
+    --font-body: var(--font-cairo), var(--font-inter), sans-serif;
+    --font-headline: var(--font-cairo), var(--font-space-grotesk), sans-serif;
   }
 }
 
@@ -166,5 +166,43 @@
 @layer components {
   [data-sidebar="sidebar"] {
     @apply backdrop-blur-lg;
+  }
+}
+
+@layer utilities {
+  html[dir="rtl"] .ms-2 {
+    margin-right: 0.5rem;
+    margin-left: 0;
+  }
+  html[dir="ltr"] .ms-2 {
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
+
+  html[dir="rtl"] .me-2 {
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
+  html[dir="ltr"] .me-2 {
+    margin-right: 0.5rem;
+    margin-left: 0;
+  }
+  
+  html[dir="rtl"] .ps-10 {
+      padding-right: 2.5rem;
+      padding-left: 0.75rem;
+  }
+  html[dir="ltr"] .ps-10 {
+      padding-left: 2.5rem;
+      padding-right: 0.75rem;
+  }
+  
+    html[dir="rtl"] .ps-12 {
+      padding-right: 3rem;
+      padding-left: 0.75rem;
+  }
+  html[dir="ltr"] .ps-12 {
+      padding-left: 3rem;
+      padding-right: 0.75rem;
   }
 }
