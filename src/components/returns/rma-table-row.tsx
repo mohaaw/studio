@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslations } from "next-intl";
 
 export type RmaStatus = "Pending Inspection" | "Restocked" | "Refunded" | "Awaiting Customer";
 
@@ -34,12 +35,13 @@ const getStatusVariant = (status: RmaStatus) => {
 export default function RmaTableRow({ rma: initialRma }: { rma: RmaItem }) {
     const { toast } = useToast();
     const [rma, setRma] = useState(initialRma);
+    const t = useTranslations('Returns.table.dropdown');
 
     const handleStatusChange = (newStatus: RmaStatus) => {
         setRma(prev => ({ ...prev, status: newStatus }));
         toast({
-            title: "RMA Status Updated",
-            description: `RMA for ${rma.rmaNumber} has been updated to "${newStatus}".`
+            title: t('toastTitle'),
+            description: t('toastDesc', { rmaNumber: rma.rmaNumber, status: newStatus })
         });
     }
 
@@ -63,17 +65,17 @@ export default function RmaTableRow({ rma: initialRma }: { rma: RmaItem }) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>View Return Details</DropdownMenuItem>
+                        <DropdownMenuLabel>{t('label')}</DropdownMenuLabel>
+                        <DropdownMenuItem>{t('view')}</DropdownMenuItem>
                         <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                            <DropdownMenuSubTrigger>{t('updateStatus')}</DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                                 <DropdownMenuSubContent>
                                     <DropdownMenuRadioGroup value={rma.status} onValueChange={(value) => handleStatusChange(value as RmaStatus)}>
-                                        <DropdownMenuRadioItem value="Pending Inspection">Pending Inspection</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="Restocked">Restock Item</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="Refunded">Process Refund</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="Awaiting Customer">Awaiting Customer</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Pending Inspection">{t('statuses.pending')}</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Restocked">{t('statuses.restock')}</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Refunded">{t('statuses.refund')}</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="Awaiting Customer">{t('statuses.awaiting')}</DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>

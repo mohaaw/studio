@@ -1,0 +1,35 @@
+
+{
+    "title": "تفويضات الإرجاع (RMA)",
+    "new": "معالجة مرتجع جديد",
+    "searchPlaceholder": "ابحث برقم RMA، معرف الطلب، أو العميل...",
+    "filterStatus": "تصفية حسب الحالة",
+    "statuses": {
+        "all": "جميع الحالات",
+        "pending": "في انتظار الفحص",
+        "restocked": "تم إعادة التخزين",
+        "refunded": "تم استرداد المبلغ"
+    },
+    "table": {
+        "rmaNumber": "رقم RMA",
+        "orderId": "الطلب الأصلي",
+        "customer": "العميل",
+        "item": "العنصر",
+        "returnDate": "تاريخ الإرجاع",
+        "status": "الحالة",
+        "actions": "الإجراءات",
+        "dropdown": {
+            "label": "الإجراءات",
+            "view": "عرض تفاصيل الإرجاع",
+            "updateStatus": "تحديث الحالة",
+            "statuses": {
+                "pending": "في انتظار الفحص",
+                "restock": "إعادة تخزين العنصر",
+                "refund": "معالجة استرداد المبلغ",
+                "awaiting": "في انتظار العميل"
+            },
+            "toastTitle": "تم تحديث حالة RMA",
+            "toastDesc": "تم تحديث حالة RMA لـ {rmaNumber} إلى \"{status}\"."
+        }
+    }
+}

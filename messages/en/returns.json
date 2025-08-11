@@ -1,0 +1,35 @@
+
+{
+    "title": "Return Authorizations (RMA)",
+    "new": "Process New Return",
+    "searchPlaceholder": "Search by RMA number, Order ID, or customer...",
+    "filterStatus": "Filter by Status",
+    "statuses": {
+        "all": "All Statuses",
+        "pending": "Pending Inspection",
+        "restocked": "Restocked",
+        "refunded": "Refunded"
+    },
+    "table": {
+        "rmaNumber": "RMA Number",
+        "orderId": "Original Order",
+        "customer": "Customer",
+        "item": "Item",
+        "returnDate": "Return Date",
+        "status": "Status",
+        "actions": "Actions",
+        "dropdown": {
+            "label": "Actions",
+            "view": "View Return Details",
+            "updateStatus": "Update Status",
+            "statuses": {
+                "pending": "Pending Inspection",
+                "restock": "Restock Item",
+                "refund": "Process Refund",
+                "awaiting": "Awaiting Customer"
+            },
+            "toastTitle": "RMA Status Updated",
+            "toastDesc": "RMA for {rmaNumber} has been updated to \"{status}\"."
+        }
+    }
+}

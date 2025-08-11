@@ -7,14 +7,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Search, Filter, PlusCircle } from "lucide-react";
 import RmaTableRow, { RmaItem } from "./rma-table-row";
+import { useTranslations } from "next-intl";
+
 
 export default function ReturnsClientPage({ initialRmas }: { initialRmas: RmaItem[] }) {
+  const t = useTranslations('Returns');
+
   return (
     <div className="space-y-6">
         <div className="flex items-center justify-between">
-            <h1 className="font-headline text-3xl font-bold">Return Authorizations (RMA)</h1>
+            <h1 className="font-headline text-3xl font-bold">{t('title')}</h1>
             <Button>
-                <PlusCircle className="mr-2 h-4 w-4" /> Process New Return
+                <PlusCircle className="mr-2 h-4 w-4" /> {t('new')}
             </Button>
         </div>
       <Card>
@@ -22,19 +26,19 @@ export default function ReturnsClientPage({ initialRmas }: { initialRmas: RmaIte
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input placeholder="Search by RMA number, Order ID, or customer..." className="pl-10" />
+                    <Input placeholder={t('searchPlaceholder')} className="pl-10" />
                 </div>
                 <div className="flex items-center gap-2">
                     <Filter className="h-5 w-5 text-muted-foreground" />
                      <Select>
                         <SelectTrigger className="w-full md:w-[180px]">
-                            <SelectValue placeholder="Filter by Status" />
+                            <SelectValue placeholder={t('filterStatus')} />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Statuses</SelectItem>
-                            <SelectItem value="pending">Pending Inspection</SelectItem>
-                            <SelectItem value="restocked">Restocked</SelectItem>
-                            <SelectItem value="refunded">Refunded</SelectItem>
+                            <SelectItem value="all">{t('statuses.all')}</SelectItem>
+                            <SelectItem value="pending">{t('statuses.pending')}</SelectItem>
+                            <SelectItem value="restocked">{t('statuses.restocked')}</SelectItem>
+                            <SelectItem value="refunded">{t('statuses.refunded')}</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -45,13 +49,13 @@ export default function ReturnsClientPage({ initialRmas }: { initialRmas: RmaIte
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>RMA Number</TableHead>
-                  <TableHead>Original Order</TableHead>
-                  <TableHead>Customer</TableHead>
-                  <TableHead>Item</TableHead>
-                  <TableHead>Return Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead><span className="sr-only">Actions</span></TableHead>
+                  <TableHead>{t('table.rmaNumber')}</TableHead>
+                  <TableHead>{t('table.orderId')}</TableHead>
+                  <TableHead>{t('table.customer')}</TableHead>
+                  <TableHead>{t('table.item')}</TableHead>
+                  <TableHead>{t('table.returnDate')}</TableHead>
+                  <TableHead>{t('table.status')}</TableHead>
+                  <TableHead><span className="sr-only">{t('table.actions')}</span></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
