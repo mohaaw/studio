@@ -54,7 +54,6 @@ const itemData = {
 export default function ItemProfilePage({ params }: { params: { id: string } }) {
   // In a real app, you would fetch item data based on params.id
   const t = useTranslations('Inventory.itemProfile');
-  const t_toast = useTranslations('Dashboard.kpi');
   const { toast } = useToast();
   const [item, setItem] = useState(itemData);
   const [stockAdjustment, setStockAdjustment] = useState(0);

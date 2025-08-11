@@ -90,7 +90,7 @@ export default function InventoryTableRow({ item }: { item: InventoryItem }) {
                         <DropdownMenuTrigger asChild>
                             <Button size="icon" variant="ghost">
                                 <MoreHorizontal className="h-4 w-4" />
-                                <span className="sr-only">More actions</span>
+                                <span className="sr-only">{t('label')}</span>
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
