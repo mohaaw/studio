@@ -15,6 +15,7 @@ import { DateRangePicker } from "../ui/date-range-picker";
 import { Progress } from "../ui/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { useTranslations } from "next-intl";
+import { Link } from "@/navigation";
 
 const salesData = [
   { month: "Jan", sales: 4000, profit: 2400 },
@@ -71,7 +72,7 @@ const notifications = [
     { id: 3, icon: DollarSign, title: 'Large Sale Processed', description: 'Mary J. closed a $2,500 deal in the POS.', time: '4h ago', read: true },
 ]
 
-export default function DashboardClientPage({ myTasks, activityFeed }: DashboardClientProps) {
+export default function DashboardClientPage({ myTasks: initialTasks, activityFeed }: DashboardClientProps) {
     const t = useTranslations('Dashboard');
     const t_kpi = useTranslations('Dashboard.kpi');
     const t_tasks = useTranslations('Dashboard.tasks');
@@ -90,9 +91,18 @@ export default function DashboardClientPage({ myTasks, activityFeed }: Dashboard
     const [isCustomizeOpen, setCustomizeOpen] = useState(false);
     const [isSessionTimeoutOpen, setSessionTimeoutOpen] = useState(false);
     const [widgetVisibility, setWidgetVisibility] = useState(initialWidgetVisibility);
+    const [myTasks, setMyTasks] = useState<Task[]>(initialTasks);
 
     const handleVisibilityChange = (widget: keyof typeof initialWidgetVisibility, checked: boolean) => {
         setWidgetVisibility(prev => ({ ...prev, [widget]: checked }));
+    }
+    
+    const handleTaskChange = (taskId: string, completed: boolean) => {
+        setMyTasks(prevTasks =>
+            prevTasks.map(task =>
+                task.id === taskId ? { ...task, completed } : task
+            )
+        );
     }
     
   return (
@@ -139,45 +149,53 @@ export default function DashboardClientPage({ myTasks, activityFeed }: Dashboard
 
       {widgetVisibility.kpiCards && (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t_kpi('revenue')}</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold font-mono">$45,231.89</div>
-                <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-              </CardContent>
+            <Card className="hover:bg-muted/50 transition-colors">
+              <Link href="/dashboard/reporting">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t_kpi('revenue')}</CardTitle>
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold font-mono">$45,231.89</div>
+                  <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                </CardContent>
+              </Link>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t_kpi('repairs')}</CardTitle>
-                <Wrench className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">12</div>
-                <p className="text-xs text-muted-foreground">3 are awaiting parts</p>
-              </CardContent>
+            <Card className="hover:bg-muted/50 transition-colors">
+              <Link href="/dashboard/repairs">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t_kpi('repairs')}</CardTitle>
+                  <Wrench className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">12</div>
+                  <p className="text-xs text-muted-foreground">3 are awaiting parts</p>
+                </CardContent>
+              </Link>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t_kpi('shipments')}</CardTitle>
-                <Truck className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+8</div>
-                <p className="text-xs text-muted-foreground">Awaiting carrier pickup</p>
-              </CardContent>
+            <Card className="hover:bg-muted/50 transition-colors">
+              <Link href="/dashboard/purchase-orders">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t_kpi('shipments')}</CardTitle>
+                  <Truck className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">+8</div>
+                  <p className="text-xs text-muted-foreground">Awaiting carrier pickup</p>
+                </CardContent>
+              </Link>
             </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">{t_kpi('customers')}</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+52</div>
-                <p className="text-xs text-muted-foreground">+12.5% this month</p>
-              </CardContent>
+            <Card className="hover:bg-muted/50 transition-colors">
+              <Link href="/dashboard/customers">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">{t_kpi('customers')}</CardTitle>
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">+52</div>
+                  <p className="text-xs text-muted-foreground">+12.5% this month</p>
+                </CardContent>
+              </Link>
             </Card>
           </div>
       )}
@@ -213,7 +231,7 @@ export default function DashboardClientPage({ myTasks, activityFeed }: Dashboard
             <CardContent className="space-y-2">
                 {myTasks.map((task) => (
                     <div key={task.id} className="flex items-center space-x-2">
-                        <Checkbox id={`task-${task.id}`} defaultChecked={task.completed} />
+                        <Checkbox id={`task-${task.id}`} checked={task.completed} onCheckedChange={(checked) => handleTaskChange(task.id, !!checked)} />
                         <label htmlFor={`task-${task.id}`} className={`text-sm ${task.completed ? 'line-through text-muted-foreground' : ''}`}>
                             {task.label}
                         </label>
