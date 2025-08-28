@@ -2,7 +2,8 @@
 
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
-import { Card, CardHeader, CardContent, Table, TableHeader, TableRow, TableHead, TableBody, TableCell, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PayrollClientPage = dynamic(() => import('@/components/payroll/payroll-client-page'));
