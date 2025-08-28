@@ -1,4 +1,3 @@
-
 import type { ReactNode } from "react";
 import '../globals.css';
 import { Toaster } from "@/components/ui/toaster";

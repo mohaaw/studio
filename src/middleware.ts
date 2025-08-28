@@ -9,8 +9,8 @@ export default createMiddleware({
 });
  
 export const config = {
-  // Match all paths except for assets and api routes.
+  // Match all paths except for assets, api routes, and the kiosk page.
   // This ensures the middleware runs on all pages but
-  // is skipped for images, fonts, etc.
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
+  // is skipped for images, fonts, and the non-localized kiosk route.
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|kiosk).*)']
 };
