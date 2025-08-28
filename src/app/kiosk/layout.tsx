@@ -1,9 +1,8 @@
-
 import type { ReactNode } from "react";
 import '../globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Inter, Space_Grotesk, Cairo } from 'next/font/google';
 import { NextIntlClientProvider } from "next-intl";
 
 const inter = Inter({
@@ -18,15 +17,20 @@ const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
 });
 
+const cairo = Cairo({
+  subsets: ['arabic'],
+  display: 'swap',
+  variable: '--font-cairo',
+});
+
 export default function KioskLayout({ children }: { children: ReactNode }) {
   // A dummy messages object for the provider.
-  // The kiosk is not localized, but the provider is still useful
-  // for components that might be shared or expect it.
+  // The kiosk is not localized, but some shared components might expect the provider.
   const messages = {};
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-body antialiased`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${cairo.variable} font-body antialiased`}>
         <NextIntlClientProvider locale="en" messages={messages}>
           <ThemeProvider
               attribute="class"
