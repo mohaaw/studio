@@ -6,14 +6,11 @@ export default createMiddleware({
  
   // Used when no locale matches
   defaultLocale: 'en',
-
-  // Redirect / to /en/dashboard
-  pathnames: {
-    '/': '/'
-  }
 });
  
 export const config = {
-  // Match only internationalized pathnames
-  matcher: ['/', '/(en|ar)/:path*']
+  // Match all paths except for assets and api routes.
+  // This ensures the middleware runs on all pages but
+  // is skipped for images, fonts, etc.
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)']
 };
