@@ -13,7 +13,7 @@ interface SettingsContextType {
 }
 
 const defaultSettings: AppSettings = {
-  shopName: 'TechShop',
+  shopName: 'CoreSync',
 };
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);

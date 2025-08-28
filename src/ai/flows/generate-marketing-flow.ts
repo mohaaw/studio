@@ -25,7 +25,7 @@ const prompt = ai.definePrompt({
   name: 'generateMarketingCopyPrompt',
   input: {schema: GenerateMarketingCopyInputSchema},
   output: {schema: z.string()},
-  prompt: `You are a marketing specialist for a second-hand electronics shop called TechShop.
+  prompt: `You are a marketing specialist for a second-hand electronics shop called CoreSync.
 Your task is to write a compelling, concise, and friendly marketing message.
 The tone should be enthusiastic and trustworthy.
 

@@ -38,7 +38,7 @@ export default function LoginPage() {
              <form className="space-y-4" onSubmit={handleLogin}>
               <div className="space-y-2">
                 <Label htmlFor="email">{t('labels.email')}</Label>
-                <Input id="email" type="email" placeholder="employee@techshop.com" required />
+                <Input id="email" type="email" placeholder="employee@coresync.com" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">{t('labels.password')}</Label>
@@ -69,5 +69,3 @@ export default function LoginPage() {
     </main>
   );
 }
-
-    

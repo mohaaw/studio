@@ -1,6 +1,6 @@
-# TechShop Manager Pro 💻
+# CoreSync Pro 💻
 
-Welcome to **TechShop Manager**, a comprehensive, AI-enhanced application designed to streamline the operations of a second-hand electronics store. This application is built with Next.js, TypeScript, and Tailwind CSS, featuring a modern and responsive user interface.
+Welcome to **CoreSync**, a comprehensive, AI-enhanced application designed to streamline the operations of a second-hand electronics store. This application is built with Next.js, TypeScript, and Tailwind CSS, featuring a modern and responsive user interface.
 
 ## Key Features & Improvements
 
@@ -40,11 +40,11 @@ This application is packed with features designed to cover all aspects of runnin
 
 ## Design Philosophy
 
-TechShop Manager Pro is built upon a robust and thoughtful design philosophy focused on providing a powerful, intuitive, and scalable solution for managing second-hand electronics businesses. Key principles include:
+CoreSync Pro is built upon a robust and thoughtful design philosophy focused on providing a powerful, intuitive, and scalable solution for managing second-hand electronics businesses. Key principles include:
 
 *   **Efficiency and Streamlining**: Automating and simplifying complex workflows to reduce manual effort and increase operational efficiency.
 
-TechShop Manager is built with a focus on **simplicity, efficiency, and intelligence**. The design principles guiding this application include:
+CoreSync is built with a focus on **simplicity, efficiency, and intelligence**. The design principles guiding this application include:
 
 *   **User-Centric Interface**: Prioritizing a clean, intuitive, and easy-to-navigate user interface that minimizes training time and maximizes productivity for store employees.
 *   **Data-Driven Decisions**: Providing powerful analytics and reporting tools to empower store owners and managers to make informed business decisions based on real-time data.
@@ -73,7 +73,7 @@ The overall design aims to create a powerful yet user-friendly platform that ser
 
 ## Getting Started
 
-This guide provides instructions for setting up and running the TechShop Manager project on both **EndeavourOS (Linux)** and **Windows 11**.
+This guide provides instructions for setting up and running the CoreSync project on both **EndeavourOS (Linux)** and **Windows 11**.
 
 ### Prerequisites
 
@@ -146,6 +146,6 @@ The application requires two separate processes to run concurrently: the **Next.
     This will start the front-end development server, usually on port 9002.
 
 5.  **Access the Application:**
-    Open your web browser and navigate to **http://localhost:9002**. You should now see the TechShop Manager login screen.
+    Open your web browser and navigate to **http://localhost:9002**. You should now see the CoreSync login screen.
 
 You are all set! The application is now running locally on your machine.

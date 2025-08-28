@@ -24,7 +24,7 @@ export default function LoginPage() {
           <div className="mb-4 flex justify-center">
             <CircuitBoard className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle className="font-headline text-3xl text-primary">TechShop Manager</CardTitle>
+          <CardTitle className="font-headline text-3xl text-primary">CoreSync</CardTitle>
            <CardDescription>
             {step === 'credentials' 
               ? "Enter your credentials to access your dashboard"
@@ -36,7 +36,7 @@ export default function LoginPage() {
              <form className="space-y-4" onSubmit={handleLogin}>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" placeholder="employee@techshop.com" required />
+                <Input id="email" type="email" placeholder="employee@coresync.com" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>

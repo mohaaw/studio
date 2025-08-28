@@ -1,7 +1,6 @@
-
 {
     "header": {
-        "title": "Welcome to TechShop",
+        "title": "Welcome to CoreSync",
         "subtitle": "Your self-service kiosk for browsing products and checking repairs."
     },
     "tabs": {
@@ -19,10 +18,8 @@
         }
     },
     "chat": {
-        "title": "TechShop Assistant",
+        "title": "CoreSync Assistant",
         "placeholder": "Ask a question...",
         "thinking": "..."
     }
 }
-
-    

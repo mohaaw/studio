@@ -34,7 +34,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useSidebar } from '../ui/sidebar';
 import { useTheme } from 'next-themes';
-import { useState, lazy, Suspense, useTransition } from 'react';
+import { useState, lazy, Suspense, useTransition, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Switch } from '../ui/switch';
@@ -57,6 +57,11 @@ export function UserNav() {
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
   };
+  
+  useEffect(() => {
+    document.body.dataset.density = displayDensity;
+  }, [displayDensity]);
+
 
   const handleLanguageChange = (locale: 'en' | 'ar') => {
     startTransition(() => {

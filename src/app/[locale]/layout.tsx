@@ -31,7 +31,7 @@ const cairo = Cairo({
 
 
 export const metadata: Metadata = {
-  title: 'TechShop Manager',
+  title: 'CoreSync',
   description: 'Manage your used-electronics shop with ease.',
 };
 

@@ -10,7 +10,7 @@ import { getTranslations } from "next-intl/server";
 
 const employeeData = {
   '1': {
-    id: '1', name: 'John Doe', role: 'Admin', email: 'john.doe@techshop.com', phone: '(123) 555-0001', avatar: 'https://placehold.co/100x100.png', hireDate: '2021-06-01',
+    id: '1', name: 'John Doe', role: 'Admin', email: 'john.doe@coresync.com', phone: '(123) 555-0001', avatar: 'https://placehold.co/100x100.png', hireDate: '2021-06-01',
     kpis: {
         sales: [ { month: "Jan", value: 5000 }, { month: "Feb", value: 6200 }, { month: "Mar", value: 5800 }, { month: "Apr", value: 7100 }, { month: "May", value: 7500 }, { month: "Jun", value: 8200 } ],
         repairs: [ { month: "Jan", value: 5 }, { month: "Feb", value: 7 }, { month: "Mar", value: 6 }, { month: "Apr", value: 8 }, { month: "May", value: 10 }, { month: "Jun", value: 9 } ],
@@ -18,7 +18,7 @@ const employeeData = {
     }
   },
   '2': {
-    id: '2', name: 'Jane Smith', role: 'Manager', email: 'jane.smith@techshop.com', phone: '(123) 555-1234', avatar: 'https://placehold.co/100x100.png', hireDate: '2022-01-15',
+    id: '2', name: 'Jane Smith', role: 'Manager', email: 'jane.smith@coresync.com', phone: '(123) 555-1234', avatar: 'https://placehold.co/100x100.png', hireDate: '2022-01-15',
     kpis: {
         sales: [ { month: "Jan", value: 12000 }, { month: "Feb", value: 15000 }, { month: "Mar", value: 13500 }, { month: "Apr", value: 16000 }, { month: "May", value: 18000 }, { month: "Jun", value: 17500 } ],
         repairs: [ { month: "Jan", value: 25 }, { month: "Feb", value: 30 }, { month: "Mar", value: 28 }, { month: "Apr", value: 35 }, { month: "May", value: 40 }, { month: "Jun", value: 38 } ],
@@ -26,7 +26,7 @@ const employeeData = {
     }
   },
   '3': {
-    id: '3', name: 'Peter Jones', role: 'Technician', email: 'peter.jones@techshop.com', phone: '(123) 555-5678', avatar: 'https://placehold.co/100x100.png', hireDate: '2022-08-01',
+    id: '3', name: 'Peter Jones', role: 'Technician', email: 'peter.jones@coresync.com', phone: '(123) 555-5678', avatar: 'https://placehold.co/100x100.png', hireDate: '2022-08-01',
     kpis: {
         sales: [ { month: "Jan", value: 1200 }, { month: "Feb", value: 1500 }, { month: "Mar", value: 1300 }, { month: "Apr", value: 1800 }, { month: "May", value: 2000 }, { month: "Jun", value: 1900 } ],
         repairs: [ { month: "Jan", value: 50 }, { month: "Feb", value: 65 }, { month: "Mar", value: 62 }, { month: "Apr", value: 70 }, { month: "May", value: 75 }, { month: "Jun", value: 80 } ],
@@ -34,7 +34,7 @@ const employeeData = {
     }
   },
   '4': {
-    id: '4', name: 'Mary Johnson', role: 'Sales', email: 'mary.j@techshop.com', phone: '(123) 555-8765', avatar: 'https://placehold.co/100x100.png', hireDate: '2023-03-10',
+    id: '4', name: 'Mary Johnson', role: 'Sales', email: 'mary.j@coresync.com', phone: '(123) 555-8765', avatar: 'https://placehold.co/100x100.png', hireDate: '2023-03-10',
     kpis: {
         sales: [ { month: "Jan", value: 25000 }, { month: "Feb", value: 28000 }, { month: "Mar", value: 26000 }, { month: "Apr", value: 32000 }, { month: "May", value: 35000 }, { month: "Jun", value: 33000 } ],
         repairs: [ { month: "Jan", value: 2 }, { month: "Feb", value: 1 }, { month: "Mar", value: 3 }, { month: "Apr", value: 0 }, { month: "May", value: 4 }, { month: "Jun", value: 2 } ],

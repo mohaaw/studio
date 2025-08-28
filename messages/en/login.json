@@ -1,6 +1,5 @@
-
 {
-    "title": "TechShop Manager",
+    "title": "CoreSync",
     "descriptions": {
         "credentials": "Enter your credentials to access your dashboard",
         "twoFactor": "Enter the code from your authenticator app"
@@ -15,5 +14,3 @@
         "verify": "Verify"
     }
 }
-
-    
