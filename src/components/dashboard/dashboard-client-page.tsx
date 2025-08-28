@@ -212,7 +212,7 @@ export default function DashboardClientPage({ myTasks: initialTasks, activityFee
                         <CartesianGrid vertical={false} strokeDasharray="3 3" />
                         <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
                         <YAxis tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => `$${value / 1000}k`} />
-                        <Tooltip content={<ChartTooltipContent />} />
+                        <Tooltip content={<ChartTooltipContent indicator="dot" />} />
                         <Legend />
                         <Line type="monotone" dataKey="sales" stroke="var(--color-sales)" strokeWidth={2} dot={false} />
                         <Line type="monotone" dataKey="profit" stroke="var(--color-profit)" strokeWidth={2} dot={false} />
