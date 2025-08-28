@@ -64,7 +64,7 @@
         "footerPlaceholder": "e.g., Thank you for your business! 90-day warranty on all used items.",
         "template": {
             "title": "Template Customization",
-            "description": "Use the full template editor to modify the layout of printed documents using variables like `{{customer.name}}`.",
+            "description": "Use the full template editor to modify the layout of printed documents using variables like `'{'{customer.name}'}'`.",
             "button": "Open Template Editor"
         }
     },
@@ -143,5 +143,3 @@
         }
     }
 }
-
-    
