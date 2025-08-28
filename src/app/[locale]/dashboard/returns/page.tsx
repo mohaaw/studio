@@ -2,8 +2,10 @@
 
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
-import { Card, CardHeader, CardContent, Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+
 
 const ReturnsClientPage = dynamic(() => import('@/components/returns/returns-client-page'));
 
